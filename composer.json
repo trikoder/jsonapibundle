@@ -1,0 +1,39 @@
+{
+  "name": "trikoder/jsonapibundle",
+  "description": "Json API bundle for Symfony",
+  "type": "symfony-bundle",
+  "require": {
+    "php": ">=7.0.0",
+    "symfony/symfony": "^3.1",
+    "neomerx/json-api": "^1.0",
+    "doctrine/orm": "~2.4,<2.5|^2.5",
+    "doctrine/doctrine-bundle": "~1.6",
+    "sensio/framework-extra-bundle": "^3.0"
+  },
+  "require-dev": {
+    "sensio/generator-bundle": "^3.0",
+    "phpunit/phpunit": "^5.2",
+    "phpunit/php-code-coverage": "^3.3",
+    "symfony/phpunit-bridge": "^3.0",
+    "justinrainbow/json-schema": "^1.6",
+    "doctrine/doctrine-fixtures-bundle": "^2.3",
+    "fzaninotto/faker": "^1.5",
+    "symfony/monolog-bundle": "^2.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Trikoder\\JsonApiBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Trikoder\\JsonApiBundle\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Alen Pokos",
+      "email": "alen.pokos@ghosap.com"
+    }
+  ]
+}

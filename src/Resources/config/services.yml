@@ -1,0 +1,89 @@
+parameters:
+    trikoder.jsonapi.request_listener.class: 'Trikoder\JsonApiBundle\Listener\KernelListener'
+    trikoder.jsonapi.schema_class_map_provider.class: 'Trikoder\JsonApiBundle\Services\SchemaClassMapService'
+    trikoder.jsonapi.factory.class: 'Trikoder\JsonApiBundle\Services\Neomerx\FactoryService'
+    trikoder.jsonapi.request_body_decoder.class: 'Trikoder\JsonApiBundle\Services\RequestBodyDecoderService'
+    trikoder.jsonapi.response_factory.class: 'Trikoder\JsonApiBundle\Services\ResponseFactoryService'
+    trikoder.jsonapi.encoder.class: 'Trikoder\JsonApiBundle\Services\Neomerx\EncoderService'
+    trikoder.jsonapi.model_tools_factory.class: 'Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory'
+    trikoder.jsonapi.error_factory.class: 'Trikoder\JsonApiBundle\Services\Neomerx\ErrorFactory'
+    trikoder.jsonapi.config_builder.class: 'Trikoder\JsonApiBundle\Services\ConfigBuilder'
+    trikoder.jsonapi.controller_config_listener.class: 'Trikoder\JsonApiBundle\Listener\ControllerConfigListener'
+    trikoder.jsonapi.model_factory_resolver.class: 'Trikoder\JsonApiBundle\Model\ModelFactoryResolver'
+    trikoder.jsonapi.doctrine_repository_factory.class: 'Trikoder\JsonApiBundle\Bridge\Doctrine\RepositoryFactory'
+    trikoder.jsonapi.simple_model_factory.class: 'Trikoder\JsonApiBundle\Model\Factory\SimpleModelFactory'
+
+services:
+    trikoder.jsonapi.request_listener:
+        class: "%trikoder.jsonapi.request_listener.class%"
+        arguments:
+            - "@trikoder.jsonapi.factory"
+            - "@trikoder.jsonapi.request_body_decoder"
+            - "@trikoder.jsonapi.response_factory"
+            - "@trikoder.jsonapi.encoder"
+            - "@trikoder.jsonapi.error_factory"
+            - "@logger"
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, priority: 16 }
+            - { name: kernel.event_listener, event: kernel.controller_arguments }
+            - { name: kernel.event_listener, event: kernel.view }
+            - { name: kernel.event_listener, event: kernel.response }
+            - { name: kernel.event_listener, event: kernel.exception }
+        lazy: true
+
+    trikoder.jsonapi.controller_config_listener:
+        class: "%trikoder.jsonapi.controller_config_listener.class%"
+        arguments:
+            - "@annotation_reader"
+            - "@trikoder.jsonapi.config_builder"
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, priority: 8 }
+        lazy: true
+
+    trikoder.jsonapi.schema_class_map_provider:
+        class: "%trikoder.jsonapi.schema_class_map_provider.class%"
+        lazy: true
+
+    trikoder.jsonapi.factory:
+        class: "%trikoder.jsonapi.factory.class%"
+        arguments: ["@service_container"]
+        lazy: true
+
+    trikoder.jsonapi.request_body_decoder:
+        class: "%trikoder.jsonapi.request_body_decoder.class%"
+        lazy: true
+
+    trikoder.jsonapi.response_factory:
+        class: "%trikoder.jsonapi.response_factory.class%"
+        lazy: true
+
+    trikoder.jsonapi.encoder:
+        class: "%trikoder.jsonapi.encoder.class%"
+        arguments: ["@trikoder.jsonapi.factory"]
+        lazy: true
+
+    trikoder.jsonapi.model_tools_factory:
+        class: "%trikoder.jsonapi.model_tools_factory.class%"
+        arguments: ["@form.factory", "@validator", "@doctrine.orm.entity_manager"]
+        lazy: true
+
+    trikoder.jsonapi.error_factory:
+        class: "%trikoder.jsonapi.error_factory.class%"
+        lazy: true
+
+    trikoder.jsonapi.config_builder:
+        class: "%trikoder.jsonapi.config_builder.class%"
+        arguments: [[], "@service_container"]
+        lazy: true
+
+    trikoder.jsonapi.doctrine_repository_factory:
+        class: "%trikoder.jsonapi.doctrine_repository_factory.class%"
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    trikoder.jsonapi.simple_model_factory:
+        class: "%trikoder.jsonapi.simple_model_factory.class%"
+
+    trikoder.jsonapi.model_factory_resolver:
+        class: "%trikoder.jsonapi.model_factory_resolver.class%"
+        calls:
+          - [registerFactory, ['@trikoder.jsonapi.simple_model_factory']]

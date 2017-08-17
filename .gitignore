@@ -1,0 +1,8 @@
+/vendor/
+/composer.lock
+/.idea/
+/logs/
+tests/Resources/app/cache/
+tests/Resources/app/data/
+tests/Resources/app/logs/
+docker-compose.override.yml

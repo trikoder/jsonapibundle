@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+
+  php:
+    volumes:
+      - $SSH_AUTH_SOCK:/ssh-agent
+    environment:
+      SSH_AUTH_SOCK: /ssh-agent

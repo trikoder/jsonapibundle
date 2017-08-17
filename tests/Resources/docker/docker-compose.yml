@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+
+  php:
+    build:
+          context: php
+          dockerfile: Dockerfile
+    volumes:
+      - ../../../:/usr/src/bundle #mount bundle root
+    links:
+      - mysql
+
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: 59gjvsxkccwlx1r0k6
+      MYSQL_DATABASE: jsonapibundle

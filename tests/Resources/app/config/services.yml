@@ -1,0 +1,9 @@
+parameters:
+    trikoder.jsonapi.schema_class_map_provider.class: 'Trikoder\JsonApiBundle\Tests\Resources\JsonApi\SchemaClassMapService'
+
+services:
+  trikoder.jsonapi.schema_class_map_provider:
+      class: "%trikoder.jsonapi.schema_class_map_provider.class%"
+      lazy: true
+      calls:
+        - [add, ['\stdClass', '\Trikoder\JsonApiBundle\Schema\Builtin\StdClassSchema']]

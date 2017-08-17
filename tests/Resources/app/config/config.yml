@@ -1,0 +1,57 @@
+imports:
+    - { resource: services.yml }
+    - { resource: jsonapi.yml }
+
+framework:
+    secret: secret
+    test: ~
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+    default_locale:  "en"
+    form:
+        enabled: true
+    validation:
+        enabled: true
+        enable_annotations: true
+    profiler:
+        only_exceptions: false
+
+web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+monolog:
+    handlers:
+        main:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            channels: [!event]
+        console:
+            type:   console
+            bubble: false
+            channels: [!event, !doctrine]
+
+doctrine:
+    dbal:
+        driver:   pdo_mysql
+        host:     "mysql"
+        port:     "3306"
+        dbname:   "jsonapibundle"
+        user:     "root"
+        password: "59gjvsxkccwlx1r0k6"
+        charset:  UTF8
+        logging: '%kernel.debug%'
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        entity_managers:
+            default:
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: true
+                mappings:
+                    custom_mapping:
+                        type: annotation
+                        prefix: Trikoder\JsonApiBundle\Tests\Resources\Entity
+                        dir: "%kernel.root_dir%/../Entity/"
+                        is_bundle: false
