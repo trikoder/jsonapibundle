@@ -2,12 +2,36 @@
 
 namespace Trikoder\JsonApiBundle\Services;
 
+use Exception;
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Trikoder\JsonApiBundle\Contracts\ErrorFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
+use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 
 class ResponseFactoryService implements ResponseFactoryInterface
 {
+    /**
+     * @var EncoderService
+     */
+    private $encoderService;
+    /**
+     * @var ErrorFactoryInterface
+     */
+    private $errorFactory;
+
+    /**
+     * ResponseFactoryService constructor.
+     * @param EncoderService $encoderService
+     * @param ErrorFactoryInterface $errorFactory
+     */
+    public function __construct(EncoderService $encoderService, ErrorFactoryInterface $errorFactory)
+    {
+        $this->encoderService = $encoderService;
+        $this->errorFactory = $errorFactory;
+    }
+
     /**
      * @inheritdoc
      */
@@ -81,6 +105,24 @@ class ResponseFactoryService implements ResponseFactoryInterface
         $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
 
         return $this->createResponse($data, $response);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createErrorFromException(Exception $exception, Response $response = null)
+    {
+        $error = $this->errorFactory->fromException($exception);
+        $encoded = $this->encoderService->encodeErrors([$error]);
+
+        $response = $this->createError($encoded, $response);
+
+        if ($exception instanceof HttpExceptionInterface) {
+            $response->headers->add($exception->getHeaders());
+            $response->setStatusCode($exception->getStatusCode());
+        }
+
+        return $response;
     }
 
     // TODO - implement shorthands for frequenty used responses , eg ok, notFound, noContent, created, etc

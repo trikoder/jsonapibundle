@@ -7,6 +7,7 @@ use Exception;
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Neomerx\JsonApi\Document\Error;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Trikoder\JsonApiBundle\Contracts\ErrorFactoryInterface;
 
 class ErrorFactory implements ErrorFactoryInterface
@@ -27,7 +28,7 @@ class ErrorFactory implements ErrorFactoryInterface
         return new Error(
             null,
             null,
-            Response::HTTP_INTERNAL_SERVER_ERROR,
+            $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR,
             $exception->getCode(),
             get_class($exception),
             $exception->getMessage()

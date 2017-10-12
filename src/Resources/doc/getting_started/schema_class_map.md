@@ -24,4 +24,5 @@ In your services configuration you can redefine `trikoder.jsonapi.schema_class_m
 
 Add method receives two parameters:
 - $class - FQN of class that provided schema should be used for
-- $schema - FQN or class of closure that returns instance of the schema that should be used for the model. Closure must accept two arguments `SchemaFactoryInterface $factory, ContainerInterface $serviceContainer`.
+- $schema - FQN or class of closure that returns instance of the schema that should be used for the model. 
+Closure must accept two arguments `SchemaFactoryInterface $factory, ContainerInterface $serviceContainer` (!IMORTANT - second argument for Closure - service container is deprecated and will be removed in the future in favour of autowiring).

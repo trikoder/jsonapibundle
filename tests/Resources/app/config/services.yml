@@ -2,8 +2,14 @@ parameters:
     trikoder.jsonapi.schema_class_map_provider.class: 'Trikoder\JsonApiBundle\Tests\Resources\JsonApi\SchemaClassMapService'
 
 services:
+
+  Symfony\Component\Routing\RouterInterface: '@router'
+
   trikoder.jsonapi.schema_class_map_provider:
       class: "%trikoder.jsonapi.schema_class_map_provider.class%"
       lazy: true
       calls:
         - [add, ['\stdClass', '\Trikoder\JsonApiBundle\Schema\Builtin\StdClassSchema']]
+
+  Trikoder\JsonApiBundle\Tests\Resources\Repository\SimpleFileModelRepository:
+      class: 'Trikoder\JsonApiBundle\Tests\Resources\Repository\SimpleFileModelRepository'

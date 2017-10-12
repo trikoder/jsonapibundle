@@ -55,6 +55,7 @@ Is class that implements `\Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInpu
 There are few built in model input handlers:
 - `\Trikoder\JsonApiBundle\Services\ModelInput\GenericFormModelInputHandler` - handler that uses symfony Form built from model's metadata
 - `\Trikoder\JsonApiBundle\Services\ModelInput\CustomFormModelInputHandler` - handler that uses custom provided symfony Form to update the model
+- `\Trikoder\JsonApiBundle\Services\ModelInput\ValidatingCustomFormModelInputHandler` - handler that uses custom provided symfony Form to update the model but it also uses form for validation (and any constraint rules on the form will be checked)
 
 ## Model validator
 

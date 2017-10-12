@@ -5,7 +5,7 @@ namespace Trikoder\JsonApiBundle\Controller\Traits;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
+use Trikoder\JsonApiBundle\Controller\Traits\Actions;
 
 /**
  * Class ShowActionTrait
@@ -13,20 +13,17 @@ use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
  */
 trait ShowActionTrait
 {
+    use Actions\ShowTrait;
 
     /**
      * @param Request $request
      *
-     * @Route("/{id}")
+     * @Route("/{id}{trailingSlash}", requirements={"trailingSlash" = "[/]{0,1}"}, defaults={"trailingSlash" = ""})
      * @Method("GET")
      * @return null|object
      */
     public function showAction(Request $request, $id)
     {
-        /** @var ConfigInterface $config */
-        $config = $this->getJsonApiConfig();
-
-        // TODO - enable return of meta data, links etc
-        return $config->getApi()->getRepository()->getOne($id, $config->getApi()->getFixedFiltering());
+        return $this->getModelById($id);
     }
 }

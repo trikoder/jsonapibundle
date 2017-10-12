@@ -5,10 +5,7 @@ namespace Trikoder\JsonApiBundle\Controller\Traits;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
-use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
-use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
-use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
+use Trikoder\JsonApiBundle\Controller\Traits\Actions;
 
 /**
  * Class DeleteActionTrait
@@ -16,29 +13,19 @@ use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
  */
 trait DeleteActionTrait
 {
+    use Actions\DeleteTrait;
 
     /**
      * @param Request $request
      *
-     * @Route("/{id}")
+     * @Route("/{id}{trailingSlash}", requirements={"trailingSlash" = "[/]{0,1}"}, defaults={"trailingSlash" = ""})
      * @Method({"DELETE"})
      *
      * @return null
      */
     public function deleteAction(Request $request, $id)
     {
-        /** @var ConfigInterface $config */
-        $config = $this->getJsonApiConfig();
-
-        /** @var RepositoryInterface $repository */
-        $repository = $config->getApi()->getRepository();
-
-        // load object
-        $model = $repository->getOne($id, $config->getApi()->getFixedFiltering());
-
-        // TODO - check if model is loaded
-
-        $repository->remove($model);
+        $this->deleteModelById($id);
 
         return null;
     }

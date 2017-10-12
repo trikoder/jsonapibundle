@@ -41,6 +41,15 @@ class ShowActionTest extends JsonapiWebTestCase
         ], $data['data']);
     }
 
+    public function testActionTrailingSlash()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/api/user/1/');
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+    }
+
 
     /**
      * Test a bit more complex show action
@@ -104,5 +113,116 @@ class ShowActionTest extends JsonapiWebTestCase
         ], $data['data']);
     }
 
-    // TODO add test for include
+    /**
+     *
+     */
+    public function testReducedResponseUserController()
+    {
+        $client = static::createClient();
+
+        // load user
+        /** @var User $user */
+        $user = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class)->find(1);
+
+        $client->request('GET', '/api/reduced-user-response/1');
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertEquals([
+            'type' => 'user',
+            'id' => '1',
+            'attributes' => [
+                'email' => $user->getEmail()
+            ],
+            'links' => [
+                'self' => '/user/1'
+            ],
+        ], $data['data']);
+    }
+
+    public function testNotFound()
+    {
+        $client = static::createClient();
+        $client->request(
+            'GET',
+            '/api/user/9999',
+            [],
+            [],
+            [],
+            ''
+        );
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+    }
+
+    public function testRelationshipsDefault()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/posts/1');
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertEquals([
+            'type' => 'post',
+            'id' => '1',
+            'attributes' => [
+                'title' => 'Post 1'
+            ],
+            'links' => [
+                'self' => '/post/1'
+            ],
+        ], $data['data']);
+    }
+
+    public function testRelationshipsDefaultRequested()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/posts/1', ['include' => 'author']);
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertEquals([
+            'type' => 'post',
+            'id' => '1',
+            'attributes' => [
+                'title' => 'Post 1'
+            ],
+            'relationships' => [
+                'author' => [
+                    'data' => [
+                        'type' => 'user',
+                        'id' => 3
+                    ]
+                ]
+            ],
+            'links' => [
+                'self' => '/post/1'
+            ],
+        ], $data['data']);
+
+        $this->assertArrayHasKey('included', $data);
+        $this->assertNotEmpty($data['included']);
+        $this->assertEquals('user', $data['included'][0]['type']);
+        $this->assertEquals(3, $data['included'][0]['id']);
+    }
+
+    // TODO - If a server is unable to identify a relationship path or does not support inclusion of resources from a path, it MUST respond with 400 Bad Request.
 }

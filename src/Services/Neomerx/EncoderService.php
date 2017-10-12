@@ -22,12 +22,23 @@ class EncoderService
     private $jsonApiFactory;
 
     /**
+     * @var EncoderOptions
+     */
+    private $encoderOptions;
+
+    /**
+     * @var bool
+     */
+    private $configurationEncodingPrettyPrint = true;
+
+    /**
      * EncoderService constructor.
      * @param FactoryService $factoryService
      */
     public function __construct(FactoryService $factoryService)
     {
         $this->jsonApiFactory = $factoryService;
+        $this->buildEncoderOptions();
     }
 
     /**
@@ -48,7 +59,7 @@ class EncoderService
         // encode links if any
         if (false === empty($links)) {
             foreach ($links as &$linksItem) {
-                if (false === ($linksItem instanceof Link)) {
+                if (false === ($linksItem instanceof Link) && null !== $linksItem) {
                     $linksItem = new Link($linksItem);
                 }
             }
@@ -57,10 +68,11 @@ class EncoderService
         // TODO - this should be service
         $encoder = $this->jsonApiFactory->createEncoderInstance(
             $classMapProvider->getMap(),
-            new EncoderOptions(JSON_PRETTY_PRINT, '')
+            $this->encoderOptions
         );
 
-        return $encoder->withMeta($meta)->withLinks($links)->withJsonApiVersion()->encodeData($data, $encodingParameters);
+        return $encoder->withMeta($meta)->withLinks($links)->withJsonApiVersion()->encodeData($data,
+            $encodingParameters);
     }
 
     /**
@@ -86,9 +98,30 @@ class EncoderService
         // TODO - this should be service
         $encoder = $this->jsonApiFactory->createEncoderInstance(
             [],
-            new EncoderOptions(JSON_PRETTY_PRINT, '')
+            $this->encoderOptions
         );
 
         return $encoder->withMeta($meta)->withLinks($links)->withJsonApiVersion()->encodeErrors($errors);
+    }
+
+    /**
+     * @param bool $prettyPrint
+     */
+    public function configureSetPrettyPrint(bool $prettyPrint = true)
+    {
+        $this->configurationEncodingPrettyPrint = $prettyPrint;
+        $this->buildEncoderOptions();
+    }
+
+    /**
+     * @return EncoderOptions
+     */
+    private function buildEncoderOptions()
+    {
+        $options = 0;
+        if(true === $this->configurationEncodingPrettyPrint) {
+            $options += JSON_PRETTY_PRINT;
+        }
+        $this->encoderOptions = new EncoderOptions($options, '');
     }
 }

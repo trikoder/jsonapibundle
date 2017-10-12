@@ -34,6 +34,8 @@ Defaults to `\Trikoder\JsonApiBundle\Services\RequestBodyDecoderService` .
 Array of fixed filtering defined for this controller. It is applied to all load action from repository (index, show, update, delete).
 Defaults to empty array.
 
+Example of fixed filtering would be `fixedFiltering={"customer":true}` as seen in `\Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User\CustomerController`
+
 
 ### allowed include paths
 Which include paths are allowed in request params. [] for nothing is allowed, null for everything is allowed.
@@ -64,6 +66,8 @@ Defaults to null.
 
 #### default sort
 Default sorting array. Defaults to [];
+
+Example of default sort would be `defaultSort={"email":"desc", "id":"desc"}`
 
 #### default pagination
 Default pagination array. Defaults to [];

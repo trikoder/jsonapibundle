@@ -4,6 +4,7 @@ namespace Trikoder\JsonApiBundle\Tests\Resources\JsonApi\Schema;
 
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Trikoder\JsonApiBundle\Schema\AbstractSchema;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
@@ -15,7 +16,7 @@ class CustomerSchema extends AbstractSchema
      */
     private $router;
 
-    public function __construct(SchemaFactoryInterface $factory, Router $router)
+    public function __construct(SchemaFactoryInterface $factory, RouterInterface $router)
     {
         parent::__construct($factory);
         $this->router = $router;

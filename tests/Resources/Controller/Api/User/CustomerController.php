@@ -37,9 +37,7 @@ class CustomerController extends JsonApiController
     {
         // replace one property
         $mapService = parent::getSchemaClassMapProvider();
-        $mapService->add(User::class, function (SchemaFactoryInterface $factory, ContainerInterface $serviceContainer) {
-            return new CustomerSchema($factory, $serviceContainer->get('router'));
-        });
+        $mapService->add(User::class, CustomerSchema::class);
         return $mapService;
     }
 

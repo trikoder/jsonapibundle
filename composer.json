@@ -18,7 +18,8 @@
     "justinrainbow/json-schema": "^1.6",
     "doctrine/doctrine-fixtures-bundle": "^2.3",
     "fzaninotto/faker": "^1.5",
-    "symfony/monolog-bundle": "^2.8"
+    "symfony/monolog-bundle": "^2.8",
+    "sensiolabs/security-checker": "^4.1"
   },
   "autoload": {
     "psr-4": {

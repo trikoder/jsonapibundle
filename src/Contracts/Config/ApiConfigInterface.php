@@ -22,7 +22,7 @@ interface ApiConfigInterface
     /**
      * Model repository
      *
-     * @return Closure|RepositoryInterface
+     * @return RepositoryInterface
      */
     public function getRepository();
 

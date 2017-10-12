@@ -40,14 +40,18 @@ class ControllerConfigListener
     public function onKernelController(FilterControllerEvent $event)
     {
         /** @var AbstractController $controller */
-        $controller = $event->getController()[0];
+        $controller = $this->resolveControllerFromEventController($event->getController());
 
         // if api enabled controller, inject config
-        if (true === $this->isJsonApiEnabledController($controller)) {
+        if (false === is_null($controller) && true === $this->isJsonApiEnabledController($controller)) {
             // prepare class annotations in variable for later use
             /** @var Annotation\Config $configAnnotation */
             $configAnnotation = $this->annotationReader->getClassAnnotation(new ReflectionClass($controller),
                 Annotation\Config::class);
+            // if no annotation, we can tolerate empty config
+            if (null === $configAnnotation) {
+                $configAnnotation = new Annotation\Config();
+            }
 
             $config = $this->configBuilder->fromAnnotation($configAnnotation);
 

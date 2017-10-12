@@ -31,4 +31,14 @@ class CustomFormModelInputHandler extends AbstractFormModelInputHandler
     {
         return $this->form;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function forModel($model)
+    {
+        // add passed model to the form
+        $this->getForm()->setData($model);
+        return parent::forModel($model);
+    }
 }

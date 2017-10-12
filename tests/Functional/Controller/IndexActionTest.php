@@ -2,6 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
 
 class IndexActionTest extends JsonapiWebTestCase
@@ -20,6 +21,15 @@ class IndexActionTest extends JsonapiWebTestCase
         $this->assertIsJsonapiResponse($response);
 
         // TODO add count test
+    }
+
+    public function testIndexActionWithoutTrailingSlash()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/api/user');
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
     }
 
     /**
@@ -71,7 +81,7 @@ class IndexActionTest extends JsonapiWebTestCase
         $client = static::createClient();
 
         // test first page
-        $client->request('GET', '/api/user/', ['page' => ['size' => 1, 'page' => 1]]);
+        $client->request('GET', '/api/user/', ['page' => ['size' => 1, 'number' => 1]]);
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $content = $this->getResponseContentJson($response);
@@ -79,12 +89,37 @@ class IndexActionTest extends JsonapiWebTestCase
         $this->assertEquals(1, $content['data'][0]['id']);
 
         // test second page
-        $client->request('GET', '/api/user/', ['page' => ['size' => 1, 'page' => 2]]);
+        $client->request('GET', '/api/user/', ['page' => ['size' => 1, 'number' => 2]]);
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $content = $this->getResponseContentJson($response);
         $this->assertCount(1, $content['data']);
         $this->assertEquals(2, $content['data'][0]['id']);
+    }
+
+
+    /**
+     * test pagination
+     */
+    public function testUserIndexPaginatedPageOnlyAction()
+    {
+        $client = static::createClient();
+
+        // test first page
+        $client->request('GET', '/api/user-paginated/', ['page' => ['number' => 1]]);
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $content = $this->getResponseContentJson($response);
+        $this->assertCount(2, $content['data']);
+        $this->assertEquals(1, $content['data'][0]['id']);
+
+        // test second page
+        $client->request('GET', '/api/user-paginated/', ['page' => ['number' => 2]]);
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $content = $this->getResponseContentJson($response);
+        $this->assertCount(2, $content['data']);
+        $this->assertEquals(3, $content['data'][0]['id']);
     }
 
     /**

@@ -5,8 +5,8 @@ namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 use Exception;
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Neomerx\JsonApi\Document\Error;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Trikoder\JsonApiBundle\Services\Neomerx\ErrorFactory;
-use Trikoder\JsonApiBundle\Services\RequestBodyDecoderService;
 
 class ErrorFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,7 +28,16 @@ class ErrorFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $testString = "Test error";
         $testException = new Exception($testString, 123);
-        $expected = new Error(null, null, 500, 123, 'Exception', $testString);
+        $expected = new Error(null, null, 500, 123, Exception::class, $testString);
+
+        $this->assertErrorEqual($expected, $this->createFactory()->fromException($testException));
+    }
+
+    public function testFromHttpException()
+    {
+        $testString = "Test HTTP error";
+        $testException = new NotFoundHttpException($testString, null, 123);
+        $expected = new Error(null, null, 404, 123, NotFoundHttpException::class, $testString);
 
         $this->assertErrorEqual($expected, $this->createFactory()->fromException($testException));
     }

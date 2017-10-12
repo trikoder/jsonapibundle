@@ -10,6 +10,7 @@ Guide how to setup bundle is located in [quick start guide](src/Resources/doc/ge
 
 ## Sample usage
 For quick start see [quick start guide](src/Resources/doc/getting_started/quick.md)
+You can also look at demo code located in [test suite](tests/Resources)
 
 ## Advanced usage
 For advanced usages that are outside of generic api you get from quick start, see [advanced usage](src/Resources/doc/getting_started/advanced_usage.md)

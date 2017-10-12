@@ -21,7 +21,6 @@ services:
             - "@trikoder.jsonapi.request_body_decoder"
             - "@trikoder.jsonapi.response_factory"
             - "@trikoder.jsonapi.encoder"
-            - "@trikoder.jsonapi.error_factory"
             - "@logger"
         tags:
             - { name: kernel.event_listener, event: kernel.controller, priority: 16 }
@@ -55,6 +54,9 @@ services:
 
     trikoder.jsonapi.response_factory:
         class: "%trikoder.jsonapi.response_factory.class%"
+        arguments:
+            - "@trikoder.jsonapi.encoder"
+            - "@trikoder.jsonapi.error_factory"
         lazy: true
 
     trikoder.jsonapi.encoder:

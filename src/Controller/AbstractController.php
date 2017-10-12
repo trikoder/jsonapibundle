@@ -62,14 +62,4 @@ abstract class AbstractController extends Controller implements JsonApiEnabledIn
     {
         return $this->config;
     }
-
-    /**
-     * Helper methods for IDEs and type hinting
-     *
-     * @return RepositoryInterface
-     */
-    protected function getRepository()
-    {
-        return $this->getJsonApiConfig()->getApi()->getRepository();
-    }
 }
