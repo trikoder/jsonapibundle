@@ -42,4 +42,40 @@ class DeleteActionTest extends JsonapiWebTestCase
         $user = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class)->find(5);
         $this->assertNull($user);
     }
+
+    public function testActionWithTrailingSlash()
+    {
+        $client = static::createClient();
+
+        $user = new User();
+        $user->setEmail('testActionWithTrailingSlash@test.com');
+        $client->getContainer()->get('doctrine.orm.entity_manager')->persist($user);
+
+        $client->request(
+            'DELETE',
+            '/api/user/'.$user->getId().'/',
+            [],
+            [],
+            [],
+            ''
+        );
+        $response = $client->getResponse();
+        $this->assertNotEquals(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+    }
+
+    public function testNotFound()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'DELETE',
+            '/api/user/99999',
+            [],
+            [],
+            [],
+            ''
+        );
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
 }

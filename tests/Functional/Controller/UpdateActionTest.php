@@ -102,4 +102,27 @@ class UpdateActionTest extends JsonapiWebTestCase
 
 
     }
+
+    public function testActionWithTrailingSlash()
+    {
+        $client = static::createClient();
+        $client->request('PUT', '/api/user/999/');
+        $response = $client->getResponse();
+        $this->assertNotEquals(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+    }
+
+    public function testNotFound()
+    {
+        $client = static::createClient();
+        $client->request(
+            'PUT',
+            '/api/user/999',
+            [],
+            [],
+            [],
+            ''
+        );
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
 }

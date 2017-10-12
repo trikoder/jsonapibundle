@@ -18,8 +18,6 @@ class ExampleServiceSchemaClassMap extends AbstractSchemaClassMapService
      */
     public function __construct()
     {
-        $this->add('\Example', function (SchemaFactoryInterface $factory, ContainerInterface $serviceContainer) {
-            return new ExampleServiceSchema($factory, $serviceContainer->get('router'));
-        });
+        $this->add('\Example', ExampleServiceSchema::class);
     }
 }

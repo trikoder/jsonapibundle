@@ -29,8 +29,28 @@ abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderIn
     public function add($class, $schema)
     {
         // TODO - do we need to prevent double adds?
-        $this->classMap[$class] = $schema;
+        $this->classMap[$this->normalizeClassFQN($class)] = $this->normalizeClassFQN($schema);
     }
 
-    // TODO - add suport for add array list of schemas
+    /**
+     * @param $class
+     * @return string
+     */
+    protected function normalizeClassFQN($class)
+    {
+        if (true === is_string($class)) {
+            $class = trim($class, "\\");
+        }
+        return $class;
+    }
+
+    /**
+     * @param array $schemas
+     */
+    public function addSchemas(array $schemas)
+    {
+        foreach ($schemas as $class => $schema) {
+            $this->add($class, $schema);
+        }
+    }
 }

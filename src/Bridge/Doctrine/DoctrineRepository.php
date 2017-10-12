@@ -38,7 +38,7 @@ class DoctrineRepository implements RepositoryInterface
     public function getList($filter = [], $sort = [], $limit = null, $offset = null)
     {
         // TODO - rewrite this so only have one level of dependancy - right now we are inside 4
-        // TODO we need to be able to send filters and other params and array and get count and result list here
+        // we need to be able to send filters and other params and array and get count and result list here
         $persister = $this->entityManager->getUnitOfWork()->getEntityPersister($this->entityRepository->getClassName());
         $collection = $persister->loadAll($filter, $sort, $limit, $offset);
         $count = $persister->count($filter);

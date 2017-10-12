@@ -2,7 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Contracts;
 
-use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
 interface ResponseFactoryInterface
@@ -12,7 +12,6 @@ interface ResponseFactoryInterface
      * @param Response|null $response any response that should be used as base
      * @return Response created response
      *
-     * TODO - rename createResponse to create, response sufix is redundant as it is already response factory
      */
     public function createResponse(string $data, Response $response = null);
 
@@ -33,4 +32,11 @@ interface ResponseFactoryInterface
      * @return Response
      */
     public function createError(string $data, Response $response = null);
+
+    /**
+     * @param Exception $exception
+     * @param Response|null $response
+     * @return Response
+     */
+    public function createErrorFromException(Exception $exception, Response $response = null);
 }

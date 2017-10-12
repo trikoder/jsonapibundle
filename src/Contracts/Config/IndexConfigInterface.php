@@ -9,6 +9,13 @@ namespace Trikoder\JsonApiBundle\Contracts\Config;
 interface IndexConfigInterface
 {
     /**
+     * Constants for known pagination strategies
+     */
+    const PAGINATION_STRATEGY_LIMIT_OFFSET = 1;
+    const PAGINATION_STRATEGY_PAGE_SIZE = 2;
+    const PAGINATION_STRATEGY_CURSOR = 3;
+
+    /**
      * List of fields supported in sort params, [] for nothing is allowed, null for everything is allowed
      *
      * @return array|null

@@ -4,15 +4,17 @@ namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Neomerx\JsonApi\Document\Error;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelValidatorInterface;
+use Trikoder\JsonApiBundle\Services\ModelInput\Traits\ConstraintViolationToErrorTransformer;
 
 class ModelValidator implements ModelValidatorInterface
 {
+    use ConstraintViolationToErrorTransformer;
+
     /**
      * @var ValidatorInterface
      */
@@ -52,41 +54,9 @@ class ModelValidator implements ModelValidatorInterface
         if (count($validationResult) == 0) {
             return true;
         } else {
-            // TODO - should we transform this?
-            $errors = [];
-
-            /** @var ConstraintViolationInterface $violation */
-            foreach ($validationResult as $violation) {
-                $errors[] = $this->convertViolationToError($violation);
-            }
-
-            return $errors;
+            return $this->convertViolationsToErrors($validationResult);
         }
     }
 
-    protected function convertViolationToError(ConstraintViolationInterface $violation)
-    {
-        $code = $violation->getCode();
-        $title = 'Constraint violation';
-        $detail = $violation->getMessage();
-        $source = [];
-        if ($violation->getPropertyPath()) {
-            // TODO - make diff between attributes and relationships
-            $source['pointer'] = '/data/attributes/' . $violation->getPropertyPath();
-        }
-        if ($code === 2) {
-            // TODO - parameter should be string? maybe we should send this in meta?
-            $source['parameter'] = $violation->getParameters();
-        }
 
-        return new Error(
-            null,
-            null,
-            Response::HTTP_CONFLICT,
-            $code,
-            $title,
-            $detail,
-            $source
-        );
-    }
 }

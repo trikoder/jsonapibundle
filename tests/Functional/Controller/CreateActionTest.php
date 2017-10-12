@@ -86,4 +86,13 @@ class CreateActionTest extends JsonapiWebTestCase
         // TODO - verify there is no new records in the database
         // TODO - verify the errors
     }
+
+    public function testActionWithoutTrailingSlash()
+    {
+        $client = static::createClient();
+        $client->request('POST', '/api/user');
+        $response = $client->getResponse();
+        $this->assertNotEquals(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+    }
 }

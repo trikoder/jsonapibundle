@@ -1,6 +1,6 @@
 <?php
 
-namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
+namespace Trikoder\JsonApiBundle\Tests\Functional\Controller\Demo;
 
 use Symfony\Component\HttpFoundation\Response;
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
@@ -24,10 +24,15 @@ class ExceptionTest extends JsonapiWebTestCase
         $this->assertIsJsonapiResponse($response);
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
 
-        // TODO - verify the errors
-
-        $data = $this->getResponseContentJson($response);
-
+        $content = $this->getResponseContentJson($response);
+        $this->assertArrayHasKey('errors', $content);
+        $this->assertCount(1, $content['errors']);
+        $this->assertEquals([
+            'status' => 500,
+            'code' => 44,
+            'title' => \Exception::class,
+            'detail' => 'Test exception'
+        ], $content['errors'][0]);
 
     }
 }

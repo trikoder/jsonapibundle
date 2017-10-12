@@ -4,24 +4,22 @@ namespace Trikoder\JsonApiBundle\Listener;
 
 use Iterator;
 use Monolog\Logger;
-use Neomerx\JsonApi\Encoder\Parameters\EncodingParameters;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Trikoder\JsonApiBundle\Contracts\ErrorFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface;
 use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
-use Trikoder\JsonApiBundle\Services\Neomerx\ErrorFactory;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
 use Trikoder\JsonApiBundle\Services\RequestDecoder;
+use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
  * Class KernelListener
@@ -60,14 +58,11 @@ class KernelListener
      * @var ResponseFactoryInterface
      */
     private $responseFactory;
+
     /**
      * @var EncoderService
      */
     private $encoderService;
-    /**
-     * @var ErrorFactoryInterface
-     */
-    private $errorFactory;
 
     /**
      * @var RequestDecoder
@@ -86,7 +81,6 @@ class KernelListener
      * @param RequestBodyDecoderInterface $requestBodyDecoder
      * @param ResponseFactoryInterface $responseFactory
      * @param EncoderService $encoderService
-     * @param ErrorFactoryInterface $errorFactory
      * @param Logger $logger
      */
     public function __construct(
@@ -94,7 +88,6 @@ class KernelListener
         RequestBodyDecoderInterface $requestBodyDecoder,
         ResponseFactoryInterface $responseFactory,
         EncoderService $encoderService,
-        ErrorFactoryInterface $errorFactory,
         Logger $logger
     ) {
         // we use neomerx so here we hint it is foreign implementation
@@ -102,7 +95,6 @@ class KernelListener
         $this->requestBodyDecoder = $requestBodyDecoder;
         $this->responseFactory = $responseFactory;
         $this->encoderService = $encoderService;
-        $this->errorFactory = $errorFactory;
         $this->logger = $logger;
     }
 
@@ -123,10 +115,10 @@ class KernelListener
      */
     public function onKernelController(FilterControllerEvent $event)
     {
-        $controller = $event->getController()[0];
+        $controller = $this->resolveControllerFromEventController($event->getController());
 
         // if api enabled controller, save information in the request
-        if (true === $this->isJsonApiEnabledController($controller)) {
+        if (false === is_null($controller) && true === $this->isJsonApiEnabledController($controller)) {
             /** @var JsonApiEnabledInterface $controller */
             $this->isJsonApiEnabledRequest = true;
 
@@ -150,12 +142,27 @@ class KernelListener
         // prepare empty values to be populated
         $resultMeta = [];
         $resultLinks = [
-            'self' => $event->getRequest()->getRequestUri(),
+            'self' => $event->getRequest()->getUri(),
         ];
 
         // get result which we need to process
         $controllerResult = $event->getControllerResult();
 
+        // process the result
+        $response = $this->getResponseFromControllerResult($controllerResult, $resultMeta, $resultLinks);
+
+        $event->setResponse($response);
+    }
+
+    /**
+     * @param $controllerResult
+     * @param array $resultMeta
+     * @param array $resultLinks
+     * @return Response
+     * @throws \Exception
+     */
+    private function getResponseFromControllerResult($controllerResult, array $resultMeta = [], array $resultLinks = [])
+    {
         // find what action to perform based on result from controller
         switch (true) {
 
@@ -163,6 +170,24 @@ class KernelListener
             case ($controllerResult instanceof Response):
 
                 // TODO - this should never happen here? Response is called in kernelResponse
+
+                break;
+
+            case ($controllerResult instanceof DataResponse):
+
+                $resultMeta = array_merge($resultMeta, $controllerResult->getMeta());
+                $resultLinks = array_merge($resultLinks, $controllerResult->getLinks());
+
+                // allow null value data response
+                if (null !== $controllerResult->getData()) {
+                    // as data inside can be anything, we extract extra info from response and pass all down for another round of decoding
+                    return $this->getResponseFromControllerResult($controllerResult->getData(), $resultMeta,
+                        $resultLinks);
+                }
+
+                $response = $this->responseFactory->createResponse($this->encode(null, $resultMeta,
+                    $resultLinks));
+                return $response;
 
                 break;
 
@@ -177,7 +202,7 @@ class KernelListener
                     $resultMeta,
                     $resultLinks
                 ));
-                $event->setResponse($response);
+                return $response;
 
                 break;
 
@@ -186,7 +211,7 @@ class KernelListener
 
                 $response = $this->responseFactory->createResponse($this->encode($controllerResult, $resultMeta,
                     $resultLinks));
-                $event->setResponse($response);
+                return $response;
 
                 break;
 
@@ -194,7 +219,7 @@ class KernelListener
             case (null === $controllerResult):
 
                 $response = $this->responseFactory->createNoContent();
-                $event->setResponse($response);
+                return $response;
 
                 break;
 
@@ -226,10 +251,10 @@ class KernelListener
     public function onKernelControllerArguments(FilterControllerArgumentsEvent $event)
     {
         /** @var JsonApiEnabledInterface $controller */
-        $controller = $event->getController()[0];
+        $controller = $this->resolveControllerFromEventController($event->getController());
 
         // if this is not json api enabled request do nothing
-        if (false === $this->isJsonApiEnabledController($controller)) {
+        if (true === is_null($controller) || false === $this->isJsonApiEnabledController($controller)) {
             return;
         }
 
@@ -256,6 +281,9 @@ class KernelListener
         // TODO here we need to translate/update response to json?
     }
 
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         // if this is not json api enabled request do nothing
@@ -264,18 +292,16 @@ class KernelListener
         }
 
         $exception = $event->getException();
-        $error = $this->errorFactory->fromException($exception);
-        $encoded = $this->encoderService->encodeErrors([$error]);
 
-        $response = $this->responseFactory->createError(
-            $encoded
-        );
+        $response = $this->responseFactory->createErrorFromException($exception);
 
         $event->setResponse($response);
 
         // send exception to logger
         if ($this->logger) {
-            $this->logger->error($exception, [$exception->getTrace()]);
+            $this->logger->error($exception->getMessage(), [
+                'exception' => $exception,
+            ]);
         }
     }
 }
