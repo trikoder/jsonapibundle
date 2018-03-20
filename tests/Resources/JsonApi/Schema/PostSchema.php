@@ -52,7 +52,11 @@ class PostSchema extends AbstractSchema
             null === $includeRelationships ||
             (is_array($includeRelationships) && array_key_exists('author', $includeRelationships))) {
 
-            $relationships['author'] = [self::DATA => $resource->getAuthor()];
+            $relationships['author'] = [
+                self::DATA => function () use ($resource) {
+                    return $resource->getAuthor();
+                }
+            ];
         }
 
         return $relationships;

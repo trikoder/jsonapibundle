@@ -22,23 +22,15 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
  */
 trait CreateTrait
 {
-
     /**
+     * @param ConfigInterface $config
+     * @param object $emptyModel
      * @param Request $request
      * @return object
      * @throws ModelValidationException
      */
-    protected function createModelFromRequest(Request $request)
+    protected function handleCreateModelInputFromRequest(ConfigInterface $config, $emptyModel, Request $request)
     {
-        /** @var ConfigInterface $config */
-        $config = $this->getJsonApiConfig();
-
-        //TODO make sure request has data in array
-
-        // create empty object, config executes and closures
-        $emptyModelFactory = $config->getCreate()->getCreateFactory();
-        $emptyModel = $emptyModelFactory->create($config->getApi()->getModelClass());
-
         // merge it with request data
         if (true === method_exists($this, 'getCreateInputHandler')) {
             // TODO - add check if callable, and give info it should be protected
@@ -53,10 +45,11 @@ trait CreateTrait
 
         // update model input with files from request
         $modelInput = $request->request->all();
-        if($request->files->count() > 0) {
+        if ($request->files->count() > 0) {
             foreach ($request->files->all() as $filesKey => $filesValue) {
-                if(array_key_exists($filesKey, $modelInput)) {
-                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s', $filesKey));
+                if (array_key_exists($filesKey, $modelInput)) {
+                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s',
+                        $filesKey));
                 }
                 $modelInput[$filesKey] = $filesValue;
             }
@@ -64,12 +57,23 @@ trait CreateTrait
         $model = $handler->forModel($emptyModel)->handle($modelInput)->getResult();
 
         // validate result
-        if($handler instanceof ModelValidatorInterface) {
+        if ($handler instanceof ModelValidatorInterface) {
             $validated = $handler->validate();
             if (true !== $validated) {
                 throw new ModelValidationException($validated);
             }
         }
+
+        return $model;
+    }
+
+    /**
+     * @param ConfigInterface $config
+     * @param object $model
+     * @throws ModelValidationException
+     */
+    protected function validateCreatedModel(ConfigInterface $config, $model)
+    {
         if (true === method_exists($this, 'getCreateValidator')) {
             // TODO - add check if callable, and give info it should be protected
             /** @var ModelValidatorInterface $validator */
@@ -87,6 +91,27 @@ trait CreateTrait
             // TODO get errors and send them as response
             throw new ModelValidationException($validated);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return object
+     * @throws ModelValidationException
+     */
+    protected function createModelFromRequest(Request $request)
+    {
+        /** @var ConfigInterface $config */
+        $config = $this->getJsonApiConfig();
+
+        //TODO make sure request has data in array
+
+        // create empty object, config executes and closures
+        $emptyModelFactory = $config->getCreate()->getCreateFactory();
+        $emptyModel = $emptyModelFactory->create($config->getApi()->getModelClass());
+
+        $model = $this->handleCreateModelInputFromRequest($config, $emptyModel, $request);
+
+        $this->validateCreatedModel($config, $model);
 
         // save it
         $config->getApi()->getRepository()->save($model);

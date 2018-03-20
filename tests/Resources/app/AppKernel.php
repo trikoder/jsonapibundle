@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\DebugBundle\DebugBundle(),
             new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
+            new Symfony\Bundle\WebServerBundle\WebServerBundle(),
 
             # the bundle
             new Trikoder\JsonApiBundle\TrikoderJsonApiBundle(),

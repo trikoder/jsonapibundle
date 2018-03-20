@@ -52,7 +52,7 @@ trait UpdateTrait
         $model = $repository->getOne($id, $config->getApi()->getFixedFiltering());
 
         // check if model is loaded
-        if(null === $model) {
+        if (null === $model) {
             throw new NotFoundHttpException();
         }
 
@@ -63,22 +63,14 @@ trait UpdateTrait
     }
 
     /**
-     * @param Request $request
+     * @param ConfigInterface $config
      * @param $model
+     * @param Request $request
      * @return object
      * @throws ModelValidationException
      */
-    protected function updateModelFromRequestUsingModel(Request $request, $model) {
-        /** @var ConfigInterface $config */
-        $config = $this->getJsonApiConfig();
-
-        //TODO make sure request has data in array
-
-        /** @var RepositoryInterface $repository */
-        $repository = $config->getApi()->getRepository();
-
-        // TODO - check if model correct class?
-
+    protected function handleUpdateModelInputFromRequest(ConfigInterface $config, $model, Request $request)
+    {
         // merge it with request data
         if (true === method_exists($this, 'getUpdateInputHandler')) {
             // TODO - add check if callable, and give info it should be protected
@@ -93,10 +85,11 @@ trait UpdateTrait
 
         // update model input with files from request
         $modelInput = $request->request->all();
-        if($request->files->count() > 0) {
+        if ($request->files->count() > 0) {
             foreach ($request->files->all() as $filesKey => $filesValue) {
-                if(array_key_exists($filesKey, $modelInput)) {
-                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s', $filesKey));
+                if (array_key_exists($filesKey, $modelInput)) {
+                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s',
+                        $filesKey));
                 }
                 $modelInput[$filesKey] = $filesValue;
             }
@@ -105,12 +98,23 @@ trait UpdateTrait
         $model = $handler->forModel($model)->handle($modelInput)->getResult();
 
         // validate result
-        if($handler instanceof ModelValidatorInterface) {
+        if ($handler instanceof ModelValidatorInterface) {
             $validated = $handler->validate();
             if (true !== $validated) {
                 throw new ModelValidationException($validated);
             }
         }
+
+        return $model;
+    }
+
+    /**
+     * @param ConfigInterface $config
+     * @param $model
+     * @throws ModelValidationException
+     */
+    protected function validateUpdatedModel(ConfigInterface $config, $model)
+    {
         if (true === method_exists($this, 'getUpdateValidator')) {
             // TODO - add check if callable, and give info it should be protected
             /** @var ModelValidatorInterface $validator */
@@ -126,6 +130,29 @@ trait UpdateTrait
         if (true !== $validated) {
             throw new ModelValidationException($validated);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @param $model
+     * @return object
+     * @throws ModelValidationException
+     */
+    protected function updateModelFromRequestUsingModel(Request $request, $model)
+    {
+        /** @var ConfigInterface $config */
+        $config = $this->getJsonApiConfig();
+
+        //TODO make sure request has data in array
+
+        // TODO - check if model correct class?
+
+        $model = $this->handleUpdateModelInputFromRequest($config, $model, $request);
+
+        $this->validateUpdatedModel($config, $model);
+
+        /** @var RepositoryInterface $repository */
+        $repository = $config->getApi()->getRepository();
 
         // save it
         $repository->save($model);

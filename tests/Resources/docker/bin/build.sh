@@ -2,6 +2,9 @@
 
 docker-compose build
 docker-compose up -d
+
+docker-compose run --no-deps --rm php rm -r tests/Resources/app/cache
+
 docker-compose run --no-deps --rm php composer install --dev --no-interaction --no-ansi --prefer-dist
 
 docker-compose run --no-deps --rm php php tests/Resources/app/bin/console doctrine:database:create --if-not-exists

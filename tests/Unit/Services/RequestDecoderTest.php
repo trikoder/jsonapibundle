@@ -7,6 +7,7 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Trikoder\JsonApiBundle\Config\ApiConfig;
 use Trikoder\JsonApiBundle\Config\Config;
 use Trikoder\JsonApiBundle\Config\CreateConfig;
@@ -60,6 +61,69 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
                 'value2',
             ]
         ], $result->query->get('filter'));
+    }
+    public function testMultipleValueFields()
+    {
+        // prepare mocked config and controller
+        $controller = $this->getMockBuilder(JsonApiEnabledInterface::class)->disableOriginalConstructor()->getMock();
+        $apiConfig = new Config(
+            new ApiConfig("\stdClass", null, null, null, $this->getRequestBodyDecoderMock(), false),
+            new CreateConfig($this->getModelFactoryMock()),
+            new IndexConfig(),
+            new UpdateConfig(),
+            new DeleteConfig()
+        );
+        $controller->method('getJsonApiConfig')->willReturn($apiConfig);
+
+        $requestDecoder = $this->getRequestDecoder($controller);
+
+
+        // test single value
+        $request = new Request(['fields' => ['myresource' => 'field']]);
+        $result = $requestDecoder->decode($request);
+        $this->assertEquals([
+            'myresource' => ['field']
+        ], $result->query->get('fields'));
+
+        // test simple case
+        $request = new Request(['fields' => ['myresource' => 'field1,field2']]);
+        $result = $requestDecoder->decode($request);
+        $this->assertEquals([
+            'myresource' => [
+                'field1',
+                'field2',
+            ]
+        ], $result->query->get('fields'));
+    }
+
+    public function testPerservationOfProperties()
+    {
+        // prepare mocked config and controller
+        $controller = $this->getMockBuilder(JsonApiEnabledInterface::class)->disableOriginalConstructor()->getMock();
+        $apiConfig = new Config(
+            new ApiConfig("\stdClass", null, null, null, $this->getRequestBodyDecoderMock(), false),
+            new CreateConfig($this->getModelFactoryMock()),
+            new IndexConfig(),
+            new UpdateConfig(),
+            new DeleteConfig()
+        );
+        $controller->method('getJsonApiConfig')->willReturn($apiConfig);
+
+        $mockedSession = $this->getMockBuilder(SessionInterface::class)->getMock();
+        $mockedSession->method('getId')->willReturn('mysession');
+
+        $requestDecoder = $this->getRequestDecoder($controller);
+
+        // test special properties
+        $request = new Request();
+        $request->setDefaultLocale('defaultlocale');
+        $request->setLocale('locale');
+        $request->setSession($mockedSession);
+        $result = $requestDecoder->decode($request);
+
+        $this->assertSame($request->getDefaultLocale(), $result->getDefaultLocale());
+        $this->assertSame($request->getLocale(), $result->getLocale());
+        $this->assertSame($request->getSession()->getId(), $result->getSession()->getId());
     }
 
     /**

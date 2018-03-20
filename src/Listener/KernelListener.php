@@ -239,6 +239,10 @@ class KernelListener
      */
     protected function encode($data = '', array $meta = null, array $links = [])
     {
+        // if meta is empty, ommit it
+        if (true === empty($meta)) {
+            $meta = null;
+        }
         return $this->encoderService->encode($this->schemaClassMapProvider, $data,
             $this->requestDecoder->getParsedRequestParameters(), $meta, $links);
     }

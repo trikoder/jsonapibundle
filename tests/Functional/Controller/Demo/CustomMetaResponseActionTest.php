@@ -49,4 +49,22 @@ class CustomMetaResponseActionTest extends JsonapiWebTestCase
 
         $this->assertNull($data['data']);
     }
+
+    /**
+     * Test simple show action
+     */
+    public function testEmptyAllAction()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/custom-meta-response/empty-all');
+
+        $response = $client->getResponse();
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertArrayNotHasKey('meta', $data);
+
+        $this->assertNull($data['data']);
+    }
 }

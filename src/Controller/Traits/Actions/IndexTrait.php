@@ -78,6 +78,18 @@ trait IndexTrait
 
         $routeParams = array_merge($routeParams, $overrideParams);
 
+        foreach ($routeParams as $paramName => &$paramValues) {
+            if (in_array($paramName, ['fields', 'filter']) && is_array($paramValues)) {
+                foreach ($paramValues as $fieldName => $fieldProperties) {
+                    if (is_array($fieldProperties)) {
+                        $paramValues[$fieldName] = implode(',', $fieldProperties);
+                    }
+                }
+            } elseif ($paramName === 'include' && is_array($paramValues)) {
+                $routeParams[$paramName] = implode(',', $paramValues);
+            }
+        }
+
         return $router->generate(
             $routeName,
             $routeParams,

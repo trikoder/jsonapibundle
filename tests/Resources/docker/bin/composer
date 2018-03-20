@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker-compose run --no-deps --rm -w /usr/src/bundle/ php /usr/local/bin/composer $@

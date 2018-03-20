@@ -32,7 +32,7 @@ class ContainerAutowiringTest extends \PHPUnit_Framework_TestCase
         $serviceContainer->method('get')->will($this->returnCallback(function ($service) {
             switch ($service) {
                 case RouterInterface::class:
-                    return $this->getMock(RouterInterface::class);
+                    return $this->createMock(RouterInterface::class);
                     break;
             }
         }));

@@ -25,13 +25,21 @@ class ErrorFactory implements ErrorFactoryInterface
      */
     public function fromException(Exception $exception): ErrorInterface
     {
+        $errorDescription = sprintf("Exception of type: %s", get_class($exception));
+        if (false === empty($exception->getMessage())) {
+            $errorTitle = $exception->getMessage();
+        } else {
+            $errorTitle = $errorDescription;
+            $errorDescription = '';
+        }
+
         return new Error(
             null,
             null,
             $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR,
             $exception->getCode(),
-            get_class($exception),
-            $exception->getMessage()
+            $errorTitle,
+            $errorDescription
         );
     }
 }

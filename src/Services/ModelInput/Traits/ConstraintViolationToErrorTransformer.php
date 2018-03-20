@@ -36,8 +36,8 @@ trait ConstraintViolationToErrorTransformer
     protected function convertViolationToError(ConstraintViolationInterface $violation)
     {
         $code = $violation->getCode();
-        $title = 'Constraint violation';
-        $detail = $violation->getMessage();
+        $title = $violation->getMessage();
+        $detail = sprintf('Constraint violation "%s"', $title);
         $source = [];
         if ($violation->getPropertyPath()) {
             // TODO - make diff between attributes and relationships

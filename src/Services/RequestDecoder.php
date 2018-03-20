@@ -128,7 +128,10 @@ class RequestDecoder
          */
 
         // create new reqest that will replace original one
-        $transformedRequest = new Request(
+        // empty duplicated to get copy of current request with allowed preserved properties
+        $transformedRequest = $currentRequest->duplicate();
+        // we favour initialize for setup because we can give content of request here, what we cannot do in duplicate
+        $transformedRequest->initialize(
             $queryParams,
             // TODO - should we merge original request with decoded content? see comment block above
             (null === $decodedContent ? [] : $decodedContent),

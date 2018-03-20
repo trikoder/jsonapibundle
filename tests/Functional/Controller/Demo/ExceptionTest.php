@@ -28,10 +28,10 @@ class ExceptionTest extends JsonapiWebTestCase
         $this->assertArrayHasKey('errors', $content);
         $this->assertCount(1, $content['errors']);
         $this->assertEquals([
-            'status' => 500,
-            'code' => 44,
-            'title' => \Exception::class,
-            'detail' => 'Test exception'
+            'status' => '500',
+            'code' => '44',
+            'title' => 'Test exception',
+            'detail' => 'Exception of type: Exception'
         ], $content['errors'][0]);
 
     }

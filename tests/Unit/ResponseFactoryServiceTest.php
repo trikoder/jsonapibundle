@@ -141,7 +141,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
      */
     private function createErrorFactoryMock()
     {
-        $errorFactory = $this->getMock(ErrorFactoryInterface::class);
+        $errorFactory = $this->createMock(ErrorFactoryInterface::class);
 
         $errorFactory
             ->method('fromException')
@@ -152,7 +152,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
             )
             ->will(
                 $this->returnCallback(function (Exception $exception) {
-                    $error = $this->getMock(ErrorInterface::class);
+                    $error = $this->createMock(ErrorInterface::class);
 
                     $error
                         ->method('getId')

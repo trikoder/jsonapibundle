@@ -47,4 +47,12 @@ class CustomMetaResponseController extends JsonApiController
             ]
         );
     }
+
+    /**
+     * @Route("/empty-all")
+     */
+    public function emptyAllAction(Request $request)
+    {
+        return new DataResponse(null);
+    }
 }

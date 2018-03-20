@@ -2,12 +2,12 @@
 
 namespace Trikoder\JsonApiBundle\Services\Neomerx;
 
+use Neomerx\JsonApi\Contracts\Schema\SchemaProviderInterface;
 use Neomerx\JsonApi\Encoder\Encoder;
 use Neomerx\JsonApi\Encoder\EncoderOptions;
 use Neomerx\JsonApi\Factories\Factory;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Trikoder\JsonApiBundle\Services\Neomerx\ResourceObject;
 
 /**
  * Class FactoryService
@@ -61,6 +61,18 @@ class FactoryService extends Factory
         $container = new Container($this->serviceContainer, $this, $providers);
         $container->setLogger($this->logger);
         return $container;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createResourceObject(
+        SchemaProviderInterface $schema,
+        $resource,
+        $isInArray,
+        $attributeKeysFilter = null
+    ) {
+        return new ResourceObject($schema, $resource, $isInArray, $attributeKeysFilter);
     }
 
 }

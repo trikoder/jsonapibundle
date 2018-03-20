@@ -11,11 +11,11 @@ class FormErrorToErrorTransformerTraitTest extends \PHPUnit_Framework_TestCase
     public function testFormErrorToError()
     {
         $trait = new FormErrorToErrorTransformerTraitClass();
-        $error = $trait->publicFormErrorToError($this->getTestError('Test'));
+        $error = $trait->publicFormErrorToError($this->getTestError('Form error for test'));
 
         $this->assertEquals(Error::class, get_class($error));
-        $this->assertEquals('Form Constraint violation', $error->getTitle());
-        $this->assertEquals('Test', $error->getDetail());
+        $this->assertEquals('Form error for test', $error->getTitle());
+        $this->assertEquals('Form error "Form error for test"', $error->getDetail());
     }
 
     private function getTestError($message)

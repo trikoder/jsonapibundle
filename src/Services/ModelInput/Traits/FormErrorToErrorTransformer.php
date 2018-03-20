@@ -37,8 +37,8 @@ trait FormErrorToErrorTransformer
      */
     protected function convertFormErrorToError(FormError $violation)
     {
-        $title = 'Form Constraint violation';
-        $detail = $violation->getMessage();
+        $title = $violation->getMessage();
+        $detail = sprintf('Form error "%s"', $violation->getMessage());
         $source = [];
         if ($violation->getOrigin()) {
             // TODO - make diff between attributes and relationships

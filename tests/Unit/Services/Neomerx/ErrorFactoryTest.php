@@ -28,7 +28,7 @@ class ErrorFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $testString = "Test error";
         $testException = new Exception($testString, 123);
-        $expected = new Error(null, null, 500, 123, Exception::class, $testString);
+        $expected = new Error(null, null, 500, 123, $testString, 'Exception of type: Exception');
 
         $this->assertErrorEqual($expected, $this->createFactory()->fromException($testException));
     }
@@ -37,7 +37,7 @@ class ErrorFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $testString = "Test HTTP error";
         $testException = new NotFoundHttpException($testString, null, 123);
-        $expected = new Error(null, null, 404, 123, NotFoundHttpException::class, $testString);
+        $expected = new Error(null, null, 404, 123, $testString, 'Exception of type: ' . NotFoundHttpException::class);
 
         $this->assertErrorEqual($expected, $this->createFactory()->fromException($testException));
     }
