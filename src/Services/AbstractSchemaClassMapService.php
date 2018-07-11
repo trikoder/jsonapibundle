@@ -6,7 +6,6 @@ use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 
 /**
  * Class AbstractSchemaClassMapService
- * @package Trikoder\JsonApiBundle\Services
  */
 abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderInterface
 {
@@ -16,7 +15,7 @@ abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderIn
     protected $classMap = [];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getMap()
     {
@@ -24,7 +23,7 @@ abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderIn
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function add($class, $schema)
     {
@@ -34,13 +33,15 @@ abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderIn
 
     /**
      * @param $class
+     *
      * @return string
      */
     protected function normalizeClassFQN($class)
     {
         if (true === is_string($class)) {
-            $class = trim($class, "\\");
+            $class = trim($class, '\\');
         }
+
         return $class;
     }
 

@@ -1,0 +1,43 @@
+<?php
+
+use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
+
+$finder = PhpCsFixer\Finder::create()
+    ->name('console')
+    ->in([
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
+    ])
+;
+
+return PhpCsFixer\Config::create()
+    ->setUsingCache(true)
+    ->setRules([
+        '@PSR2' => true,
+        '@Symfony'                   => true,
+        '@Symfony:risky'             => true,
+        '@DoctrineAnnotation'        => true,
+        'concat_space'               => ['spacing' => 'one'],
+        'array_syntax'               => ['syntax' => 'short'],
+        'list_syntax'                => ['syntax' => 'short'],
+        'no_empty_phpdoc'            => false,
+        'phpdoc_align'               => '',
+        'phpdoc_no_empty_return'     => false,
+        'phpdoc_summary'             => false,
+        'ordered_imports'            => [
+            'sortAlgorithm' => OrderedImportsFixer::SORT_ALPHA,
+            'importsOrder'  => [
+                OrderedImportsFixer::IMPORT_TYPE_CONST,
+                OrderedImportsFixer::IMPORT_TYPE_FUNCTION,
+                OrderedImportsFixer::IMPORT_TYPE_CLASS,
+            ],
+        ],
+        'class_definition'           => ['multiLineExtendsEachSingleLine' => true],
+        'ternary_to_null_coalescing' => true,
+        'yoda_style'                 => true,
+        'compact_nullable_typehint'  => true,
+        'visibility_required' => true,
+    ])
+    ->setRiskyAllowed(true)
+    ->setFinder($finder)
+;

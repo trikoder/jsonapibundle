@@ -19,6 +19,7 @@ class ObjectListCollection implements ObjectListCollectionInterface
 
     /**
      * ObjectListCollection constructor.
+     *
      * @param array $collection
      * @param null $total
      */

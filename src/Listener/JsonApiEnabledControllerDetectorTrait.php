@@ -9,6 +9,7 @@ trait JsonApiEnabledControllerDetectorTrait
 {
     /**
      * @param callable|object $controller
+     *
      * @return bool
      */
     protected function isJsonApiEnabledController($controller)
@@ -28,11 +29,12 @@ trait JsonApiEnabledControllerDetectorTrait
             }
         }
 
-        throw new \LogicException("Unsupported type provided as controller");
+        throw new \LogicException('Unsupported type provided as controller');
     }
 
     /**
      * @param $eventController
+     *
      * @return null|object
      */
     protected function resolveControllerFromEventController($eventController)

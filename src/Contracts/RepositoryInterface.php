@@ -11,6 +11,7 @@ interface RepositoryInterface
      * @param array $sort array of sort rules
      * @param int|null $limit
      * @param int|null $offset
+     *
      * @return ObjectListCollectionInterface|array|null
      */
     public function getList($filter = [], $sort = [], $limit = null, $offset = null);
@@ -20,6 +21,7 @@ interface RepositoryInterface
      *
      * @param $id
      * @param array $filter
+     *
      * @return object|null
      */
     public function getOne($id, $filter = []);

@@ -7,7 +7,6 @@ use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
 
 /**
  * Class SimpleFileUploadControllerTest
- * @package Trikoder\JsonApiBundle\Tests\Functional\Controller\Demo
  */
 class SimpleFileUploadControllerTest extends JsonapiWebTestCase
 {
@@ -46,7 +45,7 @@ class SimpleFileUploadControllerTest extends JsonapiWebTestCase
                 'extension' => 'md',
             ],
             'links' => [
-                'self' => '/simple-file/README.md' // TODO - this should same url sa request?
+                'self' => '/simple-file/README.md', // TODO - this should same url sa request?
             ],
         ], $data['data']);
     }
@@ -86,11 +85,11 @@ class SimpleFileUploadControllerTest extends JsonapiWebTestCase
                 'extension' => 'md',
             ],
             'links' => [
-                'self' => '/simple-file/README.md' // TODO - this should same url sa request?
+                'self' => '/simple-file/README.md', // TODO - this should same url sa request?
             ],
         ], $data['data']);
     }
-    
+
     /**
      * @return UploadedFile
      */

@@ -16,14 +16,13 @@ use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
+use Trikoder\JsonApiBundle\Response\DataResponse;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
 use Trikoder\JsonApiBundle\Services\RequestDecoder;
-use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
  * Class KernelListener
- * @package Trikoder\JsonApiBundle\Listener
  */
 class KernelListener
 {
@@ -45,6 +44,7 @@ class KernelListener
 
     /**
      * TODO interface this instead of using implementation
+     *
      * @var FactoryService
      */
     protected $jsonApiFactory;
@@ -118,8 +118,8 @@ class KernelListener
         $controller = $this->resolveControllerFromEventController($event->getController());
 
         // if api enabled controller, save information in the request
-        if (false === is_null($controller) && true === $this->isJsonApiEnabledController($controller)) {
-            /** @var JsonApiEnabledInterface $controller */
+        if (null !== $controller && true === $this->isJsonApiEnabledController($controller)) {
+            /* @var JsonApiEnabledInterface $controller */
             $this->isJsonApiEnabledRequest = true;
 
             $this->setSchemaClassMapProvider($controller->getSchemaClassMapProvider());
@@ -130,6 +130,7 @@ class KernelListener
      * Transforms controller result to valid json api response if possible
      *
      * @param GetResponseForControllerResultEvent $event
+     *
      * @throws \Exception
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
@@ -158,22 +159,23 @@ class KernelListener
      * @param $controllerResult
      * @param array $resultMeta
      * @param array $resultLinks
+     *
      * @return Response
+     *
      * @throws \Exception
      */
     private function getResponseFromControllerResult($controllerResult, array $resultMeta = [], array $resultLinks = [])
     {
         // find what action to perform based on result from controller
         switch (true) {
-
             // if you have response from controller, check if it is valid
-            case ($controllerResult instanceof Response):
+            case $controllerResult instanceof Response:
 
                 // TODO - this should never happen here? Response is called in kernelResponse
 
                 break;
 
-            case ($controllerResult instanceof DataResponse):
+            case $controllerResult instanceof DataResponse:
 
                 $resultMeta = array_merge($resultMeta, $controllerResult->getMeta());
                 $resultLinks = array_merge($resultLinks, $controllerResult->getLinks());
@@ -187,12 +189,13 @@ class KernelListener
 
                 $response = $this->responseFactory->createResponse($this->encode(null, $resultMeta,
                     $resultLinks));
+
                 return $response;
 
                 break;
 
             // if we got our collection encode it and package it in response
-            case ($controllerResult instanceof ObjectListCollectionInterface):
+            case $controllerResult instanceof ObjectListCollectionInterface:
 
                 // append total from collection
                 $resultMeta['total'] = $controllerResult->getTotal();
@@ -202,23 +205,26 @@ class KernelListener
                     $resultMeta,
                     $resultLinks
                 ));
+
                 return $response;
 
                 break;
 
             // if you got array or object, try to encode it and package in response
-            case (is_array($controllerResult) || is_object($controllerResult)):
+            case is_array($controllerResult) || is_object($controllerResult):
 
                 $response = $this->responseFactory->createResponse($this->encode($controllerResult, $resultMeta,
                     $resultLinks));
+
                 return $response;
 
                 break;
 
             // no content response?
-            case (null === $controllerResult):
+            case null === $controllerResult:
 
                 $response = $this->responseFactory->createNoContent();
+
                 return $response;
 
                 break;
@@ -226,8 +232,7 @@ class KernelListener
             // none of supported results were returned, run around the room in panic?
             default:
                 // TODO - move this from generic to package exception
-                throw new \Exception("Unsuported result from controller");
-
+                throw new \Exception('Unsuported result from controller');
         }
     }
 
@@ -235,6 +240,7 @@ class KernelListener
      * @param array|Iterator|null|object|string $data
      * @param array|null $meta
      * @param array $links
+     *
      * @return string
      */
     protected function encode($data = '', array $meta = null, array $links = [])
@@ -243,6 +249,7 @@ class KernelListener
         if (true === empty($meta)) {
             $meta = null;
         }
+
         return $this->encoderService->encode($this->schemaClassMapProvider, $data,
             $this->requestDecoder->getParsedRequestParameters(), $meta, $links);
     }
@@ -258,7 +265,7 @@ class KernelListener
         $controller = $this->resolveControllerFromEventController($event->getController());
 
         // if this is not json api enabled request do nothing
-        if (true === is_null($controller) || false === $this->isJsonApiEnabledController($controller)) {
+        if (null === $controller || false === $this->isJsonApiEnabledController($controller)) {
             return;
         }
 
@@ -268,7 +275,7 @@ class KernelListener
         $currentRequest = $event->getRequest();
 
         // decode it
-        /** @var RequestDecoder $requestDecoder */
+        /* @var RequestDecoder $requestDecoder */
         $this->requestDecoder = new RequestDecoder($this->jsonApiFactory, $controller);
         $transformedRequest = $this->requestDecoder->decode($currentRequest);
 

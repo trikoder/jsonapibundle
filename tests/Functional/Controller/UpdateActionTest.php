@@ -54,7 +54,7 @@ class UpdateActionTest extends JsonapiWebTestCase
                 'active' => true,
             ],
             'links' => [
-                'self' => '/user/3'
+                'self' => '/user/3',
             ],
         ], $data['data']);
 
@@ -99,8 +99,6 @@ class UpdateActionTest extends JsonapiWebTestCase
         // TODO - verify the errors
 
         $data = $this->getResponseContentJson($response);
-
-
     }
 
     public function testActionWithTrailingSlash()

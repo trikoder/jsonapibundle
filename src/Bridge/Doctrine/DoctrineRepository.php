@@ -8,7 +8,6 @@ use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 
 /**
  * Class DoctrineRepository
- * @package Trikoder\JsonApiBundle\Bridge\Doctrine
  */
 class DoctrineRepository implements RepositoryInterface
 {
@@ -23,6 +22,7 @@ class DoctrineRepository implements RepositoryInterface
 
     /**
      * DoctrineRepository constructor.
+     *
      * @param EntityRepository $entityRepository
      * @param EntityManager $entityManager
      */
@@ -33,7 +33,7 @@ class DoctrineRepository implements RepositoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getList($filter = [], $sort = [], $limit = null, $offset = null)
     {
@@ -47,17 +47,18 @@ class DoctrineRepository implements RepositoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOne($id, $filter = [])
     {
         // TODO - this should check which fields is indentifier
         $filter['id'] = $id;
+
         return $this->entityRepository->findOneBy($filter);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function save($model)
     {

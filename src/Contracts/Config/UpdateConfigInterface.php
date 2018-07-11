@@ -4,7 +4,6 @@ namespace Trikoder\JsonApiBundle\Contracts\Config;
 
 /**
  * Interface UpdateConfigInterface
- * @package Trikoder\JsonApiBundle\Contracts\Config
  */
 interface UpdateConfigInterface
 {

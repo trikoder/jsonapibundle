@@ -3,11 +3,8 @@
 namespace Trikoder\JsonApiBundle\Tests\Resources\JsonApi\Schema\Test;
 
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 use Trikoder\JsonApiBundle\Schema\AbstractSchema;
-use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class CrazySchema extends AbstractSchema
 {
@@ -40,7 +37,7 @@ class CrazySchema extends AbstractSchema
     public function getAttributes($resource)
     {
         return [
-            "title" => $resource->getTitle(),
+            'title' => $resource->getTitle(),
         ];
     }
 }

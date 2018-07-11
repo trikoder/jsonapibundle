@@ -5,15 +5,10 @@ namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\UpdateTrait;
-use Trikoder\JsonApiBundle\Controller\Traits\CreateActionTrait;
-use Trikoder\JsonApiBundle\Controller\Traits\DeleteActionTrait;
-use Trikoder\JsonApiBundle\Controller\Traits\IndexActionTrait;
-use Trikoder\JsonApiBundle\Controller\Traits\ShowActionTrait;
-use Trikoder\JsonApiBundle\Controller\Traits\UpdateActionTrait;
-use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 
 /**
  * @Route("/profile")
@@ -21,21 +16,21 @@ use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
  * @JsonApiConfig\Config(
  *     modelClass="Trikoder\JsonApiBundle\Tests\Resources\Entity\User",
  *     @JsonApiConfig\UpdateConfig(
- *          allowedFields={"email"}
+ *         allowedFields={"email"}
  *     )
  * )
- *
  */
-class UserController extends JsonApiController
+class ProfileController extends JsonApiController
 {
     use IndexTrait;
     use UpdateTrait;
 
     /**
-     * @Route()
+     * @Route
      * @Method({"GET"})
      *
      * @param Request $request
+     *
      * @return mixed
      */
     public function showAction(Request $request)
@@ -44,10 +39,11 @@ class UserController extends JsonApiController
     }
 
     /**
-     * @Route()
+     * @Route
      * @Method({"POST", "PUT", "PATCH"})
      *
      * @param Request $request
+     *
      * @return mixed
      */
     public function updateAction(Request $request)

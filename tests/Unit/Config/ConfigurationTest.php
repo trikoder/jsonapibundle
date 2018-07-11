@@ -2,14 +2,10 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Trikoder\JsonApiBundle\DependencyInjection\Configuration;
-use Trikoder\JsonApiBundle\Services\RequestBodyDecoderService;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testConfig()
     {
         $configuration = new Configuration();

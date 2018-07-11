@@ -2,13 +2,11 @@
 
 namespace Trikoder\JsonApiBundle\Contracts\Config;
 
-use Closure;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
 
 /**
  * Interface ApiConfigInterface
- * @package Trikoder\JsonApiBundle\Contracts\Config
  */
 interface ApiConfigInterface
 {
@@ -48,7 +46,7 @@ interface ApiConfigInterface
     /**
      * Flag if we allow extra params in request, if false, only params that are recognized by JsonApi are allowed
      *
-     * @return boolean
+     * @return bool
      */
     public function getAllowExtraParams();
 }

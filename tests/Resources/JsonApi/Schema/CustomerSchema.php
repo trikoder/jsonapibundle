@@ -43,9 +43,9 @@ class CustomerSchema extends AbstractSchema
      */
     public function getAttributes($resource)
     {
-        /** @var User $resource */
+        /* @var User $resource */
         return [
-            "email" => function () use ($resource) {
+            'email' => function () use ($resource) {
                 return $resource->getEmail();
             },
             'profile' => $this->router->generate('customer_dummy_action', ['id' => $resource->getId()]),

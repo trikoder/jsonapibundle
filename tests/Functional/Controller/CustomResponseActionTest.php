@@ -3,7 +3,6 @@
 namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
-use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class CustomResponseActionTest extends JsonapiWebTestCase
 {
@@ -28,7 +27,7 @@ class CustomResponseActionTest extends JsonapiWebTestCase
                 'attributeX' => 'valueY',
             ],
             'links' => [
-                'self' => '/object/' // TODO - this should same url sa request?
+                'self' => '/object/', // TODO - this should same url sa request?
             ],
         ], $data['data']);
     }

@@ -22,12 +22,11 @@ class Post
      */
     private $id;
 
-
     /**
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, unique=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $title;
 
@@ -64,11 +63,13 @@ class Post
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -82,11 +83,13 @@ class Post
 
     /**
      * @param bool $active
+     *
      * @return $this
      */
     public function setActive($active)
     {
         $this->active = $active;
+
         return $this;
     }
 
@@ -100,13 +103,13 @@ class Post
 
     /**
      * @param mixed $author
+     *
      * @return $this
      */
     public function setAuthor($author)
     {
         $this->author = $author;
+
         return $this;
     }
-
 }
-

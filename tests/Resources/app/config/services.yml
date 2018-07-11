@@ -3,9 +3,23 @@ parameters:
 
 services:
 
+  # default configuration for services in *this* file
+  _defaults:
+      autowire: true      # Automatically injects dependencies in your services.
+      autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+      public: false       # Allows optimizing the container by removing unused services; this also means
+                          # fetching services directly from the container via $container->get() won't work.
+                          # The best practice is to be explicit about your dependencies anyway.
+
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  Trikoder\JsonApiBundle\Tests\Resources\Controller\:
+      resource: '../../Controller'
+      tags: ['controller.service_arguments']
+
   Symfony\Component\Routing\RouterInterface: '@router'
 
-  trikoder.jsonapi.schema_class_map_provider:
+  Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface:
       class: "%trikoder.jsonapi.schema_class_map_provider.class%"
       lazy: true
       calls:
@@ -13,3 +27,11 @@ services:
 
   Trikoder\JsonApiBundle\Tests\Resources\Repository\SimpleFileModelRepository:
       class: 'Trikoder\JsonApiBundle\Tests\Resources\Repository\SimpleFileModelRepository'
+      public: true
+
+  Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer:
+      calls:
+        - method: set
+          arguments:
+            - 'Symfony\Component\Routing\RouterInterface'
+            - '@router'

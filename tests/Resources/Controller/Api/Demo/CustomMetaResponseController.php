@@ -4,9 +4,9 @@ namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\Demo;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
+use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
 use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
@@ -30,7 +30,7 @@ class CustomMetaResponseController extends JsonApiController
         return new DataResponse(
             $collection,
             [
-                'customInfo' => 'valid'
+                'customInfo' => 'valid',
             ]
         );
     }
@@ -43,7 +43,7 @@ class CustomMetaResponseController extends JsonApiController
         return new DataResponse(
             null,
             [
-                'customInfo' => 'valid'
+                'customInfo' => 'valid',
             ]
         );
     }

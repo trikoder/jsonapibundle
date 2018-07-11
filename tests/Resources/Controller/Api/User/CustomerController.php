@@ -2,16 +2,14 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User;
 
-use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\IndexActionTrait;
 use Trikoder\JsonApiBundle\Controller\Traits\ShowActionTrait;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 use Trikoder\JsonApiBundle\Tests\Resources\JsonApi\Schema\CustomerSchema;
-use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 
 /**
  * @Route("/customer")
@@ -19,8 +17,8 @@ use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
  *
  * @JsonApiConfig\Config(
  *     modelClass="Trikoder\JsonApiBundle\Tests\Resources\Entity\User",
- *     fixedFiltering={"customer":true},
- *     index = @JsonApiConfig\IndexConfig(
+ *     fixedFiltering={"customer": true},
+ *     index=@JsonApiConfig\IndexConfig(
  *         allowedSortFields={"email"}
  *     )
  * )
@@ -31,13 +29,14 @@ class CustomerController extends JsonApiController
     use ShowActionTrait;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getSchemaClassMapProvider()
     {
         // replace one property
         $mapService = parent::getSchemaClassMapProvider();
         $mapService->add(User::class, CustomerSchema::class);
+
         return $mapService;
     }
 

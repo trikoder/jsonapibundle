@@ -12,6 +12,7 @@ interface SchemaClassMapProviderInterface
     /**
      * @param $class string class for which schema is applied
      * @param $schema string class or service of schema used
+     *
      * @return void
      */
     public function add($class, $schema);

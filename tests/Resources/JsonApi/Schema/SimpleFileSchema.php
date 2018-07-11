@@ -30,11 +30,11 @@ class SimpleFileSchema extends AbstractSchema
      */
     public function getAttributes($resource)
     {
-        /** @var SimpleFileModel $resource */
+        /* @var SimpleFileModel $resource */
         return [
-            "name" => $resource->getName(),
-            "title" => $resource->getTitle(),
-            "extension" => $resource->getExtension(),
+            'name' => $resource->getName(),
+            'title' => $resource->getTitle(),
+            'extension' => $resource->getExtension(),
         ];
     }
 }

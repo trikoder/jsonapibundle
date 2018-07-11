@@ -30,10 +30,10 @@ class UserSchema extends AbstractSchema
      */
     public function getAttributes($resource)
     {
-        /** @var User $resource */
+        /* @var User $resource */
         return [
-            "email" => $resource->getEmail(),
-            "active" => $resource->isActive(),
+            'email' => $resource->getEmail(),
+            'active' => $resource->isActive(),
         ];
     }
 }

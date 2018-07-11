@@ -11,13 +11,12 @@ use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
  * Trait IndexTrait
- * @package Trikoder\JsonApiBundle\Controller\Traits\Actions
  */
 trait IndexTrait
 {
-
     /**
      * @param Request $request
+     *
      * @return array|null|\Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface
      */
     private function createCollectionFromRequest(Request $request)
@@ -39,6 +38,7 @@ trait IndexTrait
      * @param ObjectListCollectionInterface $collection
      * @param Request $request
      * @param RouterInterface $router
+     *
      * @return DataResponse
      */
     private function createPaginatedDataResponseFromCollectionAndRequest(
@@ -60,6 +60,7 @@ trait IndexTrait
      * @param RouterInterface $router
      * @param Request $request
      * @param array $overrideParams
+     *
      * @return string
      */
     private function generateSelfUrlFromRequest(RouterInterface $router, Request $request, array $overrideParams)
@@ -85,7 +86,7 @@ trait IndexTrait
                         $paramValues[$fieldName] = implode(',', $fieldProperties);
                     }
                 }
-            } elseif ($paramName === 'include' && is_array($paramValues)) {
+            } elseif ('include' === $paramName && is_array($paramValues)) {
                 $routeParams[$paramName] = implode(',', $paramValues);
             }
         }
@@ -101,12 +102,13 @@ trait IndexTrait
      * @param ObjectListCollectionInterface $collection
      * @param array $paginationParams Array as returned from resolvePaginationArguments
      * @param callable $urlGenerator Callable that accepts override params as first argument
+     *
      * @return DataResponse
      */
     private function createPaginatedDataResponseFromCollection(
         ObjectListCollectionInterface $collection,
         array $paginationParams,
-        Callable $urlGenerator
+        callable $urlGenerator
     ) {
         // check for required values
         if (
@@ -157,6 +159,7 @@ trait IndexTrait
      * @param $offset
      * @param $limit
      * @param $total
+     *
      * @return array containing pagination params values for first, last, self, previous, next
      */
     private function calculatePagesForLimitOffset(int $offset, int $limit, int $total): array
@@ -168,7 +171,7 @@ trait IndexTrait
         $result['prev'] = ($offset >= $limit) ? ['limit' => $limit, 'offset' => ($offset - $limit)] : null;
         $result['next'] = ($offset < $result['last']['offset']) ? [
             'limit' => $limit,
-            'offset' => $offset + $limit
+            'offset' => $offset + $limit,
         ] : null;
         $result['self'] = ['limit' => $limit, 'offset' => $offset];
 
@@ -179,6 +182,7 @@ trait IndexTrait
      * @param $offset
      * @param $limit
      * @param $total
+     *
      * @return array containing pagination params values for first, last, self, previous, next
      */
     private function calculatePagesForPageSize(int $offset, int $limit, int $total): array
@@ -190,11 +194,11 @@ trait IndexTrait
         $result['last'] = ['size' => $limit, 'number' => ceil($total / $limit)];
         $result['prev'] = ($result['self']['number'] > 1) ? [
             'size' => $limit,
-            'number' => $result['self']['number'] - 1
+            'number' => $result['self']['number'] - 1,
         ] : null;
         $result['next'] = ($result['self']['number'] < $result['last']['number']) ? [
             'size' => $limit,
-            'number' => $result['self']['number'] + 1
+            'number' => $result['self']['number'] + 1,
         ] : null;
 
         return $result;
@@ -202,6 +206,7 @@ trait IndexTrait
 
     /**
      * @param null $arguments
+     *
      * @return array
      */
     private function resolvePaginationArguments($arguments = null)
@@ -212,33 +217,32 @@ trait IndexTrait
         $pagination = array_merge([
             'limit' => null,
             'offset' => 0,
-            'strategy' => IndexConfigInterface::PAGINATION_STRATEGY_LIMIT_OFFSET
+            'strategy' => IndexConfigInterface::PAGINATION_STRATEGY_LIMIT_OFFSET,
         ],
             $config->getIndex()->getIndexDefaultPagination());
 
         if (true === is_array($arguments)) {
-
             // calculate limit first
             // page size strategy
             if (true === array_key_exists('size', $arguments)) {
-                $pagination['limit'] = (int)$arguments['size'];
+                $pagination['limit'] = (int) $arguments['size'];
                 $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_PAGE_SIZE;
             } else {
                 // offset limit strategy
                 if (true === array_key_exists('limit', $arguments)) {
-                    $pagination['limit'] = (int)$arguments['limit'];
+                    $pagination['limit'] = (int) $arguments['limit'];
                     $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_LIMIT_OFFSET;
                 }
             }
 
             // page size strategy
             if (true === array_key_exists('number', $arguments)) {
-                $pagination['offset'] = ((int)$arguments['number'] - 1) * $pagination['limit'];
+                $pagination['offset'] = ((int) $arguments['number'] - 1) * $pagination['limit'];
                 $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_PAGE_SIZE;
             } else {
                 // offset limit strategy
                 if (true === array_key_exists('offset', $arguments)) {
-                    $pagination['offset'] = (int)$arguments['offset'];
+                    $pagination['offset'] = (int) $arguments['offset'];
                     $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_LIMIT_OFFSET;
                 }
             }

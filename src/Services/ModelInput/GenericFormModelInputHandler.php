@@ -2,7 +2,6 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -12,11 +11,9 @@ use Symfony\Component\Form\FormInterface;
 
 /**
  * Class GenericFormModelInputHandler
- * @package Trikoder\JsonApiBundle\Services\ModelInput
  */
 class GenericFormModelInputHandler extends AbstractFormModelInputHandler
 {
-
     /**
      * @var FormFactoryInterface
      */
@@ -39,6 +36,7 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
 
     /**
      * GenericFormModelInputHandler constructor.
+     *
      * @param object $model
      * @param null $allowedFields
      * @param FormFactoryInterface $formFactory
@@ -59,6 +57,7 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
 
     /**
      * @param object $model
+     *
      * @return $this
      */
     public function forModel($model)
@@ -74,6 +73,7 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
 
     /**
      * Gets list of all fields from model meta data
+     *
      * @return array
      */
     private function calculateAllFields()
@@ -102,7 +102,7 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
         /** @var ClassMetadata $classMetadata */
         $classMetadata = $this->objectManager->getClassMetadata($this->modelClass);
 
-        /**
+        /*
          * handle some known form types
          */
         foreach ($this->allowedFields as $fieldName) {
@@ -134,7 +134,7 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
     /**
      * @return FormInterface
      */
-    function getForm()
+    public function getForm()
     {
         if (null === $this->form) {
             $this->createForm();

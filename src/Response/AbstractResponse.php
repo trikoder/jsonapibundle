@@ -4,7 +4,6 @@ namespace Trikoder\JsonApiBundle\Response;
 
 /**
  * Class Response
- * @package Trikoder\JsonApiBundle\Response
  */
 abstract class AbstractResponse
 {
@@ -16,6 +15,7 @@ abstract class AbstractResponse
 
     /**
      * AbstractResponse constructor.
+     *
      * @param array $meta
      * @param array $links
      */
@@ -28,6 +28,7 @@ abstract class AbstractResponse
     /**
      * @param $meta
      * @param $value
+     *
      * @return self
      */
     public function addMeta($meta, $value): self
@@ -56,6 +57,7 @@ abstract class AbstractResponse
     /**
      * @param $link
      * @param $value
+     *
      * @return self
      */
     public function addLink($link, $value): self

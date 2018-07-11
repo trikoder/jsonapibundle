@@ -18,7 +18,6 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 
 /**
  * Trait CreateTrait
- * @package Trikoder\JsonApiBundle\Controller\Traits\Actions
  */
 trait CreateTrait
 {
@@ -26,7 +25,9 @@ trait CreateTrait
      * @param ConfigInterface $config
      * @param object $emptyModel
      * @param Request $request
+     *
      * @return object
+     *
      * @throws ModelValidationException
      */
     protected function handleCreateModelInputFromRequest(ConfigInterface $config, $emptyModel, Request $request)
@@ -39,7 +40,7 @@ trait CreateTrait
             $handler = $this->getCreateInputHandler();
         } else {
             /** @var ModelInputHandlerInterface $handler */
-            $handler = $this->get("trikoder.jsonapi.model_tools_factory")->createInputHandler($emptyModel,
+            $handler = $this->getJsonApiModelToolsFactory()->createInputHandler($emptyModel,
                 $config->getCreate()->getCreateAllowedFields());
         }
 
@@ -70,6 +71,7 @@ trait CreateTrait
     /**
      * @param ConfigInterface $config
      * @param object $model
+     *
      * @throws ModelValidationException
      */
     protected function validateCreatedModel(ConfigInterface $config, $model)
@@ -81,7 +83,7 @@ trait CreateTrait
             $validator = $this->getCreateValidator();
         } else {
             /** @var ModelValidatorInterface $validator */
-            $validator = $this->get("trikoder.jsonapi.model_tools_factory")->createValidator($model);
+            $validator = $this->getJsonApiModelToolsFactory()->createValidator($model);
         }
 
         // TODO - add support for validation groups in config
@@ -95,7 +97,9 @@ trait CreateTrait
 
     /**
      * @param Request $request
+     *
      * @return object
+     *
      * @throws ModelValidationException
      */
     protected function createModelFromRequest(Request $request)
@@ -121,31 +125,37 @@ trait CreateTrait
 
     /**
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function createCreatedFromRequest(Request $request)
     {
+        // TODO change to injected
 
         /** @var ResponseFactoryInterface $responseFactory */
-        $responseFactory = $this->get("trikoder.jsonapi.response_factory");
+        $responseFactory = $this->getJsonApiResponseFactory();
         /** @var EncoderService $encoder */
-        $encoder = $this->get('trikoder.jsonapi.encoder');
+        $encoder = $this->getJsonApiEncoder();
         /** @var SchemaClassMapProviderInterface $schemaProvider */
         $schemaProvider = $this->getSchemaClassMapProvider();
 
         try {
             $model = $this->createModelFromRequest($request);
         } catch (ModelValidationException $modelValidationException) {
+            // TODO this should return conflict response (similar to DataResponse) or HttConflictException
             $response = $responseFactory->createConflict($encoder->encodeErrors($modelValidationException->getViolations()));
+
             return $response;
         }
 
         // return
+        // TODO change to injected
         $response = $responseFactory->createCreated(
             $encoder->encode($schemaProvider, $model),
-            $this->get('router')->generate($this->findShowRouteName(), ['id' => $model->getId()],
+            $this->getRouter()->generate($this->findShowRouteName(), ['id' => $model->getId()],
                 RouterInterface::ABSOLUTE_URL)
         );
+
         return $response;
     }
 
@@ -156,8 +166,9 @@ trait CreateTrait
      */
     protected function findShowRouteName()
     {
+        // TODO change to injected
         /** @var Router $router */
-        $router = $this->get('router');
+        $router = $this->getRouter();
         $controllerName = get_class($this) . '::showAction';
         $showRouteName = null;
         /** @var Route $route */
@@ -172,6 +183,7 @@ trait CreateTrait
             // TODO - update this to be more agnostic
             throw new HttpException(500, 'Show route not found for ' . $controllerName);
         }
+
         return $showRouteName;
     }
 }

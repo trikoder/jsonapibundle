@@ -6,7 +6,6 @@ use Trikoder\JsonApiBundle\Contracts\Config\IndexConfigInterface;
 
 /**
  * Class IndexConfig
- * @package Trikoder\JsonApiBundle\Config
  */
 final class IndexConfig implements IndexConfigInterface
 {
@@ -37,6 +36,7 @@ final class IndexConfig implements IndexConfigInterface
 
     /**
      * IndexConfig constructor.
+     *
      * @param array|null $allowedSortFields
      * @param array|null $allowedFilteringParameters
      * @param array $defaultSort

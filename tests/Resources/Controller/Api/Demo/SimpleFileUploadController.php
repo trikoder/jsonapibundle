@@ -4,11 +4,11 @@ namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\Demo;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
+use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\CreateTrait;
-use Trikoder\JsonApiBundle\Controller\Traits\Actions\UpdateTrait;
 use Trikoder\JsonApiBundle\Controller\Traits\UpdateActionTrait;
 use Trikoder\JsonApiBundle\Services\ModelInput\CustomFormModelInputHandler;
 use Trikoder\JsonApiBundle\Tests\Resources\Form\SimpleFileType;
@@ -28,10 +28,24 @@ class SimpleFileUploadController extends JsonApiController
     use UpdateActionTrait;
 
     /**
+     * @var FormFactoryInterface
+     */
+    protected $formFactory;
+
+    /**
+     * @required
+     */
+    public function setFormFactory(FormFactoryInterface $formFactory)
+    {
+        $this->formFactory = $formFactory;
+    }
+
+    /**
      * @Route("")
      * @Method("POST")
      *
      * @param Request $request
+     *
      * @return SimpleFileModel
      */
     public function uploadAction(Request $request)
@@ -40,11 +54,12 @@ class SimpleFileUploadController extends JsonApiController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getInputHandler()
     {
-        $form = $this->createForm(SimpleFileType::class);
+        $form = $this->formFactory->create(SimpleFileType::class);
+
         return new CustomFormModelInputHandler($form);
     }
 

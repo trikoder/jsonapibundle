@@ -6,7 +6,6 @@ use Trikoder\JsonApiBundle\Contracts\Config\UpdateConfigInterface;
 
 /**
  * Class UpdateConfig
- * @package Trikoder\JsonApiBundle\Config
  */
 final class UpdateConfig implements UpdateConfigInterface
 {
@@ -22,14 +21,14 @@ final class UpdateConfig implements UpdateConfigInterface
 
     /**
      * UpdateConfig constructor.
+     *
      * @param array|null $allowedFields
      * @param array|null $requiredRoles
      */
     public function __construct(
         array $allowedFields = null,
         array $requiredRoles = null
-    )
-    {
+    ) {
         $this->allowedFields = $allowedFields;
         $this->requiredRoles = $requiredRoles;
     }

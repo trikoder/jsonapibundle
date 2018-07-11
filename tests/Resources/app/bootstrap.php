@@ -9,4 +9,5 @@ EOT;
     exit(1);
 }
 use Doctrine\Common\Annotations\AnnotationRegistry;
-AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+
+AnnotationRegistry::registerLoader([$loader, 'loadClass']);

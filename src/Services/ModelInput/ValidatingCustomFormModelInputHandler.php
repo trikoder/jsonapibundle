@@ -7,7 +7,6 @@ use Trikoder\JsonApiBundle\Services\ModelInput\Traits\FormErrorToErrorTransforme
 
 /**
  * Class CustomFormModelInputHandler
- * @package Trikoder\JsonApiBundle\Services\ModelInput
  */
 class ValidatingCustomFormModelInputHandler extends CustomFormModelInputHandler implements ModelValidatorInterface
 {
@@ -24,17 +23,18 @@ class ValidatingCustomFormModelInputHandler extends CustomFormModelInputHandler 
     private $validationViolations;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function forModel($model)
     {
         // reset validated state
         $this->validated = false;
+
         return parent::forModel($model);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle(array $input)
     {
@@ -45,6 +45,7 @@ class ValidatingCustomFormModelInputHandler extends CustomFormModelInputHandler 
 
     /**
      * @param array $validationGroups
+     *
      * @return true|array true if valid or array of validation violations if not valid
      */
     public function validate(array $validationGroups = null)
@@ -57,7 +58,6 @@ class ValidatingCustomFormModelInputHandler extends CustomFormModelInputHandler 
             } else {
                 $this->validationViolations = $this->convertFormErrorsToErrors($this->getForm()->getErrors(true));
             }
-
         }
 
         return $this->validationViolations;

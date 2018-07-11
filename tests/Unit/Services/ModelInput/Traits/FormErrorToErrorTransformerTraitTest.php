@@ -22,6 +22,7 @@ class FormErrorToErrorTransformerTraitTest extends \PHPUnit_Framework_TestCase
     {
         $violationMock = $this->getMockBuilder(FormError::class)->disableOriginalConstructor()->getMock();
         $violationMock->method('getMessage')->willReturn($message);
+
         return $violationMock;
     }
 }

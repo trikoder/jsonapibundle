@@ -7,7 +7,6 @@ use Trikoder\JsonApiBundle\Model\ModelFactoryInterface;
 
 /**
  * Interface CreateConfigInterface
- * @package Trikoder\JsonApiBundle\Contracts\Config
  */
 interface CreateConfigInterface
 {

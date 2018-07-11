@@ -10,7 +10,6 @@ use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
  * Class PaginatedIndexActionTrait
- * @package Trikoder\JsonApiBundle\Controller\Traits
  */
 trait PaginatedIndexActionTrait
 {
@@ -19,13 +18,15 @@ trait PaginatedIndexActionTrait
     /**
      * @param Request $request
      *
-     * @Route("{trailingSlash}", requirements={"trailingSlash" = "[/]{0,1}"}, defaults={"trailingSlash" = ""})
+     * @Route("{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""})
      * @Method("GET")
+     *
      * @return DataResponse
      */
     public function indexAction(Request $request)
     {
-        $router = $this->get('router');
+        // TODO change to injected
+        $router = $this->getRouter();
 
         $collection = $this->createCollectionFromRequest($request);
 

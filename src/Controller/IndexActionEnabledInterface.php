@@ -2,11 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Controller;
 
-use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
-
 /**
  * Interface IndexActionEnabledInterface
- * @package Trikoder\JsonApiBundle\Controller
  */
 interface IndexActionEnabledInterface
 {

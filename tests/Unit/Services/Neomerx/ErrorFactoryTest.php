@@ -17,16 +17,15 @@ class ErrorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFromString()
     {
-        $testString = "Test error";
+        $testString = 'Test error';
         $expected = new Error(null, null, null, null, $testString);
 
         $this->assertErrorEqual($expected, $this->createFactory()->fromString($testString));
-
     }
 
     public function testFromException()
     {
-        $testString = "Test error";
+        $testString = 'Test error';
         $testException = new Exception($testString, 123);
         $expected = new Error(null, null, 500, 123, $testString, 'Exception of type: Exception');
 
@@ -35,7 +34,7 @@ class ErrorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFromHttpException()
     {
-        $testString = "Test HTTP error";
+        $testString = 'Test HTTP error';
         $testException = new NotFoundHttpException($testString, null, 123);
         $expected = new Error(null, null, 404, 123, $testString, 'Exception of type: ' . NotFoundHttpException::class);
 

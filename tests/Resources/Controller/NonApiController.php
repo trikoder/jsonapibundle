@@ -19,6 +19,7 @@ class NonApiController extends Controller
     {
         $response = new Response();
         $response->setContent('Test');
+
         return $response;
     }
 
@@ -27,6 +28,6 @@ class NonApiController extends Controller
      */
     public function exceptionAction()
     {
-        throw new Exception("Test");
+        throw new Exception('Test');
     }
 }

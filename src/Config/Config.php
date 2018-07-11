@@ -11,7 +11,6 @@ use Trikoder\JsonApiBundle\Contracts\Config\UpdateConfigInterface;
 
 /**
  * Class Config
- * @package Trikoder\JsonApiBundle\Config
  */
 final class Config implements ConfigInterface
 {
@@ -42,6 +41,7 @@ final class Config implements ConfigInterface
 
     /**
      * Config constructor.
+     *
      * @param ApiConfigInterface $api
      * @param CreateConfigInterface $create
      * @param IndexConfigInterface $index

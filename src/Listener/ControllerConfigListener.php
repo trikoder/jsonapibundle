@@ -11,7 +11,6 @@ use Trikoder\JsonApiBundle\Services\ConfigBuilder;
 
 /**
  * Class ControllerConfigListener
- * @package Trikoder\JsonApiBundle\Listener
  */
 class ControllerConfigListener
 {
@@ -33,8 +32,6 @@ class ControllerConfigListener
     }
 
     /**
-     *
-     *
      * @param FilterControllerEvent $event
      */
     public function onKernelController(FilterControllerEvent $event)
@@ -43,7 +40,7 @@ class ControllerConfigListener
         $controller = $this->resolveControllerFromEventController($event->getController());
 
         // if api enabled controller, inject config
-        if (false === is_null($controller) && true === $this->isJsonApiEnabledController($controller)) {
+        if (null !== $controller && true === $this->isJsonApiEnabledController($controller)) {
             // prepare class annotations in variable for later use
             /** @var Annotation\Config $configAnnotation */
             $configAnnotation = $this->annotationReader->getClassAnnotation(new ReflectionClass($controller),

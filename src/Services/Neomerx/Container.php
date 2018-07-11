@@ -5,15 +5,14 @@ namespace Trikoder\JsonApiBundle\Services\Neomerx;
 use Closure;
 use Doctrine\Common\Util\ClassUtils;
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
-use \Neomerx\JsonApi\Schema\Container as BaseContainer;
+use Neomerx\JsonApi\Schema\Container as BaseContainer;
 use ReflectionClass;
 use ReflectionParameter;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use \RuntimeException;
 
 /**
  * Class Container
- * @package Trikoder\JsonApiBundle\Services\Neomerx
  */
 class Container extends BaseContainer
 {
@@ -24,6 +23,7 @@ class Container extends BaseContainer
 
     /**
      * Container constructor.
+     *
      * @param ContainerInterface $serviceContainer
      * @param SchemaFactoryInterface $factory
      * @param array $schemas
@@ -38,7 +38,7 @@ class Container extends BaseContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getResourceType($resource)
     {
@@ -47,16 +47,19 @@ class Container extends BaseContainer
 
     /**
      * @param Closure $closure
+     *
      * @return mixed
      */
     protected function createSchemaFromClosure(Closure $closure)
     {
         $schema = $closure($this->getFactory(), $this->serviceContainer);
+
         return $schema;
     }
 
     /**
      * @param string $className
+     *
      * @return mixed
      */
     protected function createSchemaFromClassName($className)
@@ -74,14 +77,14 @@ class Container extends BaseContainer
 
             // non type hinted arguments cannot be autowired
             if (null === $argumentClassHint) {
-                throw new RuntimeException(sprintf("Argument %s for schema %s is not type hinted and cannot be autowired!",
+                throw new RuntimeException(sprintf('Argument %s for schema %s is not type hinted and cannot be autowired!',
                     $argumentIndex, $className));
             }
             $resolvedDependacy = $this->resolveSchemaClassDependancy($argumentClassHint);
 
             // if we cannot autowire it we should fail
             if (null === $resolvedDependacy) {
-                throw new RuntimeException(sprintf("Cannot resolve argument %s for schema %s with hint %s. Did you forget to register service or alias?",
+                throw new RuntimeException(sprintf('Cannot resolve argument %s for schema %s with hint %s. Did you forget to register service or alias?',
                     $argumentIndex, $className, $argumentClassHint->getName()));
             }
             $callArguments[$argumentIndex] = $resolvedDependacy;
@@ -95,6 +98,7 @@ class Container extends BaseContainer
 
     /**
      * @param ReflectionClass $dependancyClass
+     *
      * @return object
      */
     private function resolveSchemaClassDependancy(ReflectionClass $dependancyClass)
@@ -102,7 +106,7 @@ class Container extends BaseContainer
         $dependancyClassName = $dependancyClass->getName();
 
         // resolve internfal services first
-        if ($dependancyClassName === SchemaFactoryInterface::class) {
+        if (SchemaFactoryInterface::class === $dependancyClassName) {
             return $this->getFactory();
         }
 

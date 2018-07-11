@@ -3,7 +3,6 @@
 namespace Trikoder\JsonApiBundle\Services;
 
 use Exception;
-use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Trikoder\JsonApiBundle\Contracts\ErrorFactoryInterface;
@@ -23,6 +22,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
 
     /**
      * ResponseFactoryService constructor.
+     *
      * @param EncoderService $encoderService
      * @param ErrorFactoryInterface $errorFactory
      */
@@ -33,7 +33,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createResponse(string $data, Response $response = null)
     {
@@ -52,7 +52,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createConflict(string $data, Response $response = null)
     {
@@ -66,7 +66,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createCreated($data, $location, Response $response = null)
     {
@@ -81,7 +81,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createNoContent(Response $response = null)
     {
@@ -94,7 +94,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createError(string $data, Response $response = null)
     {
@@ -108,7 +108,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createErrorFromException(Exception $exception, Response $response = null)
     {

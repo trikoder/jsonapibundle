@@ -4,7 +4,6 @@ namespace Trikoder\JsonApiBundle\Tests\Functional\Controller\Demo;
 
 use Symfony\Component\HttpFoundation\Response;
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
-use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class ExceptionTest extends JsonapiWebTestCase
 {
@@ -31,8 +30,7 @@ class ExceptionTest extends JsonapiWebTestCase
             'status' => '500',
             'code' => '44',
             'title' => 'Test exception',
-            'detail' => 'Exception of type: Exception'
+            'detail' => 'Exception of type: Exception',
         ], $content['errors'][0]);
-
     }
 }

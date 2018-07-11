@@ -7,7 +7,6 @@ use Trikoder\JsonApiBundle\Schema\AbstractSchema;
 
 /**
  * Class StdClassSchema
- * @package Trikoder\JsonApiBundle\Schema\Builtin
  */
 class StdClassSchema extends AbstractSchema
 {
@@ -41,7 +40,7 @@ class StdClassSchema extends AbstractSchema
         /** @var stdClass $resource */
         $attributes = [];
 
-        foreach ((array)$resource as $attributeKey => $attributeValue) {
+        foreach ((array) $resource as $attributeKey => $attributeValue) {
             $attributes[$attributeKey] = $attributeValue;
         }
 

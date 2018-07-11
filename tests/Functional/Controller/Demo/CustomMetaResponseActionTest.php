@@ -3,7 +3,6 @@
 namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
-use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class CustomMetaResponseActionTest extends JsonapiWebTestCase
 {

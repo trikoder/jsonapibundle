@@ -8,7 +8,6 @@ use Trikoder\JsonApiBundle\Services\AbstractSchemaClassMapService;
 
 /**
  * Class EmptySchemaClassMap
- * @package Trikoder\JsonApiBundle\Services\SchemaClassMap
  */
 class EmptySchemaClassMap extends AbstractSchemaClassMapService
 {

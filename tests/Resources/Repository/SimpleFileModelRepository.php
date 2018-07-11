@@ -8,7 +8,6 @@ use Trikoder\JsonApiBundle\Tests\Resources\Model\SimpleFileModel;
 
 /**
  * Class SimpleFileModelRepository
- * @package Trikoder\JsonApiBundle\Tests\Resources\Repository
  */
 class SimpleFileModelRepository implements RepositoryInterface
 {
@@ -19,6 +18,7 @@ class SimpleFileModelRepository implements RepositoryInterface
      * @param array $sort array of sort rules
      * @param int|null $limit
      * @param int|null $offset
+     *
      * @return ObjectListCollectionInterface|array|null
      */
     public function getList($filter = [], $sort = [], $limit = null, $offset = null)
@@ -31,6 +31,7 @@ class SimpleFileModelRepository implements RepositoryInterface
      *
      * @param $id
      * @param array $filter
+     *
      * @return object|null
      */
     public function getOne($id, $filter = [])

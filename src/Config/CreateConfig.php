@@ -8,7 +8,6 @@ use Trikoder\JsonApiBundle\Model\ModelFactoryInterface;
 
 /**
  * Class CreateConfig
- * @package Trikoder\JsonApiBundle\Config
  */
 final class CreateConfig implements CreateConfigInterface
 {
@@ -31,6 +30,7 @@ final class CreateConfig implements CreateConfigInterface
 
     /**
      * CreateConfig constructor.
+     *
      * @param ModelFactoryInterface $factory
      * @param array|null $allowedFields
      * @param array|null $requiredRoles

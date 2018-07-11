@@ -15,14 +15,15 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 
 /**
  * Trait UpdateTrait
- * @package Trikoder\JsonApiBundle\Controller\Traits\Actions
  */
 trait UpdateTrait
 {
     /**
      * @param Request $request
      * @param $id
+     *
      * @return null|object
+     *
      * @throws ModelValidationException
      *
      * @deprecated see \Trikoder\JsonApiBundle\Controller\Traits\Actions\UpdateTrait::updateModelFromRequestUsingId
@@ -35,7 +36,9 @@ trait UpdateTrait
     /**
      * @param Request $request
      * @param $id
+     *
      * @return null|object
+     *
      * @throws ModelValidationException
      */
     protected function updateModelFromRequestUsingId(Request $request, $id)
@@ -66,7 +69,9 @@ trait UpdateTrait
      * @param ConfigInterface $config
      * @param $model
      * @param Request $request
+     *
      * @return object
+     *
      * @throws ModelValidationException
      */
     protected function handleUpdateModelInputFromRequest(ConfigInterface $config, $model, Request $request)
@@ -79,7 +84,7 @@ trait UpdateTrait
             $handler = $this->getUpdateInputHandler();
         } else {
             /** @var ModelInputHandlerInterface $handler */
-            $handler = $this->get("trikoder.jsonapi.model_tools_factory")->createInputHandler($model,
+            $handler = $this->getJsonApiModelToolsFactory()->createInputHandler($model,
                 $config->getUpdate()->getUpdateAllowedFields());
         }
 
@@ -111,6 +116,7 @@ trait UpdateTrait
     /**
      * @param ConfigInterface $config
      * @param $model
+     *
      * @throws ModelValidationException
      */
     protected function validateUpdatedModel(ConfigInterface $config, $model)
@@ -122,7 +128,7 @@ trait UpdateTrait
             $validator = $this->getUpdateValidator();
         } else {
             /** @var ModelValidatorInterface $validator */
-            $validator = $this->get("trikoder.jsonapi.model_tools_factory")->createValidator($model);
+            $validator = $this->getJsonApiModelToolsFactory()->createValidator($model);
         }
 
         $validated = $validator->forModel($model)->validate();
@@ -135,7 +141,9 @@ trait UpdateTrait
     /**
      * @param Request $request
      * @param $model
+     *
      * @return object
+     *
      * @throws ModelValidationException
      */
     protected function updateModelFromRequestUsingModel(Request $request, $model)
@@ -164,19 +172,23 @@ trait UpdateTrait
     /**
      * @param Request $request
      * @param $id
+     *
      * @return null|object|\Symfony\Component\HttpFoundation\Response
      */
     protected function updateRequestFromRequest(Request $request, $id)
     {
+        // TODO change to injected
         /** @var ResponseFactoryInterface $responseFactory */
-        $responseFactory = $this->get("trikoder.jsonapi.response_factory");
+        $responseFactory = $this->getJsonApiResponseFactory();
         /** @var EncoderService $encoder */
-        $encoder = $this->get('trikoder.jsonapi.encoder');
+        $encoder = $this->getJsonApiEncoder();
 
         try {
             $model = $this->updateModelFromRequest($request, $id);
         } catch (ModelValidationException $modelValidationException) {
+            // TODO this should return conflict response (similar to DataResponse) or HttConflictException
             $response = $responseFactory->createConflict($encoder->encodeErrors($modelValidationException->getViolations()));
+
             return $response;
         }
 

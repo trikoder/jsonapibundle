@@ -39,35 +39,52 @@ services:
             - { name: kernel.event_listener, event: kernel.controller, priority: 8 }
         lazy: true
 
-    trikoder.jsonapi.schema_class_map_provider:
+    Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface:
         class: "%trikoder.jsonapi.schema_class_map_provider.class%"
+        lazy: true
+
+    trikoder.jsonapi.schema_class_map_provider: '@Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface'
+
+    Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer:
+        arguments: ["@service_container"]
         lazy: true
 
     trikoder.jsonapi.factory:
         class: "%trikoder.jsonapi.factory.class%"
-        arguments: ["@service_container"]
+        arguments: ['@Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer', "@logger"]
         lazy: true
 
     trikoder.jsonapi.request_body_decoder:
         class: "%trikoder.jsonapi.request_body_decoder.class%"
         lazy: true
+        public: true
 
-    trikoder.jsonapi.response_factory:
+
+    Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface:
         class: "%trikoder.jsonapi.response_factory.class%"
         arguments:
             - "@trikoder.jsonapi.encoder"
             - "@trikoder.jsonapi.error_factory"
         lazy: true
+        public: true
 
-    trikoder.jsonapi.encoder:
+    trikoder.jsonapi.response_factory: '@Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface'
+
+    Trikoder\JsonApiBundle\Services\Neomerx\EncoderService:
         class: "%trikoder.jsonapi.encoder.class%"
         arguments: ["@trikoder.jsonapi.factory"]
         lazy: true
+        public: true
 
-    trikoder.jsonapi.model_tools_factory:
+    trikoder.jsonapi.encoder: '@Trikoder\JsonApiBundle\Services\Neomerx\EncoderService'
+
+    Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory:
         class: "%trikoder.jsonapi.model_tools_factory.class%"
         arguments: ["@form.factory", "@validator", "@doctrine.orm.entity_manager"]
         lazy: true
+        public: true
+
+    trikoder.jsonapi.model_tools_factory: '@Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory'
 
     trikoder.jsonapi.error_factory:
         class: "%trikoder.jsonapi.error_factory.class%"
@@ -81,9 +98,11 @@ services:
     trikoder.jsonapi.doctrine_repository_factory:
         class: "%trikoder.jsonapi.doctrine_repository_factory.class%"
         arguments: ["@doctrine.orm.entity_manager"]
+        public: true
 
     trikoder.jsonapi.simple_model_factory:
         class: "%trikoder.jsonapi.simple_model_factory.class%"
+        public: true
 
     trikoder.jsonapi.model_factory_resolver:
         class: "%trikoder.jsonapi.model_factory_resolver.class%"

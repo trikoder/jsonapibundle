@@ -42,18 +42,19 @@ class CreateActionTest extends JsonapiWebTestCase
 
         $this->assertEquals([
             'type' => 'user',
-            'id' => (int)$data['data']['id'], // get take id from response - if none, this will cause error
+            'id' => (int) $data['data']['id'], // get take id from response - if none, this will cause error
             'attributes' => [
                 'email' => 'mytest@domain.com',
                 'active' => true,
             ],
             'links' => [
-                'self' => '/user/'.$data['data']['id']
+                'self' => '/user/' . $data['data']['id'],
             ],
         ], $data['data']);
 
         // TODO - verify the database has the same data
     }
+
     /**
      * test simple create
      */
@@ -71,7 +72,7 @@ class CreateActionTest extends JsonapiWebTestCase
                 'data' => [
                     'type' => 'user',
                     'attributes' => [
-                        'email' => 'invalid'
+                        'email' => 'invalid',
                     ],
                 ],
             ])

@@ -72,7 +72,6 @@ class IndexActionTest extends JsonapiWebTestCase
         $this->assertEquals(2, $content['data'][0]['id']);
     }
 
-
     /**
      * test pagination
      */
@@ -96,7 +95,6 @@ class IndexActionTest extends JsonapiWebTestCase
         $this->assertCount(1, $content['data']);
         $this->assertEquals(2, $content['data'][0]['id']);
     }
-
 
     /**
      * test pagination
@@ -172,5 +170,28 @@ class IndexActionTest extends JsonapiWebTestCase
         $this->assertIsJsonapiResponse($response);
         $content = $this->getResponseContentJson($response);
         $this->assertCount(0, $content['data']);
+    }
+
+    /**
+     * test simple listing
+     */
+    public function testCrazyPostIndexAction()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/api/crazy-posts');
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
+        /*$this->assertIsJsonapiResponse($response);
+        $content = $this->getResponseContentJson($response);
+        $this->assertEquals([
+            'type' => 'crazy',
+            'id' => 1,
+            'attributes' => [
+                'title' => 'Post 1'
+            ],
+            'links' => [
+                'self' => '/crazy/1'
+            ]
+        ], $content['data'][0]);*/
     }
 }

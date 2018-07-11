@@ -8,6 +8,7 @@ trait LoadLazyPropertyTrait
 {
     /**
      * @param $property
+     *
      * @return mixed
      */
     private function lazyLoadProperty($property)
@@ -20,5 +21,4 @@ trait LoadLazyPropertyTrait
 
         return $this->$property;
     }
-
 }

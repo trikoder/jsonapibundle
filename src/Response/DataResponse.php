@@ -4,7 +4,6 @@ namespace Trikoder\JsonApiBundle\Response;
 
 /**
  * Class DataResponse
- * @package Trikoder\JsonApiBundle\Response
  */
 class DataResponse extends AbstractResponse
 {
@@ -13,6 +12,7 @@ class DataResponse extends AbstractResponse
 
     /**
      * Response constructor.
+     *
      * @param $data
      * @param array $meta
      * @param array $links
@@ -33,11 +33,13 @@ class DataResponse extends AbstractResponse
 
     /**
      * @param mixed $data
+     *
      * @return $this
      */
     public function setData($data)
     {
         $this->data = $data;
+
         return $this;
     }
 }

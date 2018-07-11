@@ -2,10 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
-use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Trikoder\JsonApiBundle\Config\ApiConfig;
@@ -17,18 +15,15 @@ use Trikoder\JsonApiBundle\Config\UpdateConfig;
 use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Model\ModelFactoryInterface;
-use Trikoder\JsonApiBundle\Services\Neomerx\Container;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
-use Trikoder\JsonApiBundle\Services\RequestBodyDecoderService;
+use Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer;
 use Trikoder\JsonApiBundle\Services\RequestDecoder;
 
 /**
  * Class RequestDecoderTest
- * @package Trikoder\JsonApiBundle\Tests\Unit\Services
  */
 class RequestDecoderTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testMultipleValueFilter()
     {
         // prepare mocked config and controller
@@ -44,12 +39,11 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
 
         $requestDecoder = $this->getRequestDecoder($controller);
 
-
         // test single value
         $request = new Request(['filter' => ['myfield' => 'value12']]);
         $result = $requestDecoder->decode($request);
         $this->assertEquals([
-            'myfield' => 'value12'
+            'myfield' => 'value12',
         ], $result->query->get('filter'));
 
         // test simple case
@@ -59,9 +53,10 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
             'myfield' => [
                 'value1',
                 'value2',
-            ]
+            ],
         ], $result->query->get('filter'));
     }
+
     public function testMultipleValueFields()
     {
         // prepare mocked config and controller
@@ -77,12 +72,11 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
 
         $requestDecoder = $this->getRequestDecoder($controller);
 
-
         // test single value
         $request = new Request(['fields' => ['myresource' => 'field']]);
         $result = $requestDecoder->decode($request);
         $this->assertEquals([
-            'myresource' => ['field']
+            'myresource' => ['field'],
         ], $result->query->get('fields'));
 
         // test simple case
@@ -92,7 +86,7 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
             'myresource' => [
                 'field1',
                 'field2',
-            ]
+            ],
         ], $result->query->get('fields'));
     }
 
@@ -131,7 +125,8 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
      */
     private function getFactoryServiceMock()
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)->disableOriginalConstructor()->getMock();
+        $logger = $this->getMockBuilder(LoggerInterface::class)->disableOriginalConstructor()->getMock();
+        $container = $this->getMockBuilder(ServiceContainer::class)->disableOriginalConstructor()->getMock();
         $container->method('has')->willReturn(true);
         $container->method('get')->will($this->returnCallback(function (...$args) {
             switch ($args[0]) {
@@ -139,9 +134,11 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
                     return $this->getMockBuilder(LoggerInterface::class)->disableOriginalConstructor()->getMock();
                     break;
             }
+
             return null;
         }));
-        $factory = new FactoryService($container);
+        $factory = new FactoryService($container, $logger);
+
         return $factory;
     }
 
@@ -163,6 +160,7 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param JsonApiEnabledInterface $controller
+     *
      * @return RequestDecoder
      */
     private function getRequestDecoder(JsonApiEnabledInterface $controller)

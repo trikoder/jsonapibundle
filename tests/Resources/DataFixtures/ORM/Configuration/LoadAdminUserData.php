@@ -2,14 +2,12 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\DataFixtures\ORM\Configuration;
 
-
 use Doctrine\Common\Persistence\ObjectManager;
 use Trikoder\JsonApiBundle\Tests\Resources\DataFixtures\ORM\AbstractBaseFixture;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class LoadAdminUserData extends AbstractBaseFixture
 {
-
     public function load(ObjectManager $manager)
     {
         // main user

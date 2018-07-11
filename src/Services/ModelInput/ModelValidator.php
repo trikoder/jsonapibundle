@@ -3,9 +3,6 @@
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
-use Neomerx\JsonApi\Document\Error;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelValidatorInterface;
@@ -25,6 +22,7 @@ class ModelValidator implements ModelValidatorInterface
 
     /**
      * ModelValidator constructor.
+     *
      * @param ValidatorInterface $validator
      */
     public function __construct(ValidatorInterface $validator)
@@ -34,16 +32,19 @@ class ModelValidator implements ModelValidatorInterface
 
     /**
      * @param object $model
+     *
      * @return $this
      */
     public function forModel($model)
     {
         $this->model = $model;
+
         return $this;
     }
 
     /**
      * @param array $validationGroups
+     *
      * @return true|ErrorInterface[] true if valid or array of validation violations if not valid
      */
     public function validate(array $validationGroups = null)
@@ -51,12 +52,10 @@ class ModelValidator implements ModelValidatorInterface
         /** @var ConstraintViolationListInterface $validationResult */
         $validationResult = $this->validator->validate($this->model, null, $validationGroups);
 
-        if (count($validationResult) == 0) {
+        if (0 == count($validationResult)) {
             return true;
         } else {
             return $this->convertViolationsToErrors($validationResult);
         }
     }
-
-
 }

@@ -20,7 +20,6 @@ use Trikoder\JsonApiBundle\Services\ConfigBuilder;
 
 /**
  * Class ConfigBuilderTest
- * @package Trikoder\JsonApiBundle\Tests\Unit\Services
  */
 class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,8 +39,10 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
                     return $this->getRepositoryMock();
                     break;
             }
+
             return null;
         }));
+
         return $mocker;
     }
 
@@ -76,6 +77,7 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $mock = $this->getMockBuilder(ModelFactoryResolverInterface::class)->disableOriginalConstructor()->getMock();
         $mock->method('resolve')->willReturn($this->getModelFactoryMock());
+
         return $mock;
     }
 
@@ -86,6 +88,7 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $mock = $this->getMockBuilder(RepositoryResolverInterface::class)->disableOriginalConstructor()->getMock();
         $mock->method('resolve')->willReturn($this->getRepositoryMock());
+
         return $mock;
     }
 
@@ -96,6 +99,7 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $factory = $this->getMockBuilder(RepositoryFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $factory->method('create')->willReturn($this->getRepositoryMock());
+
         return $factory;
     }
 
@@ -129,7 +133,6 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([11], $config->getUpdate()->getUpdateRequiredRoles());
 
         $this->assertEquals([12], $config->getDelete()->getDeleteRequiredRoles());
-
     }
 
     public function testFromAnnotationWithModelResolver()

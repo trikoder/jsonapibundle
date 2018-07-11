@@ -7,7 +7,6 @@ use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
 
 /**
  * Class PaginatedIndexActionTest
- * @package Trikoder\JsonApiBundle\Tests\Functional\Controller
  */
 class PaginatedIndexActionTest extends JsonapiWebTestCase
 {
@@ -29,7 +28,7 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
 
         $this->assertArrayHasKey('meta', $content);
         $this->assertEquals([
-            'total' => 5
+            'total' => 5,
         ], $content['meta']);
 
         $this->assertArrayHasKey('links', $content);
@@ -44,7 +43,6 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $this->assertStringEndsWith('/api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=2', $content['links']['next']);
         $this->assertStringEndsWith('/api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['first']);
         $this->assertEmpty($content['links']['prev']);
-
     }
 
     public function testFiltersPaginatedLink()
@@ -82,7 +80,6 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $this->assertStringEndsWith('/api/user-paginated/?fields%5Buser%5D=email%2Cid%2Cactive%2Cinvalid&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['first']);
         $this->assertEmpty($content['links']['prev']);
     }
-
 
     public function testIncludePaginatedLink()
     {

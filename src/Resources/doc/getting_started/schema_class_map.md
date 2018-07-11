@@ -9,15 +9,15 @@ The schema class map can be provided and used in several ways.
 ### 1. Method in controller
 Api engine calls controller method `getSchemaClassMapProvider` to get map provider. 
 In your code, you can override this method to return your implementation of SchemaClassMapProviderInterface.
-By default, the `trikoder.jsonapi.schema_class_map_provider` service is fetched.
+By default, the `Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface` service is fetched.
 
 This method can be used to append or change schema map for controller. Override the method, call parent method and update the result before returning.
 
-### 2. Change class of trikoder.jsonapi.schema_class_map_provider service
+### 2. Change class of Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface service
 In your configuration you can change value of `trikoder.jsonapi.schema_class_map_provider.class` parameter to be any class that you implement SchemaClassMapProviderInterface.
 
-### 3. Redefine trikoder.jsonapi.schema_class_map_provider
-In your services configuration you can redefine `trikoder.jsonapi.schema_class_map_provider` service with your required class.
+### 3. Redefine Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface
+In your services configuration you can redefine `Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface` service with your required class.
 
 ## Usage
 `SchemaClassMapProviderInterface` implements two methods. One of them is add method that enables to register schemas for models.

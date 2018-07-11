@@ -10,14 +10,15 @@ interface ResponseFactoryInterface
     /**
      * @param string $data body of the response
      * @param Response|null $response any response that should be used as base
-     * @return Response created response
      *
+     * @return Response created response
      */
     public function createResponse(string $data, Response $response = null);
 
     /**
      * @param string $data
      * @param Response|null $response
+     *
      * @return Response
      */
     public function createConflict(string $data, Response $response = null);
@@ -29,6 +30,7 @@ interface ResponseFactoryInterface
     /**
      * @param string $data
      * @param Response|null $response
+     *
      * @return Response
      */
     public function createError(string $data, Response $response = null);
@@ -36,6 +38,7 @@ interface ResponseFactoryInterface
     /**
      * @param Exception $exception
      * @param Response|null $response
+     *
      * @return Response
      */
     public function createErrorFromException(Exception $exception, Response $response = null);

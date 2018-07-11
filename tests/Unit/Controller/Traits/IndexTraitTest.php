@@ -3,9 +3,7 @@
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services\ModelInput;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
-use Symfony\Component\Form\FormInterface;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
-use Trikoder\JsonApiBundle\Services\ModelInput\CustomFormModelInputHandler;
 
 class IndexTraitTest extends TestCase
 {
@@ -92,7 +90,6 @@ class IndexTraitTest extends TestCase
             'last' => ['limit' => 10, 'offset' => 90],
         ], $testResult);
     }
-
 
     public function testCalculatePagesForPageSizeOnePage()
     {
@@ -185,6 +182,7 @@ class TestIndexTraitClass
     {
         return $this->calculatePagesForLimitOffset($offset, $limit, $total);
     }
+
     public function callCalculatePagesForPageSize($offset, $limit, $total)
     {
         return $this->calculatePagesForPageSize($offset, $limit, $total);

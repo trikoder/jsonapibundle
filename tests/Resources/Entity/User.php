@@ -22,13 +22,12 @@ class User
      */
     private $id;
 
-
     /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Assert\NotBlank
+     * @Assert\Email
      */
     private $email;
 
@@ -89,7 +88,7 @@ class User
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isCustomer()
     {
@@ -97,14 +96,14 @@ class User
     }
 
     /**
-     * @param boolean $customer
+     * @param bool $customer
+     *
      * @return $this
      */
     public function setCustomer($customer)
     {
         $this->customer = $customer;
+
         return $this;
     }
-
 }
-

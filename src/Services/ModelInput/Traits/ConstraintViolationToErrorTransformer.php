@@ -9,12 +9,12 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Trait ConstraintViolationToErrorTransformer
- * @package Trikoder\JsonApiBundle\Services\ModelInput\Traits
  */
 trait ConstraintViolationToErrorTransformer
 {
     /**
      * @param array|ConstraintViolationListInterface $violations
+     *
      * @return array
      */
     protected function convertViolationsToErrors(ConstraintViolationListInterface $violations)
@@ -31,6 +31,7 @@ trait ConstraintViolationToErrorTransformer
 
     /**
      * @param ConstraintViolationInterface $violation
+     *
      * @return Error
      */
     protected function convertViolationToError(ConstraintViolationInterface $violation)
@@ -43,7 +44,7 @@ trait ConstraintViolationToErrorTransformer
             // TODO - make diff between attributes and relationships
             $source['pointer'] = '/data/attributes/' . $violation->getPropertyPath();
         }
-        if ($code === 2) {
+        if (2 === $code) {
             // TODO - parameter should be string? maybe we should send this in meta?
             $source['parameter'] = $violation->getParameters();
         }

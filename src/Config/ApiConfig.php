@@ -7,12 +7,9 @@ use Trikoder\JsonApiBundle\Config\Traits\LoadLazyPropertyTrait;
 use Trikoder\JsonApiBundle\Contracts\Config\ApiConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
-use Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface;
-use Trikoder\JsonApiBundle\Repository\RepositoryResolverInterface;
 
 /**
  * Class ApiConfig
- * @package Trikoder\JsonApiBundle\Config
  */
 class ApiConfig implements ApiConfigInterface
 {
@@ -50,6 +47,7 @@ class ApiConfig implements ApiConfigInterface
 
     /**
      * ApiConfig constructor.
+     *
      * @param string $modelClass
      * @param $repository
      * @param array|null $fixedFiltering
@@ -65,7 +63,6 @@ class ApiConfig implements ApiConfigInterface
         RequestBodyDecoderInterface $requestBodyDecoder,
         bool $allowExtraParams
     ) {
-
         $this->modelClass = $modelClass;
         $this->fixedFiltering = $fixedFiltering;
         $this->allowedIncludePaths = $allowedIncludePaths;
@@ -115,7 +112,7 @@ class ApiConfig implements ApiConfigInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getAllowExtraParams()
     {

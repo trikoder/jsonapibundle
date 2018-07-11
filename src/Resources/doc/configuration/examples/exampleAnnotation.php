@@ -30,7 +30,6 @@ use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
  *         requiredRoles=null
  *     )
  * )
- *
  */
 class Controller
 {

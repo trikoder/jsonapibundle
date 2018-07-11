@@ -7,7 +7,6 @@ use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 
 /**
  * Interface JsonApiEnabledInterface
- * @package Trikoder\JsonApiBundle\Controller
  */
 interface JsonApiEnabledInterface
 {

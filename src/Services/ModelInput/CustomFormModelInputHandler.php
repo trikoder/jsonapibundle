@@ -6,7 +6,6 @@ use Symfony\Component\Form\FormInterface;
 
 /**
  * Class CustomFormModelInputHandler
- * @package Trikoder\JsonApiBundle\Services\ModelInput
  */
 class CustomFormModelInputHandler extends AbstractFormModelInputHandler
 {
@@ -17,6 +16,7 @@ class CustomFormModelInputHandler extends AbstractFormModelInputHandler
 
     /**
      * FormModelInputHandler constructor.
+     *
      * @param FormInterface $form
      */
     public function __construct(FormInterface $form)
@@ -27,18 +27,19 @@ class CustomFormModelInputHandler extends AbstractFormModelInputHandler
     /**
      * @return FormInterface
      */
-    function getForm()
+    public function getForm()
     {
         return $this->form;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function forModel($model)
     {
         // add passed model to the form
         $this->getForm()->setData($model);
+
         return parent::forModel($model);
     }
 }

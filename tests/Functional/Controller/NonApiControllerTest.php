@@ -2,8 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class NonApiControllerTest extends WebTestCase
 {
@@ -43,6 +43,6 @@ class NonApiControllerTest extends WebTestCase
         $responseContent = $response->getContent();
         $this->assertContains('Test', $responseContent);
         // if jsondecode returns null on non-empty it is not json *puke*
-        $this->assertTrue(is_null(json_decode($responseContent)) && !empty($responseContent));
+        $this->assertTrue(null === json_decode($responseContent) && !empty($responseContent));
     }
 }

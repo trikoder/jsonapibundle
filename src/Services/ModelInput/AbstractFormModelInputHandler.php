@@ -2,16 +2,14 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-
 use Doctrine\Common\Util\ClassUtils;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
 
 abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterface
 {
     /**
-     * @var object $model
+     * @var object
      */
     protected $model;
 
@@ -23,11 +21,13 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
     /**
      * @return FormInterface
      */
-    abstract function getForm();
+    abstract public function getForm();
 
     /**
      * @param object $model
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function forModel($model)
@@ -35,7 +35,7 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
         // TODO - we really do not wanna change model types once set? if we use generic handler that caluclates form on the fly
         if (null !== $this->model && null !== $this->modelClass) {
             if (!($model instanceof $this->modelClass)) {
-                throw new \Exception("change of model type is not allowed");
+                throw new \Exception('change of model type is not allowed');
             }
         }
         $this->model = $model;
@@ -46,6 +46,7 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
 
     /**
      * @param array $input
+     *
      * @return $this
      */
     public function handle(array $input)

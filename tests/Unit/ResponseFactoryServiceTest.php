@@ -1,4 +1,5 @@
 <?php
+
 namespace Trikoder\JsonApiBundle\Tests\Unit;
 
 use Exception;
@@ -12,7 +13,6 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 use Trikoder\JsonApiBundle\Services\ResponseFactoryService;
 
 /**
- * @package Trikoder\JsonApiBundle\Tests\Unit
  */
 final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -124,7 +124,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
             ->method('encodeErrors')
             ->with(
                 $this->callback(function (array $errors) {
-                    return reset($errors)->getId() === 'error';
+                    return 'error' === reset($errors)->getId();
                 })
             )
             ->will(

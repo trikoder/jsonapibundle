@@ -8,7 +8,6 @@ use Trikoder\JsonApiBundle\Schema\AbstractSchema;
 
 /**
  * Class ExampleSimpleSchema
- * @package Trikoder\JsonApiBundle\Tests\Schema
  */
 class ExampleServiceSchema extends AbstractSchema
 {
@@ -21,6 +20,7 @@ class ExampleServiceSchema extends AbstractSchema
 
     /**
      * ExampleServiceSchema constructor.
+     *
      * @param SchemaFactoryInterface $factory
      * @param RouterInterface $router
      */
@@ -52,7 +52,7 @@ class ExampleServiceSchema extends AbstractSchema
     public function getAttributes($resource)
     {
         return [
-            "attribute" => $resource->getValue(),
+            'attribute' => $resource->getValue(),
             'url' => $this->router->generate('route_to_something_great'),
         ];
     }

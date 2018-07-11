@@ -14,7 +14,7 @@ There are some prerequisites to comply to be as fast as possible.
 3. Add any custom configuration you wish, see [configuration](../configuration/configuration.md)
 4. Define your schema service, eg: 
 ```
-trikoder.jsonapi.schema_class_map_provider:
+Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface:
         class: "%trikoder.jsonapi.schema_class_map_provider.class%"
 ```
 

@@ -53,7 +53,7 @@ class DeleteActionTest extends JsonapiWebTestCase
 
         $client->request(
             'DELETE',
-            '/api/user/'.$user->getId().'/',
+            '/api/user/' . $user->getId() . '/',
             [],
             [],
             [],

@@ -5,24 +5,22 @@ namespace Trikoder\JsonApiBundle\Services;
 use Closure;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Trikoder\JsonApiBundle\Config\Annotation;
+use Trikoder\JsonApiBundle\Config\ApiConfig;
 use Trikoder\JsonApiBundle\Config\Config;
 use Trikoder\JsonApiBundle\Config\CreateConfig;
+use Trikoder\JsonApiBundle\Config\DeleteConfig;
 use Trikoder\JsonApiBundle\Config\IndexConfig;
 use Trikoder\JsonApiBundle\Config\UpdateConfig;
-use Trikoder\JsonApiBundle\Config\DeleteConfig;
 use Trikoder\JsonApiBundle\Contracts\Config\ApiConfigInterface;
-use Trikoder\JsonApiBundle\Config\ApiConfig;
 use Trikoder\JsonApiBundle\Model\ModelFactoryResolverInterface;
 use Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface;
 use Trikoder\JsonApiBundle\Repository\RepositoryResolverInterface;
 
 /**
  * Class ConfigBuilder
- * @package Trikoder\JsonApiBundle\Services
  */
 class ConfigBuilder
 {
-
     /**
      * @var ContainerInterface
      */
@@ -35,6 +33,7 @@ class ConfigBuilder
 
     /**
      * ConfigBuilder constructor.
+     *
      * @param array $defaults
      * @param ContainerInterface $container
      */
@@ -49,6 +48,7 @@ class ConfigBuilder
      * Creates config using provided annotation, if non supplied, config is with defaults
      *
      * @param Annotation\Config|null $configAnnotation
+     *
      * @return Config
      */
     public function fromAnnotation(Annotation\Config $configAnnotation = null)
@@ -80,6 +80,7 @@ class ConfigBuilder
 
     /**
      * @param Annotation\Config|null $configAnnotation
+     *
      * @return ApiConfig
      */
     protected function createApiConfig(Annotation\Config $configAnnotation = null)
@@ -95,20 +96,20 @@ class ConfigBuilder
             if ($this->serviceContainer->has($repository)) {
                 $repository = $this->serviceContainer->get($repository);
             } else {
-                throw new \RuntimeException(sprintf("Value for repository setting must be valid service, given value: %s",
+                throw new \RuntimeException(sprintf('Value for repository setting must be valid service, given value: %s',
                     $repository));
             }
         }
         // if resolver or factory, put closure to resolve the repo
         if (true === ($repository instanceof RepositoryResolverInterface)) {
             $repository = function () use ($modelClass, $repository) {
-                /** @var RepositoryResolverInterface $repository */
+                /* @var RepositoryResolverInterface $repository */
                 return $repository->resolve($modelClass);
             };
         } else {
             if (true === ($repository instanceof RepositoryFactoryInterface)) {
                 $repository = function () use ($modelClass, $repository) {
-                    /** @var RepositoryFactoryInterface $repository */
+                    /* @var RepositoryFactoryInterface $repository */
                     return $repository->create($modelClass);
                 };
             }
@@ -121,7 +122,7 @@ class ConfigBuilder
             if ($this->serviceContainer->has($requestBodyDecoder)) {
                 $requestBodyDecoder = $this->serviceContainer->get($requestBodyDecoder);
             } else {
-                throw new \RuntimeException(sprintf("String value for RequestBodyDecoder setting must be valid service, given value: %s",
+                throw new \RuntimeException(sprintf('String value for RequestBodyDecoder setting must be valid service, given value: %s',
                     $requestBodyDecoder));
             }
         }
@@ -152,6 +153,7 @@ class ConfigBuilder
 
     /**
      * @param Annotation\Config|null $configAnnotation
+     *
      * @return IndexConfig
      */
     protected function createIndexConfig(Annotation\Config $configAnnotation = null)
@@ -190,6 +192,7 @@ class ConfigBuilder
     /**
      * @param Annotation\Config|null $configAnnotation
      * @param ApiConfigInterface|null $apiConfig
+     *
      * @return CreateConfig
      */
     protected function createCreateConfig(
@@ -203,7 +206,7 @@ class ConfigBuilder
             if ($this->serviceContainer->has($factory)) {
                 $factory = $this->serviceContainer->get($factory);
             } else {
-                throw new \RuntimeException(sprintf("String value for create factory setting must be valid service, given value: %s",
+                throw new \RuntimeException(sprintf('String value for create factory setting must be valid service, given value: %s',
                     $factory));
             }
         }
@@ -226,6 +229,7 @@ class ConfigBuilder
 
     /**
      * @param Annotation\Config|null $configAnnotation
+     *
      * @return UpdateConfig
      */
     protected function createUpdateConfig(Annotation\Config $configAnnotation = null)
@@ -245,6 +249,7 @@ class ConfigBuilder
 
     /**
      * @param Annotation\Config|null $configAnnotation
+     *
      * @return DeleteConfig
      */
     protected function createDeleteConfig(Annotation\Config $configAnnotation = null)
@@ -264,6 +269,7 @@ class ConfigBuilder
      * @param Annotation\Config $configAnnotation
      * @param Closure $propertyFetcher
      * @param $alternativeValue
+     *
      * @return mixed
      */
     protected function annotationValueIfNotNull(
@@ -277,6 +283,7 @@ class ConfigBuilder
                 return $configValue;
             }
         }
+
         return $alternativeValue;
     }
 }

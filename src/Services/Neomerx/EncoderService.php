@@ -7,12 +7,10 @@ use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Neomerx\JsonApi\Document\Link;
 use Neomerx\JsonApi\Encoder\EncoderOptions;
-use Symfony\Component\HttpFoundation\Request;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 
 /**
  * Class EncoderService
- * @package Trikoder\JsonApiBundle\Services\Neomerx
  */
 class EncoderService
 {
@@ -33,6 +31,7 @@ class EncoderService
 
     /**
      * EncoderService constructor.
+     *
      * @param FactoryService $factoryService
      */
     public function __construct(FactoryService $factoryService)
@@ -47,6 +46,7 @@ class EncoderService
      * @param EncodingParametersInterface|null $encodingParameters
      * @param array|null $meta
      * @param array $links
+     *
      * @return string
      */
     public function encode(
@@ -79,6 +79,7 @@ class EncoderService
      * @param ErrorInterface[] $errors
      * @param array|null $meta
      * @param array $links
+     *
      * @return string
      */
     public function encodeErrors(
@@ -119,7 +120,7 @@ class EncoderService
     private function buildEncoderOptions()
     {
         $options = 0;
-        if(true === $this->configurationEncodingPrettyPrint) {
+        if (true === $this->configurationEncodingPrettyPrint) {
             $options += JSON_PRETTY_PRINT;
         }
         $this->encoderOptions = new EncoderOptions($options, '');

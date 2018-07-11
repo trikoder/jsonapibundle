@@ -24,6 +24,7 @@ class ConstraintViolationToErrorTransformerTraitTest extends \PHPUnit_Framework_
         $violationMock = $this->getMockBuilder(ConstraintViolationInterface::class)->disableOriginalConstructor()->getMock();
         $violationMock->method('getCode')->willReturn($code);
         $violationMock->method('getMessage')->willReturn($message);
+
         return $violationMock;
     }
 }

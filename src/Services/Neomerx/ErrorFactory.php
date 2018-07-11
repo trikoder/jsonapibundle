@@ -2,7 +2,6 @@
 
 namespace Trikoder\JsonApiBundle\Services\Neomerx;
 
-
 use Exception;
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
 use Neomerx\JsonApi\Document\Error;
@@ -13,7 +12,7 @@ use Trikoder\JsonApiBundle\Contracts\ErrorFactoryInterface;
 class ErrorFactory implements ErrorFactoryInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function fromString(string $error): ErrorInterface
     {
@@ -21,11 +20,11 @@ class ErrorFactory implements ErrorFactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function fromException(Exception $exception): ErrorInterface
     {
-        $errorDescription = sprintf("Exception of type: %s", get_class($exception));
+        $errorDescription = sprintf('Exception of type: %s', get_class($exception));
         if (false === empty($exception->getMessage())) {
             $errorTitle = $exception->getMessage();
         } else {

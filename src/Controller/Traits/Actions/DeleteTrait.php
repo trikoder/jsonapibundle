@@ -8,12 +8,12 @@ use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 
 /**
  * Trait DeleteTrait
- * @package Trikoder\JsonApiBundle\Controller\Traits\Actions
  */
 trait DeleteTrait
 {
     /**
      * @param $id
+     *
      * @return null
      */
     public function deleteModelById($id)
@@ -28,7 +28,7 @@ trait DeleteTrait
         $model = $repository->getOne($id, $config->getApi()->getFixedFiltering());
 
         // check if model is loaded
-        if(null === $model) {
+        if (null === $model) {
             throw new NotFoundHttpException();
         }
         // TODO - check if model correct class?

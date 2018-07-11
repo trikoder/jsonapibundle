@@ -4,17 +4,14 @@ namespace Trikoder\JsonApiBundle\Services;
 
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\SortParameterInterface;
+use Neomerx\JsonApi\Http\Request as NeomerxHttpRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
-use Neomerx\JsonApi\Http\Request as NeomerxHttpRequest;
 
 /**
  * Class RequestDecoder
- * @package Trikoder\JsonApiBundle\Services
- *
- * TODO - define interface for this to be used in code
  */
 class RequestDecoder
 {
@@ -25,6 +22,7 @@ class RequestDecoder
 
     /**
      * Request parameters that were parsed from request
+     *
      * @var EncodingParametersInterface
      */
     protected $parsedRequestParameters = null;
@@ -42,11 +40,11 @@ class RequestDecoder
 
     /**
      * @param Request $currentRequest
+     *
      * @return Request
      */
     public function decode(Request $currentRequest)
     {
-
         /** @var ConfigInterface $config */
         $config = $this->controller->getJsonApiConfig();
 
@@ -78,6 +76,7 @@ class RequestDecoder
                         }
                     }
                 }
+
                 return $currentRequestQuery;
             }
         ));
@@ -106,14 +105,14 @@ class RequestDecoder
         // decode payload
         $requestContentPrepared = [];
         $requestContent = $currentRequest->getContent();
-        if(false === empty($requestContent)) {
+        if (false === empty($requestContent)) {
             // payload is body of request
-            $requestContentPrepared = (array)json_decode($requestContent, true);
+            $requestContentPrepared = (array) json_decode($requestContent, true);
         } else {
             // try to fallback to post fields in case of multipart request, see also note below about content and request
-            if($currentRequest->request->has('data')) {
+            if ($currentRequest->request->has('data')) {
                 // TODO check if data is array eg. batch/bulk payload?
-                $requestContentPrepared = ['data' => (array)json_decode($currentRequest->request->get('data', "[]"), true)];
+                $requestContentPrepared = ['data' => (array) json_decode($currentRequest->request->get('data', '[]'), true)];
             }
         }
 
@@ -181,6 +180,7 @@ class RequestDecoder
 
     /**
      * @param $sourceFilterParams
+     *
      * @return array
      */
     private function decodeFilterParams($sourceFilterParams)

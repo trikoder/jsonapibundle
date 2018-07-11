@@ -15,6 +15,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
 
     /**
      * RepositoryFactory constructor.
+     *
      * @param EntityManager $entityManager
      */
     public function __construct(EntityManager $entityManager)
@@ -24,9 +25,10 @@ class RepositoryFactory implements RepositoryFactoryInterface
 
     /**
      * @param string $modelClass
+     *
      * @return RepositoryInterface
      */
-    public function create(string $modelClass) : RepositoryInterface
+    public function create(string $modelClass): RepositoryInterface
     {
         return new DoctrineRepository(
             $this->entityManager->getRepository($modelClass),

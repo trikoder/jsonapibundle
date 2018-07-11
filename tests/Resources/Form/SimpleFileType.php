@@ -11,7 +11,6 @@ use Trikoder\JsonApiBundle\Tests\Resources\Model\SimpleFileModel;
 
 /**
  * Class SimpleFileType
- * @package Trikoder\JsonApiBundle\Tests\Resources\Form
  */
 class SimpleFileType extends AbstractType
 {

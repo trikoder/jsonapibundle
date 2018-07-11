@@ -4,12 +4,12 @@ namespace Trikoder\JsonApiBundle\Contracts\ModelTools;
 
 /**
  * Interface ModelInputHandlerInterface
- * @package Trikoder\JsonApiBundle\Contracts\ModelTools
  */
 interface ModelInputHandlerInterface
 {
     /**
      * @param object $model
+     *
      * @return $this
      * TODO - check if better in contructor so it cannot be changed on runtime?
      */
@@ -17,6 +17,7 @@ interface ModelInputHandlerInterface
 
     /**
      * @param array $input
+     *
      * @return $this
      */
     public function handle(array $input);

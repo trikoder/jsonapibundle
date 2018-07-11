@@ -1,10 +1,10 @@
-FROM phpdockerio/php7-fpm
+FROM phpdockerio/php71-fpm
 
 MAINTAINER Alen Pokos <alen.pokos@trikoder.net>
 
 # xdebug for code coverage
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install php7.0-xdebug php7.0-mysql php7.0-mbstring
+    && apt-get -y --no-install-recommends install php7.1-xdebug php7.1-mysql php7.1-mbstring
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php && \

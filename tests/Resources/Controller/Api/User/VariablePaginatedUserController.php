@@ -2,12 +2,12 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\PaginatedIndexActionTrait;
-use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\Request;
 use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
@@ -21,7 +21,6 @@ use Trikoder\JsonApiBundle\Response\DataResponse;
  *         defaultPagination={"limit": 2}
  *     )
  * )
- *
  */
 class VariablePaginatedUserController extends JsonApiController
 {
@@ -30,12 +29,14 @@ class VariablePaginatedUserController extends JsonApiController
     /**
      * @param Request $request
      *
-     * @Route("/{number}{trailingSlash}", requirements={"trailingSlash" = "[/]{0,1}"}, defaults={"trailingSlash" = ""})
+     * @Route("/{number}{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""})
      * @Method("GET")
+     *
      * @return DataResponse
      */
     public function variableEndAction(Request $request, $number)
     {
+        // TODO change to injected
         $router = $this->get('router');
 
         $collection = $this->createCollectionFromRequest($request);

@@ -36,7 +36,7 @@ class ShowActionTest extends JsonapiWebTestCase
                 'active' => $user->isActive(),
             ],
             'links' => [
-                'self' => '/user/1'
+                'self' => '/user/1',
             ],
         ], $data['data']);
     }
@@ -49,7 +49,6 @@ class ShowActionTest extends JsonapiWebTestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertIsJsonapiResponse($response);
     }
-
 
     /**
      * Test a bit more complex show action
@@ -76,10 +75,10 @@ class ShowActionTest extends JsonapiWebTestCase
             'id' => 4,
             'attributes' => [
                 'email' => $user->getEmail(),
-                'profile' => $client->getContainer()->get('router')->generate('customer_dummy_action', ['id' => 4])
+                'profile' => $client->getContainer()->get('router')->generate('customer_dummy_action', ['id' => 4]),
             ],
             'links' => [
-                'self' => '/customer/4'
+                'self' => '/customer/4',
             ],
         ], $data['data']);
     }
@@ -108,7 +107,7 @@ class ShowActionTest extends JsonapiWebTestCase
                 'email' => $user->getEmail(),
             ],
             'links' => [
-                'self' => '/user/1'
+                'self' => '/user/1',
             ],
         ], $data['data']);
     }
@@ -137,10 +136,10 @@ class ShowActionTest extends JsonapiWebTestCase
             'type' => 'user',
             'id' => '1',
             'attributes' => [
-                'email' => $user->getEmail()
+                'email' => $user->getEmail(),
             ],
             'links' => [
-                'self' => '/user/1'
+                'self' => '/user/1',
             ],
         ], $data['data']);
     }
@@ -178,10 +177,10 @@ class ShowActionTest extends JsonapiWebTestCase
             'type' => 'post',
             'id' => '1',
             'attributes' => [
-                'title' => 'Post 1'
+                'title' => 'Post 1',
             ],
             'links' => [
-                'self' => '/post/1'
+                'self' => '/post/1',
             ],
         ], $data['data']);
     }
@@ -203,18 +202,18 @@ class ShowActionTest extends JsonapiWebTestCase
             'type' => 'post',
             'id' => '1',
             'attributes' => [
-                'title' => 'Post 1'
+                'title' => 'Post 1',
             ],
             'relationships' => [
                 'author' => [
                     'data' => [
                         'type' => 'user',
-                        'id' => 3
-                    ]
-                ]
+                        'id' => 3,
+                    ],
+                ],
             ],
             'links' => [
-                'self' => '/post/1'
+                'self' => '/post/1',
             ],
         ], $data['data']);
 

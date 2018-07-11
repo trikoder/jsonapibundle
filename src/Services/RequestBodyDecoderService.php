@@ -6,11 +6,11 @@ use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
 
 class RequestBodyDecoderService implements RequestBodyDecoderInterface
 {
-
     /**
      * Takes array representation of jsonapi body payload and returnes flat array as would be expected by simple POST
      *
      * @param array $body
+     *
      * @return null|array
      */
     public function decode(array $body = null)

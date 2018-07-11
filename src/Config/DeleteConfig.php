@@ -6,7 +6,6 @@ use Trikoder\JsonApiBundle\Contracts\Config\DeleteConfigInterface;
 
 /**
  * Class DeleteConfig
- * @package Trikoder\JsonApiBundle\Config
  */
 final class DeleteConfig implements DeleteConfigInterface
 {
@@ -17,6 +16,7 @@ final class DeleteConfig implements DeleteConfigInterface
 
     /**
      * DeleteConfig constructor.
+     *
      * @param array|null $requiredRoles
      */
     public function __construct(

@@ -7,13 +7,12 @@ use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 
 /**
  * Trait ShowTrait
- * @package Trikoder\JsonApiBundle\Controller\Traits\Actions
  */
 trait ShowTrait
 {
-
     /**
      * @param $id
+     *
      * @return null|object
      */
     public function getModelById($id)

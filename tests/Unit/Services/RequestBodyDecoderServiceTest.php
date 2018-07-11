@@ -2,7 +2,6 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
-use Doctrine\ORM\EntityManager;
 use Trikoder\JsonApiBundle\Services\RequestBodyDecoderService;
 
 class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
@@ -30,16 +29,16 @@ class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
                         'data' => [
                             'type' => 'related',
                             'id' => 321,
-                        ]
+                        ],
                     ],
                     'someOtherRelateds' => [
                         'data' => [
                             ['type' => 'someOther', 'id' => 51],
                             ['type' => 'someOther', 'id' => 52],
                             ['type' => 'someOther', 'id' => 53],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -68,13 +67,14 @@ class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * Test item that is being created
      */
-    public function testCreateLikeItem() {
+    public function testCreateLikeItem()
+    {
         $testData = [
             'data' => [
                 'type' => 'photos',
                 'attributes' => [
-                    'title' => 'test title'
-                ]
+                    'title' => 'test title',
+                ],
             ],
         ];
 

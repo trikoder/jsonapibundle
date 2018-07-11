@@ -6,7 +6,6 @@ use Trikoder\JsonApiBundle\Services\SchemaClassMapService;
 
 /**
  * Class RequestDecoderTest
- * @package Trikoder\JsonApiBundle\Tests\Unit\Services
  */
 class SchemaClassMapServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +15,7 @@ class SchemaClassMapServiceTest extends \PHPUnit_Framework_TestCase
         $schemaClassMap->add('someclass', 'someschemaclass');
 
         $this->assertEquals([
-            'someclass' => 'someschemaclass'
+            'someclass' => 'someschemaclass',
         ], $schemaClassMap->getMap());
     }
 
@@ -26,7 +25,7 @@ class SchemaClassMapServiceTest extends \PHPUnit_Framework_TestCase
         $schemaClassMap->add('\someclass', '\someschemaclass');
 
         $this->assertEquals([
-            'someclass' => 'someschemaclass'
+            'someclass' => 'someschemaclass',
         ], $schemaClassMap->getMap());
     }
 }

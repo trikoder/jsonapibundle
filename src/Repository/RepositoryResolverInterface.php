@@ -6,15 +6,15 @@ use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 
 /**
  * Interface RepositoryResolverInterface
- * @package Trikoder\JsonApiBundle\Repository
  */
 interface RepositoryResolverInterface
 {
     /**
      * @param string $modelClass
+     *
      * @return RepositoryInterface
      */
-    public function resolve(string $modelClass) : RepositoryInterface;
+    public function resolve(string $modelClass): RepositoryInterface;
 
     /**
      * @param RepositoryFactoryInterface $factory

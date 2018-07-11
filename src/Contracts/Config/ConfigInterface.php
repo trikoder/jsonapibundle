@@ -4,7 +4,6 @@ namespace Trikoder\JsonApiBundle\Contracts\Config;
 
 /**
  * Interface ConfigInterface
- * @package Trikoder\JsonApiBundle\Contracts\Config
  */
 interface ConfigInterface
 {

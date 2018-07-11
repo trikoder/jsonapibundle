@@ -1,0 +1,33 @@
+variables:
+  COMPOSE_PROJECT_NAME: "jsonapibundle${CI_BUILD_ID}"
+
+stages:
+  - test
+  - lint
+
+after_script:
+  - cd tests/Resources/docker/
+  - echo "Fixing permissions after docker..."
+  - bin/php chmod -R 0777 ../../../*
+  - docker-compose down
+  - echo "All Done!"
+
+ci:
+  stage: test
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - bin/build.sh
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never --coverage-text=php://stdout --coverage-html=logs/coverage
+    - bin/php php ../../../vendor/bin/security-checker security:check ../../../composer.lock
+
+lint:
+  stage: lint
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - bin/build.sh
+    - bin/php_cs --dry-run --using-cache=no
