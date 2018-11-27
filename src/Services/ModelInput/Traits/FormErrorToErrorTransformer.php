@@ -13,8 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 trait FormErrorToErrorTransformer
 {
     /**
-     * @param FormErrorIterator $formErrors
-     *
      * @return array
      */
     protected function convertFormErrorsToErrors(FormErrorIterator $formErrors)
@@ -30,8 +28,6 @@ trait FormErrorToErrorTransformer
     }
 
     /**
-     * @param FormError $violation
-     *
      * @return Error
      */
     protected function convertFormErrorToError(FormError $violation)

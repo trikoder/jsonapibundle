@@ -15,9 +15,6 @@ abstract class AbstractResponse
 
     /**
      * AbstractResponse constructor.
-     *
-     * @param array $meta
-     * @param array $links
      */
     public function __construct(array $meta = [], array $links = [])
     {
@@ -28,8 +25,6 @@ abstract class AbstractResponse
     /**
      * @param $meta
      * @param $value
-     *
-     * @return self
      */
     public function addMeta($meta, $value): self
     {
@@ -39,7 +34,6 @@ abstract class AbstractResponse
     }
 
     /**
-     * @return array
      */
     public function getMeta(): array
     {
@@ -47,7 +41,6 @@ abstract class AbstractResponse
     }
 
     /**
-     * @return array
      */
     public function getLinks(): array
     {
@@ -57,8 +50,6 @@ abstract class AbstractResponse
     /**
      * @param $link
      * @param $value
-     *
-     * @return self
      */
     public function addLink($link, $value): self
     {

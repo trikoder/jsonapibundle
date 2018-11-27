@@ -115,24 +115,25 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('modelClass', $config->getApi()->getModelClass());
         $this->assertInstanceOf(RepositoryInterface::class, $config->getApi()->getRepository());
         $this->assertInstanceOf(RequestBodyDecoderInterface::class, $config->getApi()->getRequestBodyDecoder());
-        $this->assertEquals([1], $config->getApi()->getFixedFiltering());
-        $this->assertEquals([2], $config->getApi()->getAllowedIncludePaths());
+        $this->assertEquals(['fixed_filtering'], $config->getApi()->getFixedFiltering());
+        $this->assertEquals(['allowed_include_paths'], $config->getApi()->getAllowedIncludePaths());
         $this->assertTrue($config->getApi()->getAllowExtraParams());
 
-        $this->assertEquals([3], $config->getIndex()->getIndexAllowedSortFields());
-        $this->assertEquals([4], $config->getIndex()->getIndexAllowedFilteringParameters());
-        $this->assertEquals([5], $config->getIndex()->getIndexDefaultSort());
-        $this->assertEquals([6], $config->getIndex()->getIndexDefaultPagination());
-        $this->assertEquals([7], $config->getIndex()->getIndexAllowedFields());
+        $this->assertEquals(['allowed_sort_fields'], $config->getIndex()->getIndexAllowedSortFields());
+        $this->assertEquals(['allowed_filtering_parameters'], $config->getIndex()->getIndexAllowedFilteringParameters());
+        $this->assertEquals(['default_sort'], $config->getIndex()->getIndexDefaultSort());
+        $this->assertEquals(['default_pagination'], $config->getIndex()->getIndexDefaultPagination());
+        $this->assertEquals(['index_allowed_fields'], $config->getIndex()->getIndexAllowedFields());
+        $this->assertEquals(['index_required_roles'], $config->getIndex()->getIndexRequiredRoles());
 
-        $this->assertEquals([8], $config->getCreate()->getCreateAllowedFields());
-        $this->assertEquals([9], $config->getCreate()->getCreateRequiredRoles());
+        $this->assertEquals(['create_allowed_fields'], $config->getCreate()->getCreateAllowedFields());
+        $this->assertEquals(['create_required_roles'], $config->getCreate()->getCreateRequiredRoles());
         $this->assertInstanceOf(ModelFactoryInterface::class, $config->getCreate()->getCreateFactory());
 
-        $this->assertEquals([10], $config->getUpdate()->getUpdateAllowedFields());
-        $this->assertEquals([11], $config->getUpdate()->getUpdateRequiredRoles());
+        $this->assertEquals(['update_allowed_fields'], $config->getUpdate()->getUpdateAllowedFields());
+        $this->assertEquals(['update_required_roles'], $config->getUpdate()->getUpdateRequiredRoles());
 
-        $this->assertEquals([12], $config->getDelete()->getDeleteRequiredRoles());
+        $this->assertEquals(['delete_required_roles'], $config->getDelete()->getDeleteRequiredRoles());
     }
 
     public function testFromAnnotationWithModelResolver()
@@ -223,24 +224,25 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
         $annotationConfig->modelClass = 'modelClass';
         $annotationConfig->repository = 'repository';
         $annotationConfig->requestBodyDecoder = 'request_body_decoder';
-        $annotationConfig->fixedFiltering = [1];
-        $annotationConfig->allowedIncludePaths = [2];
+        $annotationConfig->fixedFiltering = ['fixed_filtering'];
+        $annotationConfig->allowedIncludePaths = ['allowed_include_paths'];
         $annotationConfig->allowExtraParams = true;
 
-        $annotationConfig->index->allowedSortFields = [3];
-        $annotationConfig->index->allowedFilteringParameters = [4];
-        $annotationConfig->index->defaultSort = [5];
-        $annotationConfig->index->defaultPagination = [6];
-        $annotationConfig->index->allowedFields = [7];
+        $annotationConfig->index->allowedSortFields = ['allowed_sort_fields'];
+        $annotationConfig->index->allowedFilteringParameters = ['allowed_filtering_parameters'];
+        $annotationConfig->index->defaultSort = ['default_sort'];
+        $annotationConfig->index->defaultPagination = ['default_pagination'];
+        $annotationConfig->index->allowedFields = ['index_allowed_fields'];
+        $annotationConfig->index->requiredRoles = ['index_required_roles'];
 
         $annotationConfig->create->factory = $this->getModelFactoryMock();
-        $annotationConfig->create->allowedFields = [8];
-        $annotationConfig->create->requiredRoles = [9];
+        $annotationConfig->create->allowedFields = ['create_allowed_fields'];
+        $annotationConfig->create->requiredRoles = ['create_required_roles'];
 
-        $annotationConfig->update->allowedFields = [10];
-        $annotationConfig->update->requiredRoles = [11];
+        $annotationConfig->update->allowedFields = ['update_allowed_fields'];
+        $annotationConfig->update->requiredRoles = ['update_required_roles'];
 
-        $annotationConfig->delete->requiredRoles = [12];
+        $annotationConfig->delete->requiredRoles = ['delete_required_roles'];
 
         return $annotationConfig;
     }
@@ -263,6 +265,7 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
                 'default_sort' => '',
                 'default_pagination' => '',
                 'allowed_fields' => '',
+                'required_roles' => '',
             ],
             'create' => [
                 'factory' => '',

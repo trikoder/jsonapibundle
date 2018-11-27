@@ -22,8 +22,6 @@ class ModelValidator implements ModelValidatorInterface
 
     /**
      * ModelValidator constructor.
-     *
-     * @param ValidatorInterface $validator
      */
     public function __construct(ValidatorInterface $validator)
     {
@@ -52,7 +50,7 @@ class ModelValidator implements ModelValidatorInterface
         /** @var ConstraintViolationListInterface $validationResult */
         $validationResult = $this->validator->validate($this->model, null, $validationGroups);
 
-        if (0 == count($validationResult)) {
+        if (0 == \count($validationResult)) {
             return true;
         } else {
             return $this->convertViolationsToErrors($validationResult);

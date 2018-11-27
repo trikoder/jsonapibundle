@@ -33,9 +33,6 @@ class ConfigBuilder
 
     /**
      * ConfigBuilder constructor.
-     *
-     * @param array $defaults
-     * @param ContainerInterface $container
      */
     public function __construct(array $defaults, ContainerInterface $container)
     {
@@ -47,7 +44,6 @@ class ConfigBuilder
     /**
      * Creates config using provided annotation, if non supplied, config is with defaults
      *
-     * @param Annotation\Config|null $configAnnotation
      *
      * @return Config
      */
@@ -79,8 +75,6 @@ class ConfigBuilder
     }
 
     /**
-     * @param Annotation\Config|null $configAnnotation
-     *
      * @return ApiConfig
      */
     protected function createApiConfig(Annotation\Config $configAnnotation = null)
@@ -92,7 +86,7 @@ class ConfigBuilder
         $repository = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
             return $configAnnotation->repository;
         }, $this->defaults['repository']);
-        if (true === is_string($repository)) {
+        if (true === \is_string($repository)) {
             if ($this->serviceContainer->has($repository)) {
                 $repository = $this->serviceContainer->get($repository);
             } else {
@@ -118,7 +112,7 @@ class ConfigBuilder
         $requestBodyDecoder = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
             return $configAnnotation->requestBodyDecoder;
         }, $this->defaults['request_body_decoder']);
-        if (true === is_string($requestBodyDecoder)) {
+        if (true === \is_string($requestBodyDecoder)) {
             if ($this->serviceContainer->has($requestBodyDecoder)) {
                 $requestBodyDecoder = $this->serviceContainer->get($requestBodyDecoder);
             } else {
@@ -152,8 +146,6 @@ class ConfigBuilder
     }
 
     /**
-     * @param Annotation\Config|null $configAnnotation
-     *
      * @return IndexConfig
      */
     protected function createIndexConfig(Annotation\Config $configAnnotation = null)
@@ -178,21 +170,23 @@ class ConfigBuilder
             return $configAnnotation->index->allowedFields;
         }, $this->defaults['index']['allowed_fields']);
 
+        $requiredRoles = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
+            return $configAnnotation->index->requiredRoles;
+        }, $this->defaults['index']['required_roles']);
+
         $config = new IndexConfig(
             $allowedSortFields,
             $allowedFilteringParameters,
             $defaultSort,
             $defaultPagination,
-            $allowedFields
+            $allowedFields,
+            $requiredRoles
         );
 
         return $config;
     }
 
     /**
-     * @param Annotation\Config|null $configAnnotation
-     * @param ApiConfigInterface|null $apiConfig
-     *
      * @return CreateConfig
      */
     protected function createCreateConfig(
@@ -202,7 +196,7 @@ class ConfigBuilder
         $factory = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
             return $configAnnotation->create->factory;
         }, $this->defaults['create']['factory']);
-        if (true === is_string($factory)) {
+        if (true === \is_string($factory)) {
             if ($this->serviceContainer->has($factory)) {
                 $factory = $this->serviceContainer->get($factory);
             } else {
@@ -228,8 +222,6 @@ class ConfigBuilder
     }
 
     /**
-     * @param Annotation\Config|null $configAnnotation
-     *
      * @return UpdateConfig
      */
     protected function createUpdateConfig(Annotation\Config $configAnnotation = null)
@@ -248,8 +240,6 @@ class ConfigBuilder
     }
 
     /**
-     * @param Annotation\Config|null $configAnnotation
-     *
      * @return DeleteConfig
      */
     protected function createDeleteConfig(Annotation\Config $configAnnotation = null)
@@ -267,10 +257,7 @@ class ConfigBuilder
      * Helper method to select between config options
      *
      * @param Annotation\Config $configAnnotation
-     * @param Closure $propertyFetcher
      * @param $alternativeValue
-     *
-     * @return mixed
      */
     protected function annotationValueIfNotNull(
         Annotation\Config $configAnnotation = null,

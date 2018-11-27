@@ -32,7 +32,6 @@ class ControllerConfigListener
     }
 
     /**
-     * @param FilterControllerEvent $event
      */
     public function onKernelController(FilterControllerEvent $event)
     {

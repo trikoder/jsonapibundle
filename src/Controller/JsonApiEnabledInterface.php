@@ -19,8 +19,10 @@ interface JsonApiEnabledInterface
 
     /**
      * Returns controllers config
-     *
-     * @return ConfigInterface
      */
-    public function getJsonApiConfig();
+    public function getJsonApiConfig(): ConfigInterface;
+
+    /**
+     */
+    public function setJsonApiConfig(ConfigInterface $config);
 }

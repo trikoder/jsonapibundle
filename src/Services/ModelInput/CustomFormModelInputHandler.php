@@ -16,8 +16,6 @@ class CustomFormModelInputHandler extends AbstractFormModelInputHandler
 
     /**
      * FormModelInputHandler constructor.
-     *
-     * @param FormInterface $form
      */
     public function __construct(FormInterface $form)
     {

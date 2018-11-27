@@ -12,7 +12,7 @@ class ServiceContainer implements ContainerInterface
     /**
      * @var string[]
      */
-    protected $services;
+    protected $services = [];
 
     /**
      * @var ContainerInterface

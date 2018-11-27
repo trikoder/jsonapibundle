@@ -76,12 +76,6 @@ class KernelListener
 
     /**
      * KernelListener constructor.
-     *
-     * @param FactoryService $neomerxFactoryService
-     * @param RequestBodyDecoderInterface $requestBodyDecoder
-     * @param ResponseFactoryInterface $responseFactory
-     * @param EncoderService $encoderService
-     * @param Logger $logger
      */
     public function __construct(
         FactoryService $neomerxFactoryService,
@@ -100,8 +94,6 @@ class KernelListener
 
     /**
      * Setter of schema class map provider
-     *
-     * @param SchemaClassMapProviderInterface $schemaClassMapProvider
      */
     protected function setSchemaClassMapProvider(SchemaClassMapProviderInterface $schemaClassMapProvider)
     {
@@ -110,8 +102,6 @@ class KernelListener
 
     /**
      * Check if controller is json api and also get it's schema map
-     *
-     * @param FilterControllerEvent $event
      */
     public function onKernelController(FilterControllerEvent $event)
     {
@@ -129,7 +119,6 @@ class KernelListener
     /**
      * Transforms controller result to valid json api response if possible
      *
-     * @param GetResponseForControllerResultEvent $event
      *
      * @throws \Exception
      */
@@ -157,8 +146,6 @@ class KernelListener
 
     /**
      * @param $controllerResult
-     * @param array $resultMeta
-     * @param array $resultLinks
      *
      * @return Response
      *
@@ -211,7 +198,7 @@ class KernelListener
                 break;
 
             // if you got array or object, try to encode it and package in response
-            case is_array($controllerResult) || is_object($controllerResult):
+            case \is_array($controllerResult) || \is_object($controllerResult):
 
                 $response = $this->responseFactory->createResponse($this->encode($controllerResult, $resultMeta,
                     $resultLinks));
@@ -238,8 +225,6 @@ class KernelListener
 
     /**
      * @param array|Iterator|null|object|string $data
-     * @param array|null $meta
-     * @param array $links
      *
      * @return string
      */
@@ -256,8 +241,6 @@ class KernelListener
 
     /**
      * Event is called when controller arguments are being resolved, here we can replace original request with translated request
-     *
-     * @param FilterControllerArgumentsEvent $event
      */
     public function onKernelControllerArguments(FilterControllerArgumentsEvent $event)
     {
@@ -293,7 +276,6 @@ class KernelListener
     }
 
     /**
-     * @param GetResponseForExceptionEvent $event
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {

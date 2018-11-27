@@ -3,6 +3,7 @@
 namespace Trikoder\JsonApiBundle\Controller\Traits\Polyfill;
 
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
@@ -17,8 +18,9 @@ trait SymfonyAutowiredServicesTrait
 
     protected $jsonapiEncoder;
 
+    protected $authorizationChecker;
+
     /**
-     * @param RouterInterface $router
      * @required
      */
     public function setRouter(RouterInterface $router)
@@ -27,7 +29,7 @@ trait SymfonyAutowiredServicesTrait
     }
 
     /**
-     * @return mixed
+     * @return RouterInterface
      */
     public function getRouter()
     {
@@ -71,5 +73,18 @@ trait SymfonyAutowiredServicesTrait
     public function getJsonApiEncoder()
     {
         return $this->jsonapiEncoder;
+    }
+
+    /**
+     * @required
+     */
+    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
+    public function getAuthorizationChecker(): AuthorizationCheckerInterface
+    {
+        return $this->authorizationChecker;
     }
 }

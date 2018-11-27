@@ -24,11 +24,10 @@ services:
             - "@logger"
         tags:
             - { name: kernel.event_listener, event: kernel.controller, priority: 16 }
-            - { name: kernel.event_listener, event: kernel.controller_arguments }
+            - { name: kernel.event_listener, event: kernel.controller_arguments, priority: -10 }
             - { name: kernel.event_listener, event: kernel.view }
             - { name: kernel.event_listener, event: kernel.response }
             - { name: kernel.event_listener, event: kernel.exception }
-        lazy: true
 
     trikoder.jsonapi.controller_config_listener:
         class: "%trikoder.jsonapi.controller_config_listener.class%"
@@ -37,26 +36,21 @@ services:
             - "@trikoder.jsonapi.config_builder"
         tags:
             - { name: kernel.event_listener, event: kernel.controller, priority: 8 }
-        lazy: true
 
     Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface:
         class: "%trikoder.jsonapi.schema_class_map_provider.class%"
-        lazy: true
 
     trikoder.jsonapi.schema_class_map_provider: '@Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface'
 
     Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer:
         arguments: ["@service_container"]
-        lazy: true
 
     trikoder.jsonapi.factory:
         class: "%trikoder.jsonapi.factory.class%"
         arguments: ['@Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer', "@logger"]
-        lazy: true
 
     trikoder.jsonapi.request_body_decoder:
         class: "%trikoder.jsonapi.request_body_decoder.class%"
-        lazy: true
         public: true
 
 
@@ -65,7 +59,6 @@ services:
         arguments:
             - "@trikoder.jsonapi.encoder"
             - "@trikoder.jsonapi.error_factory"
-        lazy: true
         public: true
 
     trikoder.jsonapi.response_factory: '@Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface'
@@ -73,7 +66,6 @@ services:
     Trikoder\JsonApiBundle\Services\Neomerx\EncoderService:
         class: "%trikoder.jsonapi.encoder.class%"
         arguments: ["@trikoder.jsonapi.factory"]
-        lazy: true
         public: true
 
     trikoder.jsonapi.encoder: '@Trikoder\JsonApiBundle\Services\Neomerx\EncoderService'
@@ -81,19 +73,16 @@ services:
     Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory:
         class: "%trikoder.jsonapi.model_tools_factory.class%"
         arguments: ["@form.factory", "@validator", "@doctrine.orm.entity_manager"]
-        lazy: true
         public: true
 
     trikoder.jsonapi.model_tools_factory: '@Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory'
 
     trikoder.jsonapi.error_factory:
         class: "%trikoder.jsonapi.error_factory.class%"
-        lazy: true
 
     trikoder.jsonapi.config_builder:
         class: "%trikoder.jsonapi.config_builder.class%"
         arguments: [[], "@service_container"]
-        lazy: true
 
     trikoder.jsonapi.doctrine_repository_factory:
         class: "%trikoder.jsonapi.doctrine_repository_factory.class%"

@@ -24,7 +24,7 @@ class ErrorFactory implements ErrorFactoryInterface
      */
     public function fromException(Exception $exception): ErrorInterface
     {
-        $errorDescription = sprintf('Exception of type: %s', get_class($exception));
+        $errorDescription = sprintf('Exception of type: %s', \get_class($exception));
         if (false === empty($exception->getMessage())) {
             $errorTitle = $exception->getMessage();
         } else {

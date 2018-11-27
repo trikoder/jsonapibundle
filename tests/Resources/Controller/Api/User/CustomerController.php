@@ -2,8 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\IndexActionTrait;
@@ -43,7 +43,6 @@ class CustomerController extends JsonApiController
     /**
      * Dummy action - so we can try to generate route inside schema
      *
-     * @param Request $request
      *
      * @Route("/dummy-action/{id}", name="customer_dummy_action")
      */

@@ -36,7 +36,6 @@ abstract class AbstractBaseFixture extends BaseAbstractFixture implements Contai
     }
 
     /**
-     * @param ContainerInterface|null $container
      */
     public function setContainer(ContainerInterface $container = null)
     {

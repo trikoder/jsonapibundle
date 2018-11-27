@@ -10,6 +10,8 @@
     <php>
         <server name="KERNEL_DIR" value="tests/Resources/app" />
         <server name="KERNEL_CLASS" value="\AppKernel" />
+        <!-- \Doctrine\Common\ClassLoader is deprecated in doctrine/common v2.9.0 -->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="1" />
     </php>
     <testsuites>
         <testsuite name="Unit">

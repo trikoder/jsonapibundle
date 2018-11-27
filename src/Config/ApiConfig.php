@@ -48,12 +48,7 @@ class ApiConfig implements ApiConfigInterface
     /**
      * ApiConfig constructor.
      *
-     * @param string $modelClass
      * @param $repository
-     * @param array|null $fixedFiltering
-     * @param array|null $allowedIncludePaths
-     * @param RequestBodyDecoderInterface $requestBodyDecoder
-     * @param bool $allowExtraParams
      */
     public function __construct(
         string $modelClass,

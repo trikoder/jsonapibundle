@@ -48,4 +48,11 @@ interface IndexConfigInterface
      * @return array|null
      */
     public function getIndexAllowedFields();
+
+    /**
+     * List of roles required to access action, [] for nothing is allowed, null for everything is allowed
+     *
+     * @return array|null
+     */
+    public function getIndexRequiredRoles();
 }

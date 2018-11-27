@@ -11,6 +11,7 @@ trikoder_json_api:
     default_sort: []
     default_pagination: []
     allowed_fields: null
+    required_roles: null
   create:
     factory: "trikoder.jsonapi.simple_model_factory"
     allowed_fields: null
@@ -20,3 +21,4 @@ trikoder_json_api:
     required_roles: null
   delete:
     required_roles: null
+  schema_automap_scan_patterns: []

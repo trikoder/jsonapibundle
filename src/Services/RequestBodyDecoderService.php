@@ -18,13 +18,13 @@ class RequestBodyDecoderService implements RequestBodyDecoderInterface
         $decoded = [];
 
         // from data take attributes, id and relations and flatten them in array
-        if (true === is_array($body) && true === array_key_exists('data', $body)) {
+        if (true === \is_array($body) && true === array_key_exists('data', $body)) {
             $data = $body['data'];
 
             // parse relations first
             if (array_key_exists('relationships', $data)) {
                 $relationships = $data['relationships'];
-                if (true === is_array($relationships)) {
+                if (true === \is_array($relationships)) {
                     foreach ($relationships as $relationshipName => $relationshipData) {
                         // needs data
                         if (true === array_key_exists('data', $relationshipData)) {
@@ -40,7 +40,7 @@ class RequestBodyDecoderService implements RequestBodyDecoderInterface
                             }
                             if ($relationshipIsMultiple) {
                                 // TODO - can it be non-empty and non-array
-                                if (true === empty($relationshipData) || false === is_array($relationshipData)) {
+                                if (true === empty($relationshipData) || false === \is_array($relationshipData)) {
                                     $decoded[$relationshipName] = [];
                                 } else {
                                     foreach ($relationshipData as $relationshipDataItem) {

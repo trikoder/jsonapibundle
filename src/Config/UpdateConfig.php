@@ -21,9 +21,6 @@ final class UpdateConfig implements UpdateConfigInterface
 
     /**
      * UpdateConfig constructor.
-     *
-     * @param array|null $allowedFields
-     * @param array|null $requiredRoles
      */
     public function __construct(
         array $allowedFields = null,

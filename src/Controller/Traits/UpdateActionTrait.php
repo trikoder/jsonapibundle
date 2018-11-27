@@ -2,9 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Controller\Traits;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class UpdateActionTrait
@@ -14,15 +13,14 @@ trait UpdateActionTrait
     use Actions\UpdateTrait;
 
     /**
-     * @param Request $request
-     *
-     * @Route("/{id}{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""})
-     * @Method({"PATCH", "PUT"})
+     * @Route("/{id}{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""}, methods={"PATCH", "PUT", "POST"})
      *
      * @return object
      */
     public function updateAction(Request $request, $id)
     {
+        $this->evaluateRequiredRole($this->getJsonApiConfig()->getUpdate()->getUpdateRequiredRoles());
+
         return $this->updateRequestFromRequest($request, $id);
     }
 }

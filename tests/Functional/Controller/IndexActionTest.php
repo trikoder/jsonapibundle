@@ -138,7 +138,8 @@ class IndexActionTest extends JsonapiWebTestCase
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $content = $this->getResponseContentJson($response);
-        $this->assertEquals(6, $content['data'][0]['id']);
+        // TODO refactor total of 7 to count from database
+        $this->assertEquals(7, $content['data'][0]['id']);
     }
 
     /**

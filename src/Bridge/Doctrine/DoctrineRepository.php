@@ -22,9 +22,6 @@ class DoctrineRepository implements RepositoryInterface
 
     /**
      * DoctrineRepository constructor.
-     *
-     * @param EntityRepository $entityRepository
-     * @param EntityManager $entityManager
      */
     public function __construct(EntityRepository $entityRepository, EntityManager $entityManager)
     {

@@ -13,7 +13,7 @@ class ConstraintViolationToErrorTransformerTraitTest extends \PHPUnit_Framework_
         $trait = new ConstraintViolationToErrorTransformerTraitClass();
         $error = $trait->publicConvertViolationToError($this->getTestViolation(91, 'Constraint violation for test'));
 
-        $this->assertEquals(Error::class, get_class($error));
+        $this->assertEquals(Error::class, \get_class($error));
         $this->assertEquals(91, $error->getCode());
         $this->assertEquals('Constraint violation for test', $error->getTitle());
         $this->assertEquals('Constraint violation "Constraint violation for test"', $error->getDetail());

@@ -15,6 +15,6 @@ class ExampleServiceSchemaClassMap extends AbstractSchemaClassMapService
      */
     public function __construct()
     {
-        $this->add('\Example', ExampleServiceSchema::class);
+        $this->add(Example::class, ExampleServiceSchema::class);
     }
 }

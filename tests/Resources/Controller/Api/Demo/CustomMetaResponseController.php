@@ -2,15 +2,15 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\Demo;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
 use Trikoder\JsonApiBundle\Response\DataResponse;
 
 /**
- * @Route("/custom-meta-response")
+ * @Route(path="/custom-meta-response")
  *
  * @JsonApiConfig\Config(
  *     modelClass="Trikoder\JsonApiBundle\Tests\Resources\Entity\User"
@@ -21,7 +21,7 @@ class CustomMetaResponseController extends JsonApiController
     use IndexTrait;
 
     /**
-     * @Route("")
+     * @Route(path="")
      */
     public function indexAction(Request $request)
     {
@@ -36,7 +36,7 @@ class CustomMetaResponseController extends JsonApiController
     }
 
     /**
-     * @Route("/empty")
+     * @Route(path="/empty")
      */
     public function emptyAction(Request $request)
     {
@@ -49,7 +49,7 @@ class CustomMetaResponseController extends JsonApiController
     }
 
     /**
-     * @Route("/empty-all")
+     * @Route(path="/empty-all")
      */
     public function emptyAllAction(Request $request)
     {

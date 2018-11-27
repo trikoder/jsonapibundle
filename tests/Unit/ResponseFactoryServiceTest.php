@@ -168,4 +168,25 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
 
         return $errorFactory;
     }
+
+    /**
+     *
+     */
+    public function testCreateCreated()
+    {
+        $responseFactoryService = new ResponseFactoryService(
+            $this->createEncoderServiceMock(),
+            $this->createErrorFactoryMock()
+        );
+
+        $response = $responseFactoryService->createCreated(
+            json_encode(['data' => []]),
+            'custom.url/test'
+        );
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame(Response::HTTP_CREATED, $response->getStatusCode());
+        $this->assertSame('application/json', $response->headers->get('Content-type'));
+        $this->assertSame('custom.url/test', $response->headers->get('location'));
+    }
 }

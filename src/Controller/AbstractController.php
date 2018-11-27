@@ -3,8 +3,7 @@
 namespace Trikoder\JsonApiBundle\Controller;
 
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Trikoder\JsonApiBundle\Config\Config;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
@@ -28,7 +27,7 @@ abstract class AbstractController implements JsonApiEnabledInterface
     public function setSchemaClassMapProvider(SchemaClassMapProviderInterface $schemaClassMapProvider)
     {
         if (null !== $this->schemaClassMapProvider) {
-            throw new \RuntimeException("Controller already has it's schema map defined. This action would override current value. If this is acceptable for this controller, you should override this method to set the value.");
+            throw new \RuntimeException("Controller already has it's schema map defined. This action would override current value. If this is acceptable for this controller, you should override setSchemaClassMapProvider method to set the value.");
         }
         $this->schemaClassMapProvider = $schemaClassMapProvider;
     }
@@ -58,7 +57,6 @@ abstract class AbstractController implements JsonApiEnabledInterface
     }
 
     /**
-     * @param ConfigInterface $config
      */
     public function setJsonApiConfig(ConfigInterface $config)
     {
@@ -72,12 +70,27 @@ abstract class AbstractController implements JsonApiEnabledInterface
     /**
      * Returns config
      *
-     * @return ConfigInterface
      *
      * @throws Exception
      */
-    public function getJsonApiConfig()
+    public function getJsonApiConfig(): ConfigInterface
     {
         return $this->config;
+    }
+
+    /**
+     * Evaluate if user has access to current action
+     *
+     * @throws AccessDeniedHttpException
+     */
+    protected function evaluateRequiredRole($requiredRoles)
+    {
+        if (empty($requiredRoles)) {
+            return;
+        }
+
+        if (!$this->getAuthorizationChecker()->isGranted($requiredRoles)) {
+            throw new AccessDeniedHttpException('Access Denied.');
+        }
     }
 }

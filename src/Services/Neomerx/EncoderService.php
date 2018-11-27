@@ -31,8 +31,6 @@ class EncoderService
 
     /**
      * EncoderService constructor.
-     *
-     * @param FactoryService $factoryService
      */
     public function __construct(FactoryService $factoryService)
     {
@@ -41,11 +39,7 @@ class EncoderService
     }
 
     /**
-     * @param SchemaClassMapProviderInterface $classMapProvider
      * @param array|Iterator|null|object|string $data
-     * @param EncodingParametersInterface|null $encodingParameters
-     * @param array|null $meta
-     * @param array $links
      *
      * @return string
      */
@@ -77,8 +71,6 @@ class EncoderService
 
     /**
      * @param ErrorInterface[] $errors
-     * @param array|null $meta
-     * @param array $links
      *
      * @return string
      */
@@ -106,7 +98,6 @@ class EncoderService
     }
 
     /**
-     * @param bool $prettyPrint
      */
     public function configureSetPrettyPrint(bool $prettyPrint = true)
     {

@@ -31,6 +31,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'default_sort' => [],
                 'default_pagination' => [],
                 'allowed_fields' => null,
+                'required_roles' => null,
             ],
             'create' => [
                 'factory' => 'trikoder.jsonapi.simple_model_factory',
@@ -44,6 +45,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'delete' => [
                 'required_roles' => null,
             ],
+            'schema_automap_scan_patterns' => [],
         ];
     }
 }

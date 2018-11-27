@@ -16,7 +16,6 @@ class SimpleFileModel
     private $title;
 
     /**
-     * @return mixed
      */
     public function getTitle()
     {
@@ -24,8 +23,6 @@ class SimpleFileModel
     }
 
     /**
-     * @param mixed $title
-     *
      * @return $this
      */
     public function setTitle($title)
@@ -47,7 +44,6 @@ class SimpleFileModel
     }
 
     /**
-     * @return mixed
      */
     public function getName()
     {
@@ -55,8 +51,6 @@ class SimpleFileModel
     }
 
     /**
-     * @param mixed $name
-     *
      * @return $this
      */
     public function setName($name)
@@ -67,7 +61,6 @@ class SimpleFileModel
     }
 
     /**
-     * @return mixed
      */
     public function getExtension()
     {
@@ -75,8 +68,6 @@ class SimpleFileModel
     }
 
     /**
-     * @param mixed $extension
-     *
      * @return $this
      */
     public function setExtension($extension)

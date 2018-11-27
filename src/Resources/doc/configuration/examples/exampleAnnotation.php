@@ -15,7 +15,8 @@ use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
  *         allowedFilteringParameters=null,
  *         defaultSort={},
  *         defaultPagination={},
- *         allowedFields=null
+ *         allowedFields=null,
+ *         requiredRoles=null
  *     ),
  *     create=@JsonApiConfig\CreateConfig(
  *         factory="trikoder.jsonapi.simple_model_factory",

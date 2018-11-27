@@ -2,14 +2,14 @@
 
 namespace Trikoder\JsonApiBundle\Services\Neomerx;
 
-use Closure;
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Persistence\Proxy;
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Neomerx\JsonApi\Schema\Container as BaseContainer;
 use ReflectionClass;
 use ReflectionParameter;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Trikoder\JsonApiBundle\Schema\Autowire\Exception\UnresolvedDependencyException;
 
 /**
  * Class Container
@@ -23,10 +23,6 @@ class Container extends BaseContainer
 
     /**
      * Container constructor.
-     *
-     * @param ContainerInterface $serviceContainer
-     * @param SchemaFactoryInterface $factory
-     * @param array $schemas
      */
     public function __construct(
         ContainerInterface $serviceContainer,
@@ -42,26 +38,13 @@ class Container extends BaseContainer
      */
     protected function getResourceType($resource)
     {
-        return ClassUtils::getRealClass(get_class($resource));
+        if ($resource instanceof Proxy) {
+            return get_parent_class($resource);
+        }
+
+        return \get_class($resource);
     }
 
-    /**
-     * @param Closure $closure
-     *
-     * @return mixed
-     */
-    protected function createSchemaFromClosure(Closure $closure)
-    {
-        $schema = $closure($this->getFactory(), $this->serviceContainer);
-
-        return $schema;
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return mixed
-     */
     protected function createSchemaFromClassName($className)
     {
         $callArguments = [];
@@ -84,8 +67,7 @@ class Container extends BaseContainer
 
             // if we cannot autowire it we should fail
             if (null === $resolvedDependacy) {
-                throw new RuntimeException(sprintf('Cannot resolve argument %s for schema %s with hint %s. Did you forget to register service or alias?',
-                    $argumentIndex, $className, $argumentClassHint->getName()));
+                throw new UnresolvedDependencyException($argumentIndex, $className, $argumentClassHint->getName());
             }
             $callArguments[$argumentIndex] = $resolvedDependacy;
         }
@@ -97,8 +79,6 @@ class Container extends BaseContainer
     }
 
     /**
-     * @param ReflectionClass $dependancyClass
-     *
      * @return object
      */
     private function resolveSchemaClassDependancy(ReflectionClass $dependancyClass)

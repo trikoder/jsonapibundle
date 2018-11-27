@@ -13,8 +13,6 @@ trait DeleteTrait
 {
     /**
      * @param $id
-     *
-     * @return null
      */
     public function deleteModelById($id)
     {

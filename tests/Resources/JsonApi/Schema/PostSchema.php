@@ -39,7 +39,6 @@ class PostSchema extends AbstractSchema
     /**
      * @param object $resource
      * @param bool $isPrimary
-     * @param array $includeRelationships
      *
      * @return array
      */
@@ -48,15 +47,11 @@ class PostSchema extends AbstractSchema
         /** @var Post $resource */
         $relationships = [];
 
-        if (
-            null === $includeRelationships ||
-            (is_array($includeRelationships) && array_key_exists('author', $includeRelationships))) {
-            $relationships['author'] = [
-                self::DATA => function () use ($resource) {
-                    return $resource->getAuthor();
-                },
-            ];
-        }
+        $relationships['author'] = [
+            self::DATA => function () use ($resource) {
+                return $resource->getAuthor();
+            },
+        ];
 
         return $relationships;
     }

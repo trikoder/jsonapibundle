@@ -30,10 +30,6 @@ final class CreateConfig implements CreateConfigInterface
 
     /**
      * CreateConfig constructor.
-     *
-     * @param ModelFactoryInterface $factory
-     * @param array|null $allowedFields
-     * @param array|null $requiredRoles
      */
     public function __construct(
         ModelFactoryInterface $factory,

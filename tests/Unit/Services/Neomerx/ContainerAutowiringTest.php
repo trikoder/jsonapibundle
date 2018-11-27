@@ -6,6 +6,7 @@ use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
+use Trikoder\JsonApiBundle\Schema\Autowire\Exception\UnresolvedDependencyException;
 use Trikoder\JsonApiBundle\Services\Neomerx\Container;
 use Trikoder\JsonApiBundle\Tests\Resources\JsonApi\Schema\CustomerSchema;
 use Trikoder\JsonApiBundle\Tests\Resources\JsonApi\Schema\Test\CrazySchema;
@@ -75,7 +76,7 @@ class ContainerAutowiringTest extends \PHPUnit_Framework_TestCase
     {
         $container = new TestContainer($this->getServiceContainer(), $this->getSchemaFactory(), []);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(UnresolvedDependencyException::class);
         $this->expectExceptionMessage(sprintf('Cannot resolve argument %s for schema %s with hint %s. Did you forget to register service or alias?',
             1, CrazySchema::class, RememberMeServicesInterface::class));
         $schema = $container->createSchemaFromClassNameForTest(CrazySchema::class);

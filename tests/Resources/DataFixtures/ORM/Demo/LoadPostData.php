@@ -5,7 +5,6 @@ namespace Trikoder\JsonApiBundle\Tests\Resources\DataFixtures\ORM\Demo;
 use Doctrine\Common\Persistence\ObjectManager;
 use Trikoder\JsonApiBundle\Tests\Resources\DataFixtures\ORM\AbstractBaseFixture;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\Post;
-use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class LoadPostData extends AbstractBaseFixture
 {

@@ -2,10 +2,9 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\Demo;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\CreateTrait;
@@ -41,10 +40,7 @@ class SimpleFileUploadController extends JsonApiController
     }
 
     /**
-     * @Route("")
-     * @Method("POST")
-     *
-     * @param Request $request
+     * @Route(path="", methods={"POST"})
      *
      * @return SimpleFileModel
      */

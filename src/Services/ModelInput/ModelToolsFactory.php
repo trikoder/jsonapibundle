@@ -28,10 +28,6 @@ class ModelToolsFactory
 
     /**
      * ModelToolsFactory constructor.
-     *
-     * @param FormFactoryInterface $formFactory
-     * @param ValidatorInterface $validator
-     * @param ObjectManager $objectManager
      */
     public function __construct(
         FormFactoryInterface $formFactory,
@@ -45,7 +41,6 @@ class ModelToolsFactory
 
     /**
      * @param $model
-     * @param array|null $allowedFields
      *
      * @return GenericFormModelInputHandler
      */

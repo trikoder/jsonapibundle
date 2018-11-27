@@ -90,6 +90,8 @@ Copyright (C) 2017 Trikoder
 
 Author: Alen Pokos.
 
+Contributors (in alphabetic order): Antonio Pauletich, Alen Pokos, Antonio Šunjić, Damir Trputec, Juraj Juričić, Krešo Kunjas, Petar Obradović, Vedran Krizek, Vedran Mihočinec
+
 ## License
 
 Package is licensed under [MIT License](./LICENSE)

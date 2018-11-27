@@ -15,8 +15,6 @@ use Trikoder\JsonApiBundle\Response\DataResponse;
 trait IndexTrait
 {
     /**
-     * @param Request $request
-     *
      * @return array|null|\Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface
      */
     private function createCollectionFromRequest(Request $request)
@@ -35,10 +33,6 @@ trait IndexTrait
     }
 
     /**
-     * @param ObjectListCollectionInterface $collection
-     * @param Request $request
-     * @param RouterInterface $router
-     *
      * @return DataResponse
      */
     private function createPaginatedDataResponseFromCollectionAndRequest(
@@ -57,10 +51,6 @@ trait IndexTrait
     }
 
     /**
-     * @param RouterInterface $router
-     * @param Request $request
-     * @param array $overrideParams
-     *
      * @return string
      */
     private function generateSelfUrlFromRequest(RouterInterface $router, Request $request, array $overrideParams)
@@ -80,13 +70,13 @@ trait IndexTrait
         $routeParams = array_merge($routeParams, $overrideParams);
 
         foreach ($routeParams as $paramName => &$paramValues) {
-            if (in_array($paramName, ['fields', 'filter']) && is_array($paramValues)) {
+            if (\in_array($paramName, ['fields', 'filter']) && \is_array($paramValues)) {
                 foreach ($paramValues as $fieldName => $fieldProperties) {
-                    if (is_array($fieldProperties)) {
+                    if (\is_array($fieldProperties)) {
                         $paramValues[$fieldName] = implode(',', $fieldProperties);
                     }
                 }
-            } elseif ('include' === $paramName && is_array($paramValues)) {
+            } elseif ('include' === $paramName && \is_array($paramValues)) {
                 $routeParams[$paramName] = implode(',', $paramValues);
             }
         }
@@ -99,7 +89,6 @@ trait IndexTrait
     }
 
     /**
-     * @param ObjectListCollectionInterface $collection
      * @param array $paginationParams Array as returned from resolvePaginationArguments
      * @param callable $urlGenerator Callable that accepts override params as first argument
      *
@@ -205,8 +194,6 @@ trait IndexTrait
     }
 
     /**
-     * @param null $arguments
-     *
      * @return array
      */
     private function resolvePaginationArguments($arguments = null)
@@ -221,7 +208,7 @@ trait IndexTrait
         ],
             $config->getIndex()->getIndexDefaultPagination());
 
-        if (true === is_array($arguments)) {
+        if (true === \is_array($arguments)) {
             // calculate limit first
             // page size strategy
             if (true === array_key_exists('size', $arguments)) {

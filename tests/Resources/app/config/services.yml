@@ -15,13 +15,11 @@ services:
   # as action arguments even if you don't extend any base controller class
   Trikoder\JsonApiBundle\Tests\Resources\Controller\:
       resource: '../../Controller'
-      tags: ['controller.service_arguments']
 
   Symfony\Component\Routing\RouterInterface: '@router'
 
   Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface:
       class: "%trikoder.jsonapi.schema_class_map_provider.class%"
-      lazy: true
       calls:
         - [add, ['\stdClass', '\Trikoder\JsonApiBundle\Schema\Builtin\StdClassSchema']]
 
@@ -35,3 +33,6 @@ services:
           arguments:
             - 'Symfony\Component\Routing\RouterInterface'
             - '@router'
+
+
+  Trikoder\JsonApiBundle\Tests\Resources\Security\AuthenticatedUserProvider: ~

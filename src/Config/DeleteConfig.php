@@ -16,8 +16,6 @@ final class DeleteConfig implements DeleteConfigInterface
 
     /**
      * DeleteConfig constructor.
-     *
-     * @param array|null $requiredRoles
      */
     public function __construct(
         array $requiredRoles = null

@@ -2,7 +2,6 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -159,8 +158,6 @@ class RequestDecoderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param JsonApiEnabledInterface $controller
-     *
      * @return RequestDecoder
      */
     private function getRequestDecoder(JsonApiEnabledInterface $controller)

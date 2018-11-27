@@ -2,8 +2,9 @@ variables:
   COMPOSE_PROJECT_NAME: "jsonapibundle${CI_BUILD_ID}"
 
 stages:
-  - test
+  - test-latest
   - lint
+  - test-versions
 
 after_script:
   - cd tests/Resources/docker/
@@ -12,8 +13,9 @@ after_script:
   - docker-compose down
   - echo "All Done!"
 
-ci:
-  stage: test
+# any latest built
+ci-latest:
+  stage: test-latest
   tags:
       - docker-compose
   script:
@@ -22,6 +24,96 @@ ci:
     - bin/setup_fixtures.sh
     - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never --coverage-text=php://stdout --coverage-html=logs/coverage
     - bin/php php ../../../vendor/bin/security-checker security:check ../../../composer.lock
+
+# symfony 4.1 build
+ci-symfony4.1:
+  stage: test-versions
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - docker-compose build
+    - docker-compose up -d
+    - bin/composer require "symfony/framework-bundle:^4.1" "symfony/form:^4.1" "symfony/validator:^4.1" --no-interaction --no-ansi --prefer-dist
+    - docker-compose run --no-deps --rm php composer install --no-interaction --no-ansi --prefer-dist
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never
+
+# supported 4.0 build
+ci-symfony4.0:
+  stage: test-versions
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - docker-compose build
+    - docker-compose up -d
+    - bin/composer require "symfony/framework-bundle:^4.0" "symfony/form:^4.0" "symfony/validator:^4.0" --no-interaction --no-ansi --prefer-dist
+    - docker-compose run --no-deps --rm php composer install --no-interaction --no-ansi --prefer-dist
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never
+
+# supported 3.4 build
+ci-symfony3.4:
+  stage: test-versions
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - docker-compose build
+    - docker-compose up -d
+    - mv -f ../app/config/symfony34/config.yml ../app/config/
+    - bin/composer require "symfony/framework-bundle:^3.4" "symfony/form:^3.4" "symfony/validator:^3.4" --no-interaction --no-ansi --prefer-dist
+    - docker-compose run --no-deps --rm php composer install --no-interaction --no-ansi --prefer-dist
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never
+
+# un-supported 3.3 build
+ci-symfony3.3:
+  stage: test-versions
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - docker-compose build
+    - docker-compose up -d
+    - mv -f ../app/config/symfony34/config.yml ../app/config/
+    - bin/composer require "symfony/framework-bundle:^3.3" "symfony/form:^3.3" "symfony/validator:^3.3" --no-interaction --no-ansi --prefer-dist
+    - docker-compose run --no-deps --rm php composer install --no-interaction --no-ansi --prefer-dist
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never
+
+
+# un-supported 3.2 build
+ci-symfony3.2:
+  stage: test-versions
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - docker-compose build
+    - docker-compose up -d
+    - mv -f ../app/config/symfony34/config.yml ../app/config/
+    - bin/composer require "symfony/framework-bundle:^3.2" "symfony/form:^3.2" "symfony/validator:^3.2" --no-interaction --no-ansi --prefer-dist
+    - docker-compose run --no-deps --rm php composer install --no-interaction --no-ansi --prefer-dist
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never
+
+
+# supported 3.1 build
+ci-symfony3.1:
+  stage: test-versions
+  tags:
+      - docker-compose
+  script:
+    - cd tests/Resources/docker/
+    - docker-compose build
+    - docker-compose up -d
+    - mv -f ../app/config/symfony34/config.yml ../app/config/
+    - bin/composer require "symfony/framework-bundle:^3.1" "symfony/form:^3.1" "symfony/validator:^3.1" --no-interaction --no-ansi --prefer-dist
+    - docker-compose run --no-deps --rm php composer install --no-interaction --no-ansi --prefer-dist
+    - bin/setup_fixtures.sh
+    - docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never
 
 lint:
   stage: lint

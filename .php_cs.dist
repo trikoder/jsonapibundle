@@ -8,6 +8,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ])
+    ->exclude('cache')
 ;
 
 return PhpCsFixer\Config::create()
@@ -37,6 +38,7 @@ return PhpCsFixer\Config::create()
         'yoda_style'                 => true,
         'compact_nullable_typehint'  => true,
         'visibility_required' => true,
+        'no_superfluous_phpdoc_tags' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)

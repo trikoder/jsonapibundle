@@ -17,9 +17,6 @@ class TrikoderJsonApiExtension extends ConfigurableExtension
 {
     /**
      * Configures the passed container according to the merged configuration.
-     *
-     * @param array $mergedConfig
-     * @param ContainerBuilder $container
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {

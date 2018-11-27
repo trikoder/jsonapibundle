@@ -26,9 +26,7 @@ class RepositoryResolver implements RepositoryResolverInterface
     private $repositoryRegistry = [];
 
     /**
-     * @param string $modelClass
      *
-     * @return RepositoryInterface
      */
     public function resolve(string $modelClass): RepositoryInterface
     {
@@ -58,8 +56,6 @@ class RepositoryResolver implements RepositoryResolverInterface
     }
 
     /**
-     * @param RepositoryInterface $repository
-     * @param string $modelClass
      */
     public function registerRepository(RepositoryInterface $repository, string $modelClass)
     {
@@ -71,8 +67,7 @@ class RepositoryResolver implements RepositoryResolverInterface
     }
 
     /**
-     * @param RepositoryFactoryInterface $factory
-     * @param string|null $modelClass
+     * @deprecated @see \Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface
      */
     public function registerFactory(RepositoryFactoryInterface $factory, string $modelClass = null)
     {

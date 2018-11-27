@@ -5,14 +5,12 @@ namespace Trikoder\JsonApiBundle\Repository;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 
 /**
- * Interface RepositoryFactoryInterface
+ * @deprecated in favour of DIC factory option, use https://symfony.com/doc/current/service_container/factories.html
  */
 interface RepositoryFactoryInterface
 {
     /**
-     * @param string $modelClass
      *
-     * @return RepositoryInterface
      */
     public function create(string $modelClass): RepositoryInterface;
 }

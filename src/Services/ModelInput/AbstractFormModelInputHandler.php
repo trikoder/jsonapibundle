@@ -2,7 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Persistence\Proxy;
 use Symfony\Component\Form\FormInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
 
@@ -39,14 +39,18 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
             }
         }
         $this->model = $model;
-        $this->modelClass = ClassUtils::getClass($this->model);
+
+        // make sure we are not working with doctrine proxy
+        if ($this->model instanceof Proxy) {
+            $this->modelClass = get_parent_class($this->model);
+        } else {
+            $this->modelClass = \get_class($this->model);
+        }
 
         return $this;
     }
 
     /**
-     * @param array $input
-     *
      * @return $this
      */
     public function handle(array $input)

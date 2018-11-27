@@ -38,7 +38,7 @@ abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderIn
      */
     protected function normalizeClassFQN($class)
     {
-        if (true === is_string($class)) {
+        if (true === \is_string($class)) {
             $class = trim($class, '\\');
         }
 
@@ -46,7 +46,6 @@ abstract class AbstractSchemaClassMapService implements SchemaClassMapProviderIn
     }
 
     /**
-     * @param array $schemas
      */
     public function addSchemas(array $schemas)
     {

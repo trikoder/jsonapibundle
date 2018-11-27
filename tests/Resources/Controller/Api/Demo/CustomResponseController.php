@@ -3,8 +3,8 @@
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\Demo;
 
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
@@ -14,13 +14,13 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 /**
- * @Route("/custom-response")
+ * @Route(path="/custom-response")
  */
 class CustomResponseController extends JsonApiController
 {
     /**
-     * @Route("")
-     * @Route("/from-array")
+     * @Route(path="")
+     * @Route(path="/from-array")
      */
     public function defaultAction()
     {
@@ -41,7 +41,7 @@ class CustomResponseController extends JsonApiController
     }
 
     /**
-     * @Route("/manual")
+     * @Route(path="/manual")
      */
     public function manualListAction(Request $request)
     {
@@ -63,7 +63,7 @@ class CustomResponseController extends JsonApiController
     }
 
     /**
-     * @Route("")
+     * @Route(path="")
      */
     public function exceptionAction()
     {

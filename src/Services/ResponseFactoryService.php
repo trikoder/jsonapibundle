@@ -22,9 +22,6 @@ class ResponseFactoryService implements ResponseFactoryInterface
 
     /**
      * ResponseFactoryService constructor.
-     *
-     * @param EncoderService $encoderService
-     * @param ErrorFactoryInterface $errorFactory
      */
     public function __construct(EncoderService $encoderService, ErrorFactoryInterface $errorFactory)
     {
@@ -35,7 +32,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResponse(string $data, Response $response = null)
+    public function createResponse(string $data, Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response(); // TODO move to JsonResponse
@@ -54,7 +51,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createConflict(string $data, Response $response = null)
+    public function createConflict(string $data, Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response(); // TODO move to JsonResponse
@@ -68,14 +65,17 @@ class ResponseFactoryService implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createCreated($data, $location, Response $response = null)
+    public function createCreated(string $data, string $location = null, Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response(); // TODO move to JsonResponse
         }
 
         $response->setStatusCode(Response::HTTP_CREATED);
-        $response->headers->add(['Location', $location]);
+
+        if (null !== $location) {
+            $response->headers->add(['Location' => $location]);
+        }
 
         return $this->createResponse($data, $response);
     }
@@ -83,7 +83,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createNoContent(Response $response = null)
+    public function createNoContent(Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response(); // TODO move to JsonResponse
@@ -96,7 +96,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createError(string $data, Response $response = null)
+    public function createError(string $data, Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response(); // TODO move to JsonResponse
@@ -110,7 +110,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createErrorFromException(Exception $exception, Response $response = null)
+    public function createErrorFromException(Exception $exception, Response $response = null): Response
     {
         $error = $this->errorFactory->fromException($exception);
         $encoded = $this->encoderService->encodeErrors([$error]);

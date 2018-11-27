@@ -16,8 +16,6 @@ interface ModelInputHandlerInterface
     public function forModel($model);
 
     /**
-     * @param array $input
-     *
      * @return $this
      */
     public function handle(array $input);

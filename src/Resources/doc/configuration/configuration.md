@@ -14,7 +14,6 @@ Model class that this controller is responsible of. Defaults to `\stdClass`.
 ### repository
 Can be name of the service or reference to instance that implements any of these interfaces:
 - `\Trikoder\JsonApiBundle\Contracts\RepositoryInterface`
-- `\Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface`
 - `\Trikoder\JsonApiBundle\Repository\RepositoryResolverInterface`
  
 Defaults to built-in service `trikoder.jsonapi.doctrine_repository_factory` that is by default `Trikoder\JsonApiBundle\Bridge\Doctrine\RepositoryFactory`

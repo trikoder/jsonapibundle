@@ -8,8 +8,6 @@ namespace Trikoder\JsonApiBundle\Model;
 interface ModelFactoryInterface
 {
     /**
-     * @param string $modelClass
-     *
      * @return object
      */
     public function create(string $modelClass);

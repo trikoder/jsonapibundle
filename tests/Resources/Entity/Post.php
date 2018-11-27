@@ -54,7 +54,6 @@ class Post
     }
 
     /**
-     * @return string
      */
     public function getTitle(): string
     {
@@ -74,7 +73,6 @@ class Post
     }
 
     /**
-     * @return bool
      */
     public function isActive(): bool
     {
@@ -94,7 +92,6 @@ class Post
     }
 
     /**
-     * @return mixed
      */
     public function getAuthor()
     {
@@ -102,8 +99,6 @@ class Post
     }
 
     /**
-     * @param mixed $author
-     *
      * @return $this
      */
     public function setAuthor($author)

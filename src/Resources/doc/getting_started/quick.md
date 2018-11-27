@@ -3,7 +3,7 @@
 Quick start guide is the fastest way to get started with jsonapi. 
 There are some prerequisites to comply to be as fast as possible.
 
-## Assumtions !
+## Assumptions !
 
 - models are defined as doctrine entities 
 
@@ -32,8 +32,11 @@ If you followed steps from first time setup you can register it by service call 
 `- [add, ['\stdClass', '\Trikoder\JsonApiBundle\Schema\Builtin\StdClassSchema']]` 
 To find out more methods and usages on schema class map see (schema_class_map.md)
 
+Alternatively (and especially if you like your life to be as easy as possible), use [schema automapping feature](schema_automapping.md)
 ### 3. Create controller
-Create your api controller that extends `Trikoder\JsonApiBundle\Controller\AbstractController`.
+Create your API controller that extends `\Trikoder\JsonApiBundle\Controller\AbstractController`.
+Your controller will be automatically registered as a service as the 
+`\Trikoder\JsonApiBundle\Controller\AbstractController` is already tagged with the `controller.service_arguments` tag.
 Minimal non-symfony configuration is to define model class this controller serves eg.:
 ```php
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;

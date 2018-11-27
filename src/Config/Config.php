@@ -41,12 +41,6 @@ final class Config implements ConfigInterface
 
     /**
      * Config constructor.
-     *
-     * @param ApiConfigInterface $api
-     * @param CreateConfigInterface $create
-     * @param IndexConfigInterface $index
-     * @param UpdateConfigInterface $update
-     * @param DeleteConfigInterface $delete
      */
     public function __construct(
         ApiConfigInterface $api,

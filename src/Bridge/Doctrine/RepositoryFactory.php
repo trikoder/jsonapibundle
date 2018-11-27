@@ -6,6 +6,9 @@ use Doctrine\ORM\EntityManager;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface;
 
+/**
+ * @deprecated @see \Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface
+ */
 class RepositoryFactory implements RepositoryFactoryInterface
 {
     /**
@@ -15,8 +18,6 @@ class RepositoryFactory implements RepositoryFactoryInterface
 
     /**
      * RepositoryFactory constructor.
-     *
-     * @param EntityManager $entityManager
      */
     public function __construct(EntityManager $entityManager)
     {
@@ -24,9 +25,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
     }
 
     /**
-     * @param string $modelClass
      *
-     * @return RepositoryInterface
      */
     public function create(string $modelClass): RepositoryInterface
     {

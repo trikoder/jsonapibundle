@@ -35,26 +35,27 @@ final class IndexConfig implements IndexConfigInterface
     private $allowedFields;
 
     /**
+     * @return array|null
+     */
+    private $requiredRoles;
+
+    /**
      * IndexConfig constructor.
-     *
-     * @param array|null $allowedSortFields
-     * @param array|null $allowedFilteringParameters
-     * @param array $defaultSort
-     * @param array $defaultPagination
-     * @param array|null $allowedFields
      */
     public function __construct(
         array $allowedSortFields = null,
         array $allowedFilteringParameters = null,
         array $defaultSort = [],
         array $defaultPagination = [],
-        array $allowedFields = null
+        array $allowedFields = null,
+        array $requiredRoles = null
     ) {
         $this->allowedSortFields = $allowedSortFields;
         $this->allowedFilteringParameters = $allowedFilteringParameters;
         $this->defaultSort = $defaultSort;
         $this->defaultPagination = $defaultPagination;
         $this->allowedFields = $allowedFields;
+        $this->requiredRoles = $requiredRoles;
     }
 
     /**
@@ -95,5 +96,15 @@ final class IndexConfig implements IndexConfigInterface
     public function getIndexAllowedFields()
     {
         return $this->allowedFields;
+    }
+
+    /**
+     * List of roles required to access action, [] for nothing is allowed, null for everything is allowed
+     *
+     * @return array|null
+     */
+    public function getIndexRequiredRoles()
+    {
+        return $this->requiredRoles;
     }
 }

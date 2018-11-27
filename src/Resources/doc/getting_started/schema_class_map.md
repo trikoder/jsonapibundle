@@ -6,6 +6,15 @@ It must implement `\Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInter
 The schema class map can be provided and used in several ways.
 
 ## Defining
+
+Recommended way is to define as service and register all schemas in yml:
+```yaml
+Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface:
+      class: "%trikoder.jsonapi.schema_class_map_provider.class%"
+      calls:
+        - [add, ['\stdClass', '\Trikoder\JsonApiBundle\Schema\Builtin\StdClassSchema']]
+```
+
 ### 1. Method in controller
 Api engine calls controller method `getSchemaClassMapProvider` to get map provider. 
 In your code, you can override this method to return your implementation of SchemaClassMapProviderInterface.
@@ -25,4 +34,5 @@ In your services configuration you can redefine `Trikoder\JsonApiBundle\Contract
 Add method receives two parameters:
 - $class - FQN of class that provided schema should be used for
 - $schema - FQN or class of closure that returns instance of the schema that should be used for the model. 
-Closure must accept two arguments `SchemaFactoryInterface $factory, ContainerInterface $serviceContainer` (!IMORTANT - second argument for Closure - service container is deprecated and will be removed in the future in favour of autowiring).
+Using Closure is not recommended as any dependancies can be autowired and injected by the bundle. See [schemas](schemas.md) for more details. 
+Closure must accept one argument: `SchemaFactoryInterface $factory`

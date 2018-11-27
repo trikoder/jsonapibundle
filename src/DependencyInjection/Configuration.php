@@ -41,6 +41,7 @@ class Configuration implements ConfigurationInterface
                         ->variableNode('default_sort')->defaultValue([])->end()
                         ->variableNode('default_pagination')->defaultValue([])->end()
                         ->variableNode('allowed_fields')->defaultNull()->end()
+                        ->variableNode('required_roles')->defaultNull()->end()
                     ->end()
                 ->addDefaultsIfNotSet()
                 ->end()
@@ -64,6 +65,9 @@ class Configuration implements ConfigurationInterface
                         ->variableNode('required_roles')->defaultNull()->end()
                     ->end()
                 ->addDefaultsIfNotSet()
+                ->end()
+                ->arrayNode('schema_automap_scan_patterns')
+                    ->scalarPrototype()->end()->defaultValue([])
                 ->end()
             ->end();
         $rootNode->addDefaultsIfNotSet();

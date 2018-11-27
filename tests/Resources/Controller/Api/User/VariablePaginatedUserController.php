@@ -2,9 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\PaginatedIndexActionTrait;
@@ -27,10 +26,7 @@ class VariablePaginatedUserController extends JsonApiController
     use PaginatedIndexActionTrait;
 
     /**
-     * @param Request $request
-     *
-     * @Route("/{number}{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""})
-     * @Method("GET")
+     * @Route("/{number}{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""}, methods={"GET"})
      *
      * @return DataResponse
      */

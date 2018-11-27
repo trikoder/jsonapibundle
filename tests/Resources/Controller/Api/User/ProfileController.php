@@ -2,9 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller\Api\User;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
 use Trikoder\JsonApiBundle\Controller\AbstractController as JsonApiController;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
@@ -26,12 +25,7 @@ class ProfileController extends JsonApiController
     use UpdateTrait;
 
     /**
-     * @Route
-     * @Method({"GET"})
-     *
-     * @param Request $request
-     *
-     * @return mixed
+     * @Route(methods={"GET"})
      */
     public function showAction(Request $request)
     {
@@ -39,12 +33,7 @@ class ProfileController extends JsonApiController
     }
 
     /**
-     * @Route
-     * @Method({"POST", "PUT", "PATCH"})
-     *
-     * @param Request $request
-     *
-     * @return mixed
+     * @Route(methods={"POST", "PUT", "PATCH"})
      */
     public function updateAction(Request $request)
     {

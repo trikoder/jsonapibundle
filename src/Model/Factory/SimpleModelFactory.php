@@ -10,8 +10,6 @@ use Trikoder\JsonApiBundle\Model\ModelFactoryInterface;
 class SimpleModelFactory implements ModelFactoryInterface
 {
     /**
-     * @param string $modelClass
-     *
      * @return object
      */
     public function create(string $modelClass)

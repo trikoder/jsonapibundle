@@ -20,9 +20,6 @@ class ExampleServiceSchema extends AbstractSchema
 
     /**
      * ExampleServiceSchema constructor.
-     *
-     * @param SchemaFactoryInterface $factory
-     * @param RouterInterface $router
      */
     public function __construct(SchemaFactoryInterface $factory, RouterInterface $router)
     {
@@ -51,9 +48,14 @@ class ExampleServiceSchema extends AbstractSchema
      */
     public function getAttributes($resource)
     {
+        $router = $this->router;
+
         return [
             'attribute' => $resource->getValue(),
-            'url' => $this->router->generate('route_to_something_great'),
+            // any attribute or value can be closure that is evaluated on first ready. lazy af
+            'url' => function () use ($router) {
+                return $router->generate('route_to_something_great');
+            },
         ];
     }
 }

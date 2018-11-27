@@ -3,10 +3,9 @@
 namespace Trikoder\JsonApiBundle\Controller\Traits\Actions;
 
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
@@ -22,9 +21,7 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 trait CreateTrait
 {
     /**
-     * @param ConfigInterface $config
      * @param object $emptyModel
-     * @param Request $request
      *
      * @return object
      *
@@ -69,7 +66,6 @@ trait CreateTrait
     }
 
     /**
-     * @param ConfigInterface $config
      * @param object $model
      *
      * @throws ModelValidationException
@@ -96,8 +92,6 @@ trait CreateTrait
     }
 
     /**
-     * @param Request $request
-     *
      * @return object
      *
      * @throws ModelValidationException
@@ -124,8 +118,6 @@ trait CreateTrait
     }
 
     /**
-     * @param Request $request
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function createCreatedFromRequest(Request $request)
@@ -148,12 +140,16 @@ trait CreateTrait
             return $response;
         }
 
-        // return
-        // TODO change to injected
+        $showLocation = null;
+        if (true === method_exists($this, 'getRouter')) {
+            $showRouteName = $this->findShowRouteName();
+            if (null !== $showRouteName) {
+                $showLocation = $this->getRouter()->generate($showRouteName, ['id' => $model->getId()], RouterInterface::ABSOLUTE_URL);
+            }
+        }
         $response = $responseFactory->createCreated(
             $encoder->encode($schemaProvider, $model),
-            $this->getRouter()->generate($this->findShowRouteName(), ['id' => $model->getId()],
-                RouterInterface::ABSOLUTE_URL)
+            $showLocation
         );
 
         return $response;
@@ -161,15 +157,20 @@ trait CreateTrait
 
     /**
      * Find showAction route to this controller.
+     * Returns null if route cannot be found
      *
-     * @return string
+     * @internal
+     *
+     * @return string|null
      */
     protected function findShowRouteName()
     {
-        // TODO change to injected
+        if (true !== method_exists($this, 'getRouter')) {
+            return null;
+        }
         /** @var Router $router */
         $router = $this->getRouter();
-        $controllerName = get_class($this) . '::showAction';
+        $controllerName = \get_class($this) . '::showAction';
         $showRouteName = null;
         /** @var Route $route */
         foreach ($router->getRouteCollection() as $routeName => $route) {
@@ -180,8 +181,7 @@ trait CreateTrait
             }
         }
         if (null === $showRouteName) {
-            // TODO - update this to be more agnostic
-            throw new HttpException(500, 'Show route not found for ' . $controllerName);
+            return null;
         }
 
         return $showRouteName;

@@ -19,7 +19,6 @@ use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 trait UpdateTrait
 {
     /**
-     * @param Request $request
      * @param $id
      *
      * @return null|object
@@ -34,12 +33,13 @@ trait UpdateTrait
     }
 
     /**
-     * @param Request $request
      * @param $id
      *
      * @return null|object
      *
      * @throws ModelValidationException
+     *
+     * @internal
      */
     protected function updateModelFromRequestUsingId(Request $request, $id)
     {
@@ -66,13 +66,13 @@ trait UpdateTrait
     }
 
     /**
-     * @param ConfigInterface $config
      * @param $model
-     * @param Request $request
      *
      * @return object
      *
      * @throws ModelValidationException
+     *
+     * @internal
      */
     protected function handleUpdateModelInputFromRequest(ConfigInterface $config, $model, Request $request)
     {
@@ -114,10 +114,11 @@ trait UpdateTrait
     }
 
     /**
-     * @param ConfigInterface $config
      * @param $model
      *
      * @throws ModelValidationException
+     *
+     * @internal
      */
     protected function validateUpdatedModel(ConfigInterface $config, $model)
     {
@@ -139,12 +140,13 @@ trait UpdateTrait
     }
 
     /**
-     * @param Request $request
      * @param $model
      *
      * @return object
      *
      * @throws ModelValidationException
+     *
+     * @internal
      */
     protected function updateModelFromRequestUsingModel(Request $request, $model)
     {
@@ -170,7 +172,6 @@ trait UpdateTrait
     }
 
     /**
-     * @param Request $request
      * @param $id
      *
      * @return null|object|\Symfony\Component\HttpFoundation\Response
@@ -184,7 +185,7 @@ trait UpdateTrait
         $encoder = $this->getJsonApiEncoder();
 
         try {
-            $model = $this->updateModelFromRequest($request, $id);
+            $model = $this->updateModelFromRequestUsingId($request, $id);
         } catch (ModelValidationException $modelValidationException) {
             // TODO this should return conflict response (similar to DataResponse) or HttConflictException
             $response = $responseFactory->createConflict($encoder->encodeErrors($modelValidationException->getViolations()));

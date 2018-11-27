@@ -13,7 +13,7 @@ class FormErrorToErrorTransformerTraitTest extends \PHPUnit_Framework_TestCase
         $trait = new FormErrorToErrorTransformerTraitClass();
         $error = $trait->publicFormErrorToError($this->getTestError('Form error for test'));
 
-        $this->assertEquals(Error::class, get_class($error));
+        $this->assertEquals(Error::class, \get_class($error));
         $this->assertEquals('Form error for test', $error->getTitle());
         $this->assertEquals('Form error "Form error for test"', $error->getDetail());
     }

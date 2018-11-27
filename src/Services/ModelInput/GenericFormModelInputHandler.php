@@ -38,9 +38,6 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
      * GenericFormModelInputHandler constructor.
      *
      * @param object $model
-     * @param null $allowedFields
-     * @param FormFactoryInterface $formFactory
-     * @param ObjectManager $objectManager
      */
     public function __construct(
         $model,

@@ -35,4 +35,9 @@ class IndexConfig
      * @return array|null
      */
     public $allowedFields;
+
+    /**
+     * @return array|null
+     */
+    public $requiredRoles;
 }

@@ -14,8 +14,6 @@ class DataResponse extends AbstractResponse
      * Response constructor.
      *
      * @param $data
-     * @param array $meta
-     * @param array $links
      */
     public function __construct($data, array $meta = [], array $links = [])
     {
@@ -24,7 +22,6 @@ class DataResponse extends AbstractResponse
     }
 
     /**
-     * @return mixed
      */
     public function getData()
     {
@@ -32,8 +29,6 @@ class DataResponse extends AbstractResponse
     }
 
     /**
-     * @param mixed $data
-     *
      * @return $this
      */
     public function setData($data)

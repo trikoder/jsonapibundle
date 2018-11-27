@@ -26,4 +26,9 @@ interface ConfigInterface
      * @return UpdateConfigInterface
      */
     public function getUpdate();
+
+    /**
+     * @return DeleteConfigInterface
+     */
+    public function getDelete();
 }

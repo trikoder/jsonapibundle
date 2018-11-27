@@ -4,6 +4,7 @@ namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
+use Trikoder\JsonApiBundle\Tests\Resources\Entity\Post;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class ShowActionTest extends JsonapiWebTestCase
@@ -179,15 +180,29 @@ class ShowActionTest extends JsonapiWebTestCase
             'attributes' => [
                 'title' => 'Post 1',
             ],
+            'relationships' => [
+                'author' => [
+                    'data' => [
+                        'type' => 'user',
+                        'id' => 3,
+                    ],
+                ],
+            ],
             'links' => [
                 'self' => '/post/1',
             ],
         ], $data['data']);
+
+        $this->assertArrayNotHasKey('include', $data);
     }
 
     public function testRelationshipsDefaultRequested()
     {
         $client = static::createClient();
+
+        // load post
+        /** @var Post post */
+        $post = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(Post::class)->find(1);
 
         $client->request('GET', '/api/posts/1', ['include' => 'author']);
 
@@ -216,6 +231,17 @@ class ShowActionTest extends JsonapiWebTestCase
                 'self' => '/post/1',
             ],
         ], $data['data']);
+
+        $this->assertEquals([
+            [
+                'type' => 'user',
+                'id' => '3',
+                'attributes' => [
+                    'email' => $post->getAuthor()->getEmail(),
+                    'active' => $post->getAuthor()->isActive(),
+                ],
+            ],
+        ], $data['included']);
 
         $this->assertArrayHasKey('included', $data);
         $this->assertNotEmpty($data['included']);

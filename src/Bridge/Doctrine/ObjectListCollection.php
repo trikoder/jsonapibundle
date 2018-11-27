@@ -19,20 +19,17 @@ class ObjectListCollection implements ObjectListCollectionInterface
 
     /**
      * ObjectListCollection constructor.
-     *
-     * @param array $collection
-     * @param null $total
      */
     public function __construct(array $collection, $total = null)
     {
-        if (false === is_array($collection) || null === $collection) {
+        if (false === \is_array($collection) || null === $collection) {
             $collection = [];
         }
         $this->collection = $collection;
 
         // if null, we presume full list is returned
         if (null === $total) {
-            $total = count($collection);
+            $total = \count($collection);
         }
 
         $this->total = $total;

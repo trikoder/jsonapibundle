@@ -2,6 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
+use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Listener\JsonApiEnabledControllerDetectorTrait;
 
@@ -29,6 +30,9 @@ class JsonApiEnabledControllerDetectorTraitTest extends \PHPUnit_Framework_TestC
         } catch (\LogicException $exception) {
             $this->assertEquals('Unsupported type provided as controller', $exception->getMessage());
         }
+
+        // test some class
+        $this->assertFalse($trait->isJsonApiEnabledControllerTest($this));
     }
 
     public function testResolveControllerFromEventController()
@@ -72,7 +76,14 @@ class JsonApiEnabledInterfaceTestClass implements JsonApiEnabledInterface
         // NOOP, stub
     }
 
-    public function getJsonApiConfig()
+    public function getJsonApiConfig(): ConfigInterface
+    {
+        // NOOP, stub
+    }
+
+    /**
+     */
+    public function setJsonApiConfig(ConfigInterface $config)
     {
         // NOOP, stub
     }

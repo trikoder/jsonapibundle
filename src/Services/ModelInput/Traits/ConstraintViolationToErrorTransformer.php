@@ -30,8 +30,6 @@ trait ConstraintViolationToErrorTransformer
     }
 
     /**
-     * @param ConstraintViolationInterface $violation
-     *
      * @return Error
      */
     protected function convertViolationToError(ConstraintViolationInterface $violation)

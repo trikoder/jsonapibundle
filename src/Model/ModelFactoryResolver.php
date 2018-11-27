@@ -20,10 +20,6 @@ class ModelFactoryResolver implements ModelFactoryResolverInterface
     private $registry = [];
 
     /**
-     * @param string $modelClass
-     *
-     * @return ModelFactoryInterface
-     *
      * @throws RuntimeException
      */
     public function resolve(string $modelClass): ModelFactoryInterface
@@ -39,8 +35,6 @@ class ModelFactoryResolver implements ModelFactoryResolverInterface
     }
 
     /**
-     * @param ModelFactoryInterface $factory
-     * @param string|null $modelClass
      */
     public function registerFactory(ModelFactoryInterface $factory, string $modelClass = null)
     {

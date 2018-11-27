@@ -39,8 +39,6 @@ class RequestDecoder
     }
 
     /**
-     * @param Request $currentRequest
-     *
      * @return Request
      */
     public function decode(Request $currentRequest)
@@ -66,7 +64,7 @@ class RequestDecoder
                     $configFields = $config->getIndex()->getIndexAllowedFields();
                     // if all request fields are empty so we apply for all types
                     $currentRequestQueryFieldsEmpty = (false === array_key_exists('fields',
-                            $currentRequestQuery) || false === is_array($currentRequestQuery['fields']));
+                            $currentRequestQuery) || false === \is_array($currentRequestQuery['fields']));
                     if (true === $currentRequestQueryFieldsEmpty) {
                         $currentRequestQuery['fields'] = [];
                     }
@@ -138,7 +136,7 @@ class RequestDecoder
             $currentRequest->cookies->all(),
             $currentRequest->files->all(),
             $currentRequest->server->all(),
-            is_array($decodedContent) ? http_build_query($decodedContent) : ''
+            \is_array($decodedContent) ? http_build_query($decodedContent) : ''
         );
 
         return $transformedRequest;
@@ -187,7 +185,7 @@ class RequestDecoder
     {
         $decodedParams = [];
 
-        if (true === is_array($sourceFilterParams)) {
+        if (true === \is_array($sourceFilterParams)) {
             foreach ($sourceFilterParams as $field => $filters) {
                 if (false !== strpos($filters, ',')) {
                     $decodedParams[$field] = explode(',', $filters);
