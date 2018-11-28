@@ -1,8 +1,5 @@
 # Json Api CRUD Bundle
 
-[![pipeline status](https://gitlab.trikoder.net/trikoder/jsonapibundle/badges/master/pipeline.svg)](https://gitlab.trikoder.net/trikoder/jsonapibundle/commits/master)
-[![coverage report](https://gitlab.trikoder.net/trikoder/jsonapibundle/badges/master/coverage.svg)](https://gitlab.trikoder.net/trikoder/jsonapibundle/commits/master)
-
 Package to provide out-of-the box support for jsonapi in symfony with as native as possible way.
 
 # Under development
@@ -29,7 +26,7 @@ Documentations is located inside `src/Resources/doc/` directory.
 
 ## Issues
 
-Use gitlab issue tracker.
+Use the issue tracker.
 
 ## Known limitations
 
