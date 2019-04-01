@@ -118,9 +118,82 @@ class UpdateActionTest extends JsonapiWebTestCase
             [],
             [],
             [],
-            ''
+            json_encode([
+                'data' => [
+                    'type' => 'user',
+                    'id' => 3,
+                    'attributes' => [
+                        'email' => 'invalid',
+                    ],
+                ],
+            ])
         );
         $response = $client->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
+
+    public function testErrorReturnedForEmptyRequestBody()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'PUT',
+            '/api/user/3',
+            [],
+            [],
+            []
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    public function testErrorReturnedForInvalidJsonRequestBody()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'PUT',
+            '/api/user/3',
+            [],
+            [],
+            [],
+            'asdads'
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    public function testIAmAllowedToUpdateOnlyFieldsConfiguredInAllowedFields()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'POST',
+            '/api/user-config-restrictions/3',
+            [],
+            [],
+            [],
+            json_encode([
+                'data' => [
+                    'type' => 'user',
+                    'id' => 3,
+                    'attributes' => [
+                        'i_should_not_be_able_to_update_this_field' => 'some malicious value',
+                    ],
+                ],
+            ])
+        );
+
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode(), $response->getContent());
     }
 }

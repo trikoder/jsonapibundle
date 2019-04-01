@@ -27,7 +27,10 @@ class SchemaAutoMapCompilerPass implements CompilerPassInterface
 
             $schemaDirScanPatterns = $config['schema_automap_scan_patterns'];
 
-            $schemaFilenames = $this->getSchemaFilenames($schemaDirScanPatterns);
+            $schemaFilenames = $this->getSchemaFilenames(
+                $this->processSchemaDirScanPatterns($schemaDirScanPatterns,
+                    $container->getParameter('kernel.project_dir'))
+            );
 
             foreach ($schemaFilenames as $schemaFilename) {
                 // we need fqn for reflection and service definition changes
@@ -40,6 +43,15 @@ class SchemaAutoMapCompilerPass implements CompilerPassInterface
                 }
             }
         }
+    }
+
+    protected function processSchemaDirScanPatterns(array $schemaDirScanPatterns, string $rootDir): array
+    {
+        foreach ($schemaDirScanPatterns as $key => $pattern) {
+            $schemaDirScanPatterns[$key] = $rootDir . '/' . $pattern;
+        }
+
+        return $schemaDirScanPatterns;
     }
 
     /**

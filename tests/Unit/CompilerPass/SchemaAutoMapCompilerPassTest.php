@@ -29,6 +29,7 @@ class SchemaAutoMapCompilerPassTest extends TestCase
         $serviceDefinition = new Definition(SchemaClassMapProviderInterface::class);
         $serviceDefinition->setClass(SchemaClassMapProviderInterface::class);
         $containerBuilder->setDefinition(SchemaClassMapProviderInterface::class, $serviceDefinition);
+        $containerBuilder->setParameter('kernel.project_dir', '.');
 
         $compilerPass->process($containerBuilder);
 
@@ -45,6 +46,7 @@ class SchemaAutoMapCompilerPassTest extends TestCase
 
         $compilerPass = new SchemaAutoMapCompilerPass();
 
+        // test finding the files
         $schemaFiles = $schemaFileFinder->invoke($compilerPass, ['tests/Resources/AutomapTestSchema/']);
 
         // there should be at least one entry in the schemafiles array that ends in "MappableTestSchema.php"

@@ -249,5 +249,19 @@ class ShowActionTest extends JsonapiWebTestCase
         $this->assertEquals(3, $data['included'][0]['id']);
     }
 
+    public function testIAmAllowedToFetchOnlyFieldsConfiguredInAllowedFields()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'GET',
+            '/api/user-config-restrictions/3?fields[user]=i_should_not_be_able_to_fetch_this_field'
+        );
+
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
     // TODO - If a server is unable to identify a relationship path or does not support inclusion of resources from a path, it MUST respond with 400 Bad Request.
 }

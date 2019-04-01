@@ -3,15 +3,12 @@
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelValidatorInterface;
-use Trikoder\JsonApiBundle\Services\ModelInput\Traits\FormErrorToErrorTransformer;
 
 /**
  * Class CustomFormModelInputHandler
  */
 class ValidatingCustomFormModelInputHandler extends CustomFormModelInputHandler implements ModelValidatorInterface
 {
-    use FormErrorToErrorTransformer;
-
     /**
      * @var bool
      */

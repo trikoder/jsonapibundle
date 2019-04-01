@@ -29,7 +29,7 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $this->assertArrayHasKey('meta', $content);
         $this->assertEquals([
             // TODO refactor this to count from database
-            'total' => 6,
+            'total' => 7,
         ], $content['meta']);
 
         $this->assertArrayHasKey('links', $content);

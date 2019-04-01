@@ -125,5 +125,16 @@ class ResponseFactoryService implements ResponseFactoryInterface
         return $response;
     }
 
+    public function createBadRequest(string $data, Response $response = null): Response
+    {
+        if (null === $response) {
+            $response = new Response(); // TODO move to JsonResponse
+        }
+
+        $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+
+        return $this->createResponse($data, $response);
+    }
+
     // TODO - implement shorthands for frequenty used responses , eg ok, notFound, noContent, created, etc
 }

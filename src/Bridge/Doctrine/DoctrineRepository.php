@@ -61,6 +61,8 @@ class DoctrineRepository implements RepositoryInterface
     {
         $this->entityManager->persist($model);
         $this->entityManager->flush();
+
+        return $model;
     }
 
     /**

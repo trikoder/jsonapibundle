@@ -40,7 +40,7 @@ Change log for the project can be found in changelog.md
 
 ## Testing
 
-The whole sandbox and development enviroment is located inside project.
+The whole sandbox and development environment is located inside project.
 
 To run tests, position yourself inside `tests/Resources/docker` and run `bin/test.sh`
 This will build whole docker setup, load fixtures and run all test suites.
@@ -56,7 +56,7 @@ There is also php access script `bin/php [CMD]` (eg. `bin/php bash` to enter bas
 
 ### Coding standards
 
-When contributing to this package, you will need to adhere to our conding standards.
+When contributing to this package, you will need to adhere to our coding standards.
 They are following PSR-2 with some additional rules. To check your code during development
 you can use provided config for php-cs-fixer. it's in root of the project, file:
 
@@ -64,7 +64,7 @@ you can use provided config for php-cs-fixer. it's in root of the project, file:
 
 **Checking your code**
 
-First you need to setup test enviroment (as described in paragraph above).
+First you need to setup test environment (as described in paragraph above).
 
 Then:
 
@@ -73,7 +73,7 @@ Checking code:
 ```
 bin/php_cs --dry-run
 ```
-If you want automatic fix, just ommit ``--dry-run`:
+If you want automatic fix, just omit ``--dry-run`:
 
 ```
 bin/php_cs

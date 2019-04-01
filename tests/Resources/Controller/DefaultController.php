@@ -2,14 +2,13 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/")
  */
-class DefaultController extends Controller
+class DefaultController
 {
     /**
      * @Route("/")

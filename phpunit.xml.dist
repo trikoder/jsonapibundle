@@ -31,6 +31,7 @@
                 <directory>./src/Resources/doc</directory>
                 <directory>./tests</directory>
                 <directory>./vendor</directory>
+                <directory>./var</directory>
                 <file>./src/DependencyInjection/TrikoderJsonApiExtension.php</file>
             </exclude>
         </whitelist>

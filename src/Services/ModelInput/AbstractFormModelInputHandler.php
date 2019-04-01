@@ -3,11 +3,16 @@
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
 use Doctrine\Common\Persistence\Proxy;
+use Symfony\Component\Form\Extension\Validator\Constraints\Form;
+use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\FormInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
+use Trikoder\JsonApiBundle\Services\ModelInput\Traits\FormErrorToErrorTransformer;
 
 abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterface
 {
+    use FormErrorToErrorTransformer;
+
     /**
      * @var object
      */
@@ -56,8 +61,32 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
     public function handle(array $input)
     {
         $form = $this->getForm();
-        $form->submit($input, false); // false is important to allow patch
-        // TODO - should we only update result if valid?
+
+        try {
+            $form->submit($input, false); // false is important to allow patch
+        } catch (\Exception $exception) {
+            // this will pack any attachment exceptions into UnhandleableModelInputException
+            throw new UnhandleableModelInputException([], $exception);
+        }
+
+        // if form is not valid this would be concerned invalid input handle?
+        if (false === $form->isValid()) {
+            // in case validation problem is extra fields, then do not attach it as validation error
+            $formErrors = $form->getErrors(true);
+            $extraFieldsErrors = $formErrors->findByCodes(Form::NO_SUCH_FIELD_ERROR);
+            if ($extraFieldsErrors->count() > 0) {
+                $extraFields = [];
+                /** @var FormErrorIterator $extraFieldsError */
+                foreach ($extraFieldsErrors as $extraFieldsError) {
+                    $extraFields[] = $extraFieldsError->getOrigin()->getName();
+                }
+                throw new UnhandleableModelInputException($extraFields);
+            } else {
+                throw new UnhandleableModelInputException([],
+                    new ModelValidationException($this->convertFormErrorsToErrors($formErrors)));
+            }
+        }
+
         $this->model = $form->getData();
 
         return $this;

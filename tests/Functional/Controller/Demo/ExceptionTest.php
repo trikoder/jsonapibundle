@@ -15,7 +15,7 @@ class ExceptionTest extends JsonapiWebTestCase
         $client = static::createClient();
 
         $client->request(
-            'PUT',
+            'GET',
             '/api/exception'
         );
 

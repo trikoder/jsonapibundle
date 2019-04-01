@@ -2,12 +2,14 @@
 
 namespace Trikoder\JsonApiBundle\Contracts;
 
+use Trikoder\JsonApiBundle\Services\RequestDecoder\Exception\InvalidBodyForMethodException;
+
 interface RequestBodyDecoderInterface
 {
     /**
-     * @param array $body
+     * @return array
      *
-     * @return null|array
+     * @throws InvalidBodyForMethodException
      */
-    public function decode(array $body = null);
+    public function decode(string $requestMethod, array $body = []);
 }

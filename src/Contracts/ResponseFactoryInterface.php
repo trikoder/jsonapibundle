@@ -40,4 +40,9 @@ interface ResponseFactoryInterface
      * @param Response $response
      */
     public function createErrorFromException(Exception $exception, Response $response = null): Response;
+
+    /**
+     * @param Response $response
+     */
+    public function createBadRequest(string $data, Response $response = null): Response;
 }

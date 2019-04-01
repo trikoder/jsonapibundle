@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.16.0] 2019-02-14
+
+### Added
+- `GenericFormModelInputHandler` can now auto-magicaly handle PHP objects using return typehints, see `GenericModelMetaData`
+
+### Changed
+- `Trikoder\JsonApiBundle\Contracts\RepositoryInterface::save` can now return a object that is saved
+- InputHandlers will now throw `UnhandleableModelInputException` exceptions when input cannot be properly handled onto model
+
+
 ## [0.14.0] 2018-10-23
 
 ### Added
@@ -20,8 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Changed route annotation use to symfony/routing, previously was sensio/framework-extra-bundle
-- Added symfony/routing as dependancy on 3.4
-- Added "doctrine/common": "<2.9" as dependancy to cover deprication notices
+- Added symfony/routing as dependency on 3.4
+- Added "doctrine/common": "<2.9" as dependency to cover deprecation notices
 
 ### Removed
 - Removed second argument (ServiceContainer) of schema as closure definition. see [Manual](src/Resources/doc/getting_started/schema_class_map.md)

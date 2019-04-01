@@ -26,7 +26,7 @@ Must implement `\Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface`.
 You can use this to redefine how regular json api body payload is transformed into controllers request body.
 You can remap fields, change formats, etc.
 
-Defaults to `\Trikoder\JsonApiBundle\Services\RequestBodyDecoderService` .
+Defaults to `\Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService` .
 
 
 ### fixed filtering

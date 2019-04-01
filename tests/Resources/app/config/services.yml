@@ -27,6 +27,10 @@ services:
       class: 'Trikoder\JsonApiBundle\Tests\Resources\Repository\SimpleFileModelRepository'
       public: true
 
+  Trikoder\JsonApiBundle\Tests\Resources\Repository\GenericModelRepository:
+    class: 'Trikoder\JsonApiBundle\Tests\Resources\Repository\GenericModelRepository'
+    public: true
+
   Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer:
       calls:
         - method: set

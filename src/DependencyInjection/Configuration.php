@@ -14,8 +14,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('trikoder_json_api');
+        // Avoids Symfony 4.2 deprecation, can be removed when <= 4.1 versions stop being supported
+        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('trikoder_json_api');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('trikoder_json_api');
+        }
 
         // TODO - add info for config items
         // TODO - add examples for variables

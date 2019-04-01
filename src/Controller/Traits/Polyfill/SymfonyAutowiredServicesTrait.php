@@ -28,10 +28,7 @@ trait SymfonyAutowiredServicesTrait
         $this->router = $router;
     }
 
-    /**
-     * @return RouterInterface
-     */
-    public function getRouter()
+    public function getRouter(): RouterInterface
     {
         return $this->router;
     }
@@ -44,7 +41,7 @@ trait SymfonyAutowiredServicesTrait
         $this->modelToolsFactory = $modelToolsFactory;
     }
 
-    public function getJsonApiModelToolsFactory()
+    public function getJsonApiModelToolsFactory(): ModelToolsFactory
     {
         return $this->modelToolsFactory;
     }
@@ -57,7 +54,7 @@ trait SymfonyAutowiredServicesTrait
         $this->responseFactory = $responseFactory;
     }
 
-    public function getJsonApiResponseFactory()
+    public function getJsonApiResponseFactory(): ResponseFactoryInterface
     {
         return $this->responseFactory;
     }
@@ -70,7 +67,7 @@ trait SymfonyAutowiredServicesTrait
         $this->jsonapiEncoder = $encoder;
     }
 
-    public function getJsonApiEncoder()
+    public function getJsonApiEncoder(): EncoderService
     {
         return $this->jsonapiEncoder;
     }

@@ -2,10 +2,12 @@ parameters:
     trikoder.jsonapi.request_listener.class: 'Trikoder\JsonApiBundle\Listener\KernelListener'
     trikoder.jsonapi.schema_class_map_provider.class: 'Trikoder\JsonApiBundle\Services\SchemaClassMapService'
     trikoder.jsonapi.factory.class: 'Trikoder\JsonApiBundle\Services\Neomerx\FactoryService'
-    trikoder.jsonapi.request_body_decoder.class: 'Trikoder\JsonApiBundle\Services\RequestBodyDecoderService'
+    trikoder.jsonapi.request_body_decoder.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService'
+    trikoder.jsonapi.request_body_validator.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyValidator'
     trikoder.jsonapi.response_factory.class: 'Trikoder\JsonApiBundle\Services\ResponseFactoryService'
     trikoder.jsonapi.encoder.class: 'Trikoder\JsonApiBundle\Services\Neomerx\EncoderService'
     trikoder.jsonapi.model_tools_factory.class: 'Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory'
+    trikoder.jsonapi.model_meta_data_factory.class: 'Trikoder\JsonApiBundle\Services\ModelInput\ModelMetaDataFactory'
     trikoder.jsonapi.error_factory.class: 'Trikoder\JsonApiBundle\Services\Neomerx\ErrorFactory'
     trikoder.jsonapi.config_builder.class: 'Trikoder\JsonApiBundle\Services\ConfigBuilder'
     trikoder.jsonapi.controller_config_listener.class: 'Trikoder\JsonApiBundle\Listener\ControllerConfigListener'
@@ -51,8 +53,11 @@ services:
 
     trikoder.jsonapi.request_body_decoder:
         class: "%trikoder.jsonapi.request_body_decoder.class%"
+        arguments: ['@Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface']
         public: true
 
+    Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface:
+        class: '%trikoder.jsonapi.request_body_validator.class%'
 
     Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface:
         class: "%trikoder.jsonapi.response_factory.class%"
@@ -72,10 +77,20 @@ services:
 
     Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory:
         class: "%trikoder.jsonapi.model_tools_factory.class%"
-        arguments: ["@form.factory", "@validator", "@doctrine.orm.entity_manager"]
+        arguments:
+            - "@form.factory"
+            - "@validator"
+            - "@trikoder.jsonapi.model_meta_data_factory"
+            - "%form.type_extension.csrf.enabled%"
         public: true
 
     trikoder.jsonapi.model_tools_factory: '@Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory'
+
+    Trikoder\JsonApiBundle\Services\ModelInput\ModelMetaDataFactory:
+        class: "%trikoder.jsonapi.model_meta_data_factory.class%"
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    trikoder.jsonapi.model_meta_data_factory: '@Trikoder\JsonApiBundle\Services\ModelInput\ModelMetaDataFactory'
 
     trikoder.jsonapi.error_factory:
         class: "%trikoder.jsonapi.error_factory.class%"

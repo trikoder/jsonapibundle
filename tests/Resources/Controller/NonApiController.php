@@ -3,14 +3,13 @@
 namespace Trikoder\JsonApiBundle\Tests\Resources\Controller;
 
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/non-api")
  */
-class NonApiController extends Controller
+class NonApiController
 {
     /**
      * @Route("/test")

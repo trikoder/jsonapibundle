@@ -30,7 +30,8 @@ interface RepositoryInterface
      * Saves model to arbitrary persistance layer
      *
      * @param object $model model to save
-     * TODO - check return values
+     *
+     * @return null|object null or newly saved object
      */
     public function save($model);
 

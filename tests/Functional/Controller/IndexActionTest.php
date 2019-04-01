@@ -138,8 +138,8 @@ class IndexActionTest extends JsonapiWebTestCase
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $content = $this->getResponseContentJson($response);
-        // TODO refactor total of 7 to count from database
-        $this->assertEquals(7, $content['data'][0]['id']);
+        // TODO refactor total of 8 to count from database ++
+        $this->assertEquals(8, $content['data'][0]['id']);
     }
 
     /**
@@ -194,5 +194,55 @@ class IndexActionTest extends JsonapiWebTestCase
                 'self' => '/crazy/1'
             ]
         ], $content['data'][0]);*/
+    }
+
+    public function testIAmAllowedToFilterOnlyByFieldsConfiguredInAllowedFilteringParameters()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'GET',
+            '/api/user-config-restrictions/',
+            [
+                'filter' => [
+                    'i_should_not_be_able_to_filter_by_this_field' => 'my',
+                ],
+            ]
+        );
+
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    public function testIAmAllowedToSortOnlyByFieldsConfiguredInAllowedSortFields()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'GET',
+            '/api/user-config-restrictions/',
+            [
+                'sort' => 'i_should_not_be_able_to_sort_by_this_field',
+            ]
+        );
+
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    public function testIAmAllowedToFetchOnlyFieldsConfiguredInAllowedFields()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'GET',
+            '/api/user-config-restrictions?fields[user]=i_should_not_be_able_to_fetch_this_field'
+        );
+
+        $response = $client->getResponse();
+        $this->assertIsJsonapiResponse($response);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -22,9 +21,9 @@ class ModelToolsFactory
     private $validator;
 
     /**
-     * @var ObjectManager
+     * @var bool
      */
-    private $objectManager;
+    private $isFormCsrfEnabled;
 
     /**
      * ModelToolsFactory constructor.
@@ -32,32 +31,31 @@ class ModelToolsFactory
     public function __construct(
         FormFactoryInterface $formFactory,
         ValidatorInterface $validator,
-        ObjectManager $objectManager
+        ModelMetaDataFactory $metadataFactory,
+        bool $isFormCsrfEnabled
     ) {
         $this->formFactory = $formFactory;
         $this->validator = $validator;
-        $this->objectManager = $objectManager;
+        $this->metadataFactory = $metadataFactory;
+        $this->isFormCsrfEnabled = $isFormCsrfEnabled;
     }
 
-    /**
-     * @param $model
-     *
-     * @return GenericFormModelInputHandler
-     */
-    public function createInputHandler($model, array $allowedFields = null)
+    public function createInputHandler($model, array $allowedFields = null): GenericFormModelInputHandler
     {
-        $inputHandler = new GenericFormModelInputHandler($model, $allowedFields, $this->formFactory, $this->objectManager);
+        $formBuilderOptions = [];
+
+        // automatically set generic input handler to not validate csrf
+        if ($this->isFormCsrfEnabled) {
+            $formBuilderOptions['csrf_protection'] = false;
+        }
+
+        $inputHandler = new GenericFormModelInputHandler($model, $this->formFactory, $this->metadataFactory, $allowedFields, $formBuilderOptions);
         $inputHandler->forModel($model);
 
         return $inputHandler;
     }
 
-    /**
-     * @param $model
-     *
-     * @return ModelValidator
-     */
-    public function createValidator($model)
+    public function createValidator($model): ModelValidator
     {
         $validator = new ModelValidator($this->validator);
         $validator->forModel($model);

@@ -5,5 +5,7 @@
 tests/Resources/app/cache/
 tests/Resources/app/data/
 tests/Resources/app/logs/
+/var/
 docker-compose.override.yml
 /.php_cs.cache
+/var

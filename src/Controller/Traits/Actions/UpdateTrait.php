@@ -4,6 +4,7 @@ namespace Trikoder\JsonApiBundle\Controller\Traits\Actions;
 
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
@@ -11,6 +12,7 @@ use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelValidatorInterface;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Services\ModelInput\ModelValidationException;
+use Trikoder\JsonApiBundle\Services\ModelInput\UnhandleableModelInputException;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 
 /**
@@ -24,6 +26,7 @@ trait UpdateTrait
      * @return null|object
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      *
      * @deprecated see \Trikoder\JsonApiBundle\Controller\Traits\Actions\UpdateTrait::updateModelFromRequestUsingId
      */
@@ -38,6 +41,7 @@ trait UpdateTrait
      * @return null|object
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      *
      * @internal
      */
@@ -71,6 +75,7 @@ trait UpdateTrait
      * @return object
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      *
      * @internal
      */
@@ -83,7 +88,6 @@ trait UpdateTrait
             // TODO - document this possible method - this is so we can easily change input handler (add custom one or whatever)
             $handler = $this->getUpdateInputHandler();
         } else {
-            /** @var ModelInputHandlerInterface $handler */
             $handler = $this->getJsonApiModelToolsFactory()->createInputHandler($model,
                 $config->getUpdate()->getUpdateAllowedFields());
         }
@@ -117,6 +121,7 @@ trait UpdateTrait
      * @param $model
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      *
      * @internal
      */
@@ -145,6 +150,7 @@ trait UpdateTrait
      * @return object
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      *
      * @internal
      */
@@ -165,7 +171,16 @@ trait UpdateTrait
         $repository = $config->getApi()->getRepository();
 
         // save it
-        $repository->save($model);
+        $saveResult = $repository->save($model);
+        // if repository returned result, we take it as new model
+        if (null !== $saveResult) {
+            // if repository returned different class for model, we consider it error
+            if (false === ($saveResult instanceof $model)) {
+                throw new \LogicException(sprintf('Repository result is not a valid, expected object of type %s, got %s', \get_class($model), \get_class($saveResult)));
+            }
+
+            return $saveResult;
+        }
 
         // return resulting
         return $model;
@@ -187,8 +202,15 @@ trait UpdateTrait
         try {
             $model = $this->updateModelFromRequestUsingId($request, $id);
         } catch (ModelValidationException $modelValidationException) {
-            // TODO this should return conflict response (similar to DataResponse) or HttConflictException
             $response = $responseFactory->createConflict($encoder->encodeErrors($modelValidationException->getViolations()));
+
+            return $response;
+        } catch (UnhandleableModelInputException $unhandleableModelInputException) {
+            if ($unhandleableModelInputException->getPrevious() instanceof ModelValidationException && $unhandleableModelInputException->getPrevious()->hasViolations()) {
+                $response = $responseFactory->createConflict($encoder->encodeErrors($unhandleableModelInputException->getPrevious()->getViolations()));
+            } else {
+                $response = $responseFactory->createErrorFromException(new BadRequestHttpException($unhandleableModelInputException->getMessage()));
+            }
 
             return $response;
         }

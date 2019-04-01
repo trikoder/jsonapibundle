@@ -43,4 +43,12 @@ class ModelValidationException extends Exception
     {
         return $this->violations;
     }
+
+    /**
+     * Returns true if there is at least on violation included
+     */
+    public function hasViolations(): bool
+    {
+        return \count($this->violations) > 0 ? true : false;
+    }
 }

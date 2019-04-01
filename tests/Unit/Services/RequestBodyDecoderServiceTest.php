@@ -2,13 +2,14 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
-use Trikoder\JsonApiBundle\Services\RequestBodyDecoderService;
+use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService;
+use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyValidator;
 
 class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
 {
     protected function createService()
     {
-        return new RequestBodyDecoderService();
+        return new RequestBodyDecoderService(new RequestBodyValidator());
     }
 
     /**
@@ -50,7 +51,7 @@ class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
             'someOtherRelateds' => [51, 52, 53],
         ];
 
-        $result = $this->createService()->decode($testData);
+        $result = $this->createService()->decode('POST', $testData);
 
         $this->assertEquals($expectedData, $result);
     }
@@ -60,7 +61,7 @@ class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyBody()
     {
-        $result = $this->createService()->decode([]);
+        $result = $this->createService()->decode('GET', []);
         $this->assertEquals([], $result);
     }
 
@@ -82,8 +83,19 @@ class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
             'title' => 'test title',
         ];
 
-        $result = $this->createService()->decode($testData);
+        $result = $this->createService()->decode('GET', $testData);
 
         $this->assertEquals($expectedData, $result);
+    }
+
+    public function testNullDataBody()
+    {
+        $testData = [
+            'data' => null,
+        ];
+
+        $result = $this->createService()->decode('POST', $testData);
+
+        $this->assertEquals([], $result);
     }
 }

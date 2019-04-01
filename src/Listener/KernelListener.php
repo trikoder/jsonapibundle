@@ -4,7 +4,6 @@ namespace Trikoder\JsonApiBundle\Listener;
 
 use Iterator;
 use Monolog\Logger;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -19,7 +18,7 @@ use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Response\DataResponse;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
-use Trikoder\JsonApiBundle\Services\RequestDecoder;
+use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestDecoder;
 
 /**
  * Class KernelListener

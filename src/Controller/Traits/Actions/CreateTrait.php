@@ -5,14 +5,17 @@ namespace Trikoder\JsonApiBundle\Controller\Traits\Actions;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelValidatorInterface;
+use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 use Trikoder\JsonApiBundle\Services\ModelInput\ModelValidationException;
+use Trikoder\JsonApiBundle\Services\ModelInput\UnhandleableModelInputException;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 
 /**
@@ -26,6 +29,7 @@ trait CreateTrait
      * @return object
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      */
     protected function handleCreateModelInputFromRequest(ConfigInterface $config, $emptyModel, Request $request)
     {
@@ -52,6 +56,7 @@ trait CreateTrait
                 $modelInput[$filesKey] = $filesValue;
             }
         }
+
         $model = $handler->forModel($emptyModel)->handle($modelInput)->getResult();
 
         // validate result
@@ -69,6 +74,7 @@ trait CreateTrait
      * @param object $model
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      */
     protected function validateCreatedModel(ConfigInterface $config, $model)
     {
@@ -95,6 +101,7 @@ trait CreateTrait
      * @return object
      *
      * @throws ModelValidationException
+     * @throws UnhandleableModelInputException
      */
     protected function createModelFromRequest(Request $request)
     {
@@ -111,8 +118,20 @@ trait CreateTrait
 
         $this->validateCreatedModel($config, $model);
 
+        /** @var RepositoryInterface $repository */
+        $repository = $config->getApi()->getRepository();
+
         // save it
-        $config->getApi()->getRepository()->save($model);
+        $saveResult = $repository->save($model);
+        // if repository returned result, we take it as new model
+        if (null !== $saveResult) {
+            // if repository returned different class for model, we consider it error
+            if (false === ($saveResult instanceof $model)) {
+                throw new \LogicException(sprintf('Repository result is not a valid, expected object of type %s, got %s', \get_class($model), \get_class($saveResult)));
+            }
+
+            return $saveResult;
+        }
 
         return $model;
     }
@@ -134,8 +153,15 @@ trait CreateTrait
         try {
             $model = $this->createModelFromRequest($request);
         } catch (ModelValidationException $modelValidationException) {
-            // TODO this should return conflict response (similar to DataResponse) or HttConflictException
             $response = $responseFactory->createConflict($encoder->encodeErrors($modelValidationException->getViolations()));
+
+            return $response;
+        } catch (UnhandleableModelInputException $unhandleableModelInputException) {
+            if ($unhandleableModelInputException->getPrevious() instanceof ModelValidationException && $unhandleableModelInputException->getPrevious()->hasViolations()) {
+                $response = $responseFactory->createConflict($encoder->encodeErrors($unhandleableModelInputException->getPrevious()->getViolations()));
+            } else {
+                $response = $responseFactory->createErrorFromException(new BadRequestHttpException($unhandleableModelInputException->getMessage()));
+            }
 
             return $response;
         }

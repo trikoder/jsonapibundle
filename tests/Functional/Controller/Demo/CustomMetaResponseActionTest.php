@@ -23,8 +23,8 @@ class CustomMetaResponseActionTest extends JsonapiWebTestCase
 
         $this->assertEquals([
             'customInfo' => 'valid',
-            // TODO refactor this to count from database
-            'total' => 6,
+            // TODO refactor this to count from database ++
+            'total' => 7,
         ], $data['meta']);
 
         $this->assertNotEmpty($data['data']);

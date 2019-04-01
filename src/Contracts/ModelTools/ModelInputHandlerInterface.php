@@ -2,6 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Contracts\ModelTools;
 
+use Trikoder\JsonApiBundle\Services\ModelInput\UnhandleableModelInputException;
+
 /**
  * Interface ModelInputHandlerInterface
  */
@@ -11,11 +13,12 @@ interface ModelInputHandlerInterface
      * @param object $model
      *
      * @return $this
-     * TODO - check if better in contructor so it cannot be changed on runtime?
      */
     public function forModel($model);
 
     /**
+     * @throws UnhandleableModelInputException
+     *
      * @return $this
      */
     public function handle(array $input);

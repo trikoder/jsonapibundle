@@ -44,7 +44,7 @@ final class RequiredRolesTest extends JsonapiWebTestCase
     public function testCreateAuthorizationRequiredResponse()
     {
         $client = static::createClient();
-        $client->request('POST', '/api/user-limited-access/');
+        $client->request('POST', '/api/user-limited-access/', [], [], [], $this->getBodyData());
         $response = $client->getResponse();
 
         $this->assertSame(Response::HTTP_FORBIDDEN, $response->getStatusCode());
@@ -55,7 +55,7 @@ final class RequiredRolesTest extends JsonapiWebTestCase
     {
         $client = static::createClient([], ['PHP_AUTH_USER' => 'tester',
                                             'PHP_AUTH_PW' => 'tester', ]);
-        $client->request('POST', '/api/user-limited-access/');
+        $client->request('POST', '/api/user-limited-access/', [], [], [], $this->getBodyData());
         $response = $client->getResponse();
 
         $this->assertEquals(Response::HTTP_CONFLICT, $response->getStatusCode());
@@ -86,7 +86,7 @@ final class RequiredRolesTest extends JsonapiWebTestCase
     public function testUpdateAuthorizationRequiredResponse()
     {
         $client = static::createClient();
-        $client->request('PATCH', '/api/user-limited-access/666');
+        $client->request('PATCH', '/api/user-limited-access/666', [], [], [], $this->getBodyData());
         $response = $client->getResponse();
 
         $this->assertSame(Response::HTTP_FORBIDDEN, $response->getStatusCode());
@@ -97,10 +97,19 @@ final class RequiredRolesTest extends JsonapiWebTestCase
     {
         $client = static::createClient([], ['PHP_AUTH_USER' => 'tester',
                                             'PHP_AUTH_PW' => 'tester', ]);
-        $client->request('PATCH', '/api/user-limited-access/666');
+        $client->request('PATCH', '/api/user-limited-access/666', [], [], [], $this->getBodyData());
         $response = $client->getResponse();
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
         $this->assertIsJsonapiResponse($response);
+    }
+
+    private function getBodyData(): string
+    {
+        return json_encode([
+            'data' => [
+                'type' => 'user',
+            ],
+        ]);
     }
 }

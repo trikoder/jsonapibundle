@@ -2,8 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -25,29 +25,36 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
     private $allowedFields;
 
     /**
-     * @var ObjectManager
-     */
-    private $objectManager;
-
-    /**
      * @var FormInterface
      */
     private $form;
 
     /**
-     * GenericFormModelInputHandler constructor.
-     *
-     * @param object $model
+     * @var GenericModelMetaData
      */
+    private $modelMetaData;
+
+    /**
+     * @var ModelMetaDataFactory
+     */
+    private $metaDataFactory;
+
+    /**
+     * @var array
+     */
+    private $formBuilderOptions;
+
     public function __construct(
         $model,
-        $allowedFields = null,
         FormFactoryInterface $formFactory,
-        ObjectManager $objectManager // TODO - remove this dependancy and add withMetaData method to enable usage without Doctrine entity
+        ModelMetaDataFactory $metaDataFactory,
+        $allowedFields = null,
+        array $formBuilderOptions
     ) {
         $this->formFactory = $formFactory;
+        $this->metaDataFactory = $metaDataFactory;
         $this->allowedFields = $allowedFields;
-        $this->objectManager = $objectManager;
+        $this->formBuilderOptions = $formBuilderOptions;
 
         $this->forModel($model);
     }
@@ -61,60 +68,38 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
     {
         parent::forModel($model);
 
+        $this->modelMetaData = $this->metaDataFactory->getMetaDataForModel($this->modelClass);
+
         if (null === $this->allowedFields) {
-            $this->allowedFields = $this->calculateAllFields();
+            $this->allowedFields = $this->modelMetaData->getAllFields();
         }
 
         return $this;
     }
 
-    /**
-     * Gets list of all fields from model meta data
-     *
-     * @return array
-     */
-    private function calculateAllFields()
-    {
-        /** @var ClassMetadata $classMetadata */
-        $classMetadata = $this->objectManager->getClassMetadata($this->modelClass);
-
-        // get all fields, relations, and identifiers
-        $fields = array_unique(array_merge(
-            $classMetadata->getFieldNames(),
-            $classMetadata->getAssociationNames(),
-            $classMetadata->getIdentifierFieldNames()
-        ));
-
-        return $fields;
-    }
-
     private function createForm()
     {
-        $formBuilder = $this->formFactory->create(FormType::class, $this->model, [
-            'method' => 'POST',
-            // TODO - check for csrf as it returned errors, need to enable it?
-            // 'csrf_protection' => false // false because we cannot server csrf
-        ]);
+        $formBuilderOptions = array_merge(['method' => 'POST'], $this->formBuilderOptions);
 
-        /** @var ClassMetadata $classMetadata */
-        $classMetadata = $this->objectManager->getClassMetadata($this->modelClass);
+        $formBuilder = $this->formFactory->create(FormType::class, $this->model, $formBuilderOptions);
 
         /*
          * handle some known form types
          */
         foreach ($this->allowedFields as $fieldName) {
             $fieldOptions = [];
-            $fieldType = $classMetadata->getTypeOfField($fieldName);
+            $type = null;
+            $fieldType = $this->modelMetaData->getTypeForField($fieldName);
             switch ($fieldType) {
-                case 'date':
-                    $fieldOptions['widget'] = 'single_text';
-                    $fieldOptions['view_timezone'] = 'UTC';
-                    break;
+                case 'DateTime':
                 case 'datetime':
+                case 'date':
+                    $type = DateTimeType::class;
                     $fieldOptions['widget'] = 'single_text';
                     $fieldOptions['view_timezone'] = 'UTC';
                     break;
                 case 'array':
+                    $type = CollectionType::class;
                     $fieldOptions['entry_type'] = TextType::class;
                     $fieldOptions['allow_add'] = true;
                     $fieldOptions['allow_delete'] = true;
@@ -122,7 +107,7 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
                     break;
             }
 
-            $formBuilder->add($fieldName, null, $fieldOptions);
+            $formBuilder->add($fieldName, $type, $fieldOptions);
         }
 
         $this->form = $formBuilder;

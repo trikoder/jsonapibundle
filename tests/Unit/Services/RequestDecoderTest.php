@@ -16,7 +16,7 @@ use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Model\ModelFactoryInterface;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
 use Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer;
-use Trikoder\JsonApiBundle\Services\RequestDecoder;
+use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestDecoder;
 
 /**
  * Class RequestDecoderTest
