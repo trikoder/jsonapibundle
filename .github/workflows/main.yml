@@ -33,8 +33,12 @@ jobs:
 
 
       - name: test
-        run: docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never --coverage-text=php://stdout --coverage-html=logs/coverage
+        run:  |
+              cd tests/Resources/docker/
+              docker-compose run --no-deps --rm php php vendor/bin/phpunit --debug --colors=never --coverage-text=php://stdout --coverage-html=logs/coverage
 
 
       - name: security check
-        run: bin/php php ../../../vendor/bin/security-checker security:check ../../../composer.lock
+        run:  |
+              cd tests/Resources/docker/
+              bin/php php ../../../vendor/bin/security-checker security:check ../../../composer.lock
