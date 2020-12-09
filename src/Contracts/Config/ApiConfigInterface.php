@@ -4,6 +4,7 @@ namespace Trikoder\JsonApiBundle\Contracts\Config;
 
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
+use Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface;
 
 /**
  * Interface ApiConfigInterface
@@ -42,6 +43,21 @@ interface ApiConfigInterface
      * @return RequestBodyDecoderInterface
      */
     public function getRequestBodyDecoder();
+
+    /**
+     * @return RequestBodyDecoderInterface
+     */
+    public function getRelationshipRequestBodyDecoder();
+
+    /**
+     * @return RequestBodyValidatorInterface
+     */
+    public function getRequestBodyValidator();
+
+    /**
+     * @return RequestBodyValidatorInterface
+     */
+    public function getRelationshipRequestBodyValidator();
 
     /**
      * Flag if we allow extra params in request, if false, only params that are recognized by JsonApi are allowed

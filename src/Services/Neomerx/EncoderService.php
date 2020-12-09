@@ -39,7 +39,7 @@ class EncoderService
     }
 
     /**
-     * @param array|Iterator|null|object|string $data
+     * @param array|Iterator|object|string|null $data
      *
      * @return string
      */

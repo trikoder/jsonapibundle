@@ -4,6 +4,8 @@ namespace Trikoder\JsonApiBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Trikoder\JsonApiBundle\Listener\KernelListener;
 
 class Configuration implements ConfigurationInterface
 {
@@ -36,6 +38,15 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->scalarNode('request_body_decoder')
                     ->defaultValue('trikoder.jsonapi.request_body_decoder')
+                    ->end()
+                ->scalarNode('relationship_request_body_decoder')
+                    ->defaultValue('trikoder.jsonapi.relationship_request_body_decoder')
+                    ->end()
+                ->scalarNode('request_body_validator')
+                    ->defaultValue('trikoder.jsonapi.request_body_validator')
+                    ->end()
+                ->scalarNode('relationship_request_body_validator')
+                    ->defaultValue('trikoder.jsonapi.relationship_request_body_validator')
                     ->end()
                 ->variableNode('fixed_filtering')->defaultValue([])->end()
                 ->variableNode('allowed_include_paths')->defaultNull()->end()
@@ -74,6 +85,14 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('schema_automap_scan_patterns')
                     ->scalarPrototype()->end()->defaultValue([])
+                ->end()
+                ->integerNode('kernel_listener_on_kernel_view_priority')
+                    ->info(sprintf('Priority for "%s" listener - "%s" event.', KernelListener::class, KernelEvents::VIEW))
+                    ->defaultValue(0)
+                ->end()
+                ->integerNode('kernel_listener_on_kernel_exception_priority')
+                    ->info(sprintf('Priority for "%s" listener - "%s" event.', KernelListener::class, KernelEvents::EXCEPTION))
+                    ->defaultValue(0)
                 ->end()
             ->end();
         $rootNode->addDefaultsIfNotSet();

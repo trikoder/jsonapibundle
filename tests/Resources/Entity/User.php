@@ -2,8 +2,11 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Trikoder\JsonApiBundle\Schema\Builtin\ResourceInterface;
 
 /**
  * User
@@ -11,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="Trikoder\JsonApiBundle\Tests\Resources\Repository\UserRepository")
  */
-class User
+class User implements ResourceInterface
 {
     /**
      * @var int
@@ -32,6 +35,16 @@ class User
     private $email;
 
     /**
+     * @ORM\OneToMany(targetEntity="Cart", mappedBy="user")
+     */
+    private $carts;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="users")
+     */
+    private $tags;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="active", type="boolean")
@@ -44,6 +57,24 @@ class User
      * @ORM\Column(name="customer", type="boolean")
      */
     private $customer = false;
+
+    public function __construct()
+    {
+        $this->carts = new ArrayCollection();
+        $this->tags = new ArrayCollection();
+    }
+
+    public static function getJsonApiResourceType(): string
+    {
+        return 'user';
+    }
+
+    /**
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * Get id
@@ -103,6 +134,57 @@ class User
     public function setCustomer($customer)
     {
         $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getCarts()
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): self
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts[] = $cart;
+            $cart->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): self
+    {
+        if ($this->carts->contains($cart)) {
+            $this->carts->removeElement($cart);
+            // set the owning side to null (unless already changed)
+            if ($cart->getUser() === $this) {
+                $cart->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->contains($tag)) {
+            $this->tags->removeElement($tag);
+        }
 
         return $this;
     }

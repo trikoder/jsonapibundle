@@ -2,7 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture as BaseAbstractFixture;
+use Doctrine\Bundle\FixturesBundle\Fixture as BaseAbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;

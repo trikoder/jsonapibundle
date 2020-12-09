@@ -31,7 +31,7 @@ interface RepositoryInterface
      *
      * @param object $model model to save
      *
-     * @return null|object null or newly saved object
+     * @return object|null null or newly saved object
      */
     public function save($model);
 

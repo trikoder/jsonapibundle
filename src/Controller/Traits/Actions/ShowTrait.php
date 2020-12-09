@@ -13,7 +13,7 @@ trait ShowTrait
     /**
      * @param $id
      *
-     * @return null|object
+     * @return object|null
      */
     public function getModelById($id)
     {

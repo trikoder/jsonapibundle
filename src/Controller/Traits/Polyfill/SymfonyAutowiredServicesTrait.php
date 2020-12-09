@@ -2,6 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Controller\Traits\Polyfill;
 
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
@@ -19,6 +20,8 @@ trait SymfonyAutowiredServicesTrait
     protected $jsonapiEncoder;
 
     protected $authorizationChecker;
+
+    protected $propertyAccessor;
 
     /**
      * @required
@@ -83,5 +86,18 @@ trait SymfonyAutowiredServicesTrait
     public function getAuthorizationChecker(): AuthorizationCheckerInterface
     {
         return $this->authorizationChecker;
+    }
+
+    /**
+     * @required
+     */
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    {
+        $this->propertyAccessor = $propertyAccessor;
+    }
+
+    public function getPropertyAccessor(): PropertyAccessorInterface
+    {
+        return $this->propertyAccessor;
     }
 }

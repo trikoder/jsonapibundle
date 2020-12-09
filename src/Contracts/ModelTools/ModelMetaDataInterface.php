@@ -9,7 +9,7 @@ interface ModelMetaDataInterface
     public function getAllFields(): array;
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getTypeForField(string $fieldName);
 }

@@ -11,7 +11,7 @@
         <server name="KERNEL_DIR" value="tests/Resources/app" />
         <server name="KERNEL_CLASS" value="\AppKernel" />
         <!-- \Doctrine\Common\ClassLoader is deprecated in doctrine/common v2.9.0 -->
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="1" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0&amp;verbose=0" />
     </php>
     <testsuites>
         <testsuite name="Unit">

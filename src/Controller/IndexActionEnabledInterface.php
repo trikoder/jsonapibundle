@@ -19,7 +19,7 @@ interface IndexActionEnabledInterface
      * Returns list of allowed include paths for request
      * Return [] for nothing is allowed, null for everything is allowed
      *
-     * @return null|array
+     * @return array|null
      */
     public function getAllowedIncludePaths();
 
@@ -27,7 +27,7 @@ interface IndexActionEnabledInterface
      * Returns list of allowed sorting parameters for request
      * Return [] for nothing is allowed, null for everything is allowed
      *
-     * @return null|array
+     * @return array|null
      */
     public function getAllowedSortFields();
 
@@ -35,7 +35,7 @@ interface IndexActionEnabledInterface
      * Returns the list of allowed filtering parameters for request
      * Return [] for nothing is allowed, null for everything is allowed
      *
-     * @return null|array
+     * @return array|null
      */
     public function getAllowedFilteringParameters();
 }

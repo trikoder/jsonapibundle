@@ -4,13 +4,14 @@ namespace Trikoder\JsonApiBundle\Tests\Unit;
 
 use Exception;
 use Neomerx\JsonApi\Contracts\Document\ErrorInterface;
-use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Trikoder\JsonApiBundle\Contracts\ErrorFactoryInterface;
+use Trikoder\JsonApiBundle\Services\JsonApiResponseLinter;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 use Trikoder\JsonApiBundle\Services\ResponseFactoryService;
+use Trikoder\JsonApiBundle\Services\ResponseLinterInterface;
 
 /**
  */
@@ -23,7 +24,8 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
     {
         $responseFactoryService = new ResponseFactoryService(
             $this->createEncoderServiceMock(),
-            $this->createErrorFactoryMock()
+            $this->createErrorFactoryMock(),
+            $this->createResponseLinterMock()
         );
 
         $response = $responseFactoryService->createErrorFromException(
@@ -32,7 +34,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
-        $this->assertSame('application/json', $response->headers->get('Content-type'));
+        $this->assertSame(JsonApiResponseLinter::CONTENT_TYPE, $response->headers->get('Content-type'));
         $this->assertSame('Normal exception', $response->getContent());
     }
 
@@ -43,7 +45,8 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
     {
         $responseFactoryService = new ResponseFactoryService(
             $this->createEncoderServiceMock(),
-            $this->createErrorFactoryMock()
+            $this->createErrorFactoryMock(),
+            $this->createResponseLinterMock()
         );
 
         $customResponse = new Response();
@@ -57,7 +60,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame($customResponse, $response);
         $this->assertInstanceOf(Response::class, $customResponse);
         $this->assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $customResponse->getStatusCode());
-        $this->assertSame('application/json', $customResponse->headers->get('Content-type'));
+        $this->assertSame(JsonApiResponseLinter::CONTENT_TYPE, $customResponse->headers->get('Content-type'));
         $this->assertSame('Normal exception', $customResponse->getContent());
         $this->assertSame('Bar', $customResponse->headers->get('X-Foo'));
     }
@@ -69,7 +72,8 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
     {
         $responseFactoryService = new ResponseFactoryService(
             $this->createEncoderServiceMock(),
-            $this->createErrorFactoryMock()
+            $this->createErrorFactoryMock(),
+            $this->createResponseLinterMock()
         );
 
         $response = $responseFactoryService->createErrorFromException(
@@ -78,7 +82,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertSame('application/json', $response->headers->get('Content-type'));
+        $this->assertSame(JsonApiResponseLinter::CONTENT_TYPE, $response->headers->get('Content-type'));
         $this->assertSame('Access denied', $response->getContent());
         $this->assertSame('Bearer', $response->headers->get('WWW-Authenticate'));
     }
@@ -90,7 +94,8 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
     {
         $responseFactoryService = new ResponseFactoryService(
             $this->createEncoderServiceMock(),
-            $this->createErrorFactoryMock()
+            $this->createErrorFactoryMock(),
+            $this->createResponseLinterMock()
         );
 
         $customResponse = new Response();
@@ -104,14 +109,14 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame($customResponse, $response);
         $this->assertInstanceOf(Response::class, $customResponse);
         $this->assertSame(Response::HTTP_UNAUTHORIZED, $customResponse->getStatusCode());
-        $this->assertSame('application/json', $customResponse->headers->get('Content-type'));
+        $this->assertSame(JsonApiResponseLinter::CONTENT_TYPE, $customResponse->headers->get('Content-type'));
         $this->assertSame('Access denied', $customResponse->getContent());
         $this->assertSame('Bearer', $customResponse->headers->get('WWW-Authenticate'));
         $this->assertSame('Bar', $customResponse->headers->get('X-Foo'));
     }
 
     /**
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EncoderService
      */
     private function createEncoderServiceMock()
     {
@@ -127,17 +132,17 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
                     return 'error' === reset($errors)->getId();
                 })
             )
-            ->will(
-                $this->returnCallback(function (array $errors) {
+            ->willReturnCallback(
+                function (array $errors) {
                     return reset($errors)->getTitle();
-                })
+                }
             );
 
         return $encoderService;
     }
 
     /**
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return ErrorFactoryInterface
      */
     private function createErrorFactoryMock()
     {
@@ -150,8 +155,8 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
                     return $exception instanceof Exception;
                 })
             )
-            ->will(
-                $this->returnCallback(function (Exception $exception) {
+            ->willReturnCallback(
+                function (Exception $exception) {
                     $error = $this->createMock(ErrorInterface::class);
 
                     $error
@@ -163,10 +168,20 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
                         ->willReturn($exception->getMessage());
 
                     return $error;
-                })
+                }
             );
 
         return $errorFactory;
+    }
+
+    /**
+     * @return ResponseLinterInterface
+     */
+    private function createResponseLinterMock()
+    {
+        $service = new JsonApiResponseLinter();
+
+        return $service;
     }
 
     /**
@@ -176,7 +191,8 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
     {
         $responseFactoryService = new ResponseFactoryService(
             $this->createEncoderServiceMock(),
-            $this->createErrorFactoryMock()
+            $this->createErrorFactoryMock(),
+            $this->createResponseLinterMock()
         );
 
         $response = $responseFactoryService->createCreated(
@@ -186,7 +202,7 @@ final class ResponseFactoryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(Response::HTTP_CREATED, $response->getStatusCode());
-        $this->assertSame('application/json', $response->headers->get('Content-type'));
+        $this->assertSame(JsonApiResponseLinter::CONTENT_TYPE, $response->headers->get('Content-type'));
         $this->assertSame('custom.url/test', $response->headers->get('location'));
     }
 }

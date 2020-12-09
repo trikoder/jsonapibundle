@@ -31,4 +31,9 @@ interface ConfigInterface
      * @return DeleteConfigInterface
      */
     public function getDelete();
+
+    /**
+     * @return UpdateRelationshipConfigInterface
+     */
+    public function getUpdateRelationship();
 }

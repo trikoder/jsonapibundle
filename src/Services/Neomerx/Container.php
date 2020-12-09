@@ -3,13 +3,18 @@
 namespace Trikoder\JsonApiBundle\Services\Neomerx;
 
 use Doctrine\Common\Persistence\Proxy;
+use InvalidArgumentException;
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
+use Neomerx\JsonApi\Contracts\Schema\SchemaProviderInterface;
+use Neomerx\JsonApi\Factories\Exceptions;
+use Neomerx\JsonApi\I18n\Translator as T;
 use Neomerx\JsonApi\Schema\Container as BaseContainer;
 use ReflectionClass;
 use ReflectionParameter;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Trikoder\JsonApiBundle\Schema\Autowire\Exception\UnresolvedDependencyException;
+use Trikoder\JsonApiBundle\Schema\Builtin\GenericSchema;
 
 /**
  * Class Container
@@ -45,7 +50,42 @@ class Container extends BaseContainer
         return \get_class($resource);
     }
 
+    public function getSchemaByType($type)
+    {
+        true === \is_string($type) ?: Exceptions::throwInvalidArgument('type', $type);
+
+        if (true === $this->hasCreatedProvider($type)) {
+            return $this->getCreatedProvider($type);
+        }
+
+        if (false === $this->hasProviderMapping($type)) {
+            throw new InvalidArgumentException(T::t('Schema is not registered for type \'%s\'.', [$type]));
+        }
+
+        $classNameOrCallable = $this->getProviderMapping($type);
+        if (true === \is_string($classNameOrCallable)) {
+            $schema = $this->createSchemaFromClassNameWithClassName($classNameOrCallable, $type);
+        } else {
+            $schema = $this->createSchemaFromCallable($classNameOrCallable);
+        }
+        $this->setCreatedProvider($type, $schema);
+
+        /* @var SchemaProviderInterface $schema */
+
+        $this->setResourceToJsonTypeMapping($schema->getResourceType(), $type);
+
+        return $schema;
+    }
+
+    /**
+     * @deprecated
+     */
     protected function createSchemaFromClassName($className)
+    {
+        return $this->createSchemaFromClassNameWithClassName($className, null);
+    }
+
+    protected function createSchemaFromClassNameWithClassName($className, $modelClassName = null)
     {
         $callArguments = [];
 
@@ -54,14 +94,19 @@ class Container extends BaseContainer
 
         // see if there are any additional dependencies
         $constructorArguments = $reflector->getConstructor()->getParameters();
+
+        if (GenericSchema::class === $className) {
+            // remove first argument as it is fixted to className
+            array_shift($constructorArguments);
+        }
+
         /** @var ReflectionParameter $constructorArgument */
         foreach ($constructorArguments as $argumentIndex => $constructorArgument) {
             $argumentClassHint = $constructorArgument->getClass();
 
             // non type hinted arguments cannot be autowired
             if (null === $argumentClassHint) {
-                throw new RuntimeException(sprintf('Argument %s for schema %s is not type hinted and cannot be autowired!',
-                    $argumentIndex, $className));
+                throw new RuntimeException(sprintf('Argument %s for schema %s is not type hinted and cannot be autowired!', $argumentIndex, $className));
             }
             $resolvedDependacy = $this->resolveSchemaClassDependancy($argumentClassHint);
 
@@ -70,6 +115,10 @@ class Container extends BaseContainer
                 throw new UnresolvedDependencyException($argumentIndex, $className, $argumentClassHint->getName());
             }
             $callArguments[$argumentIndex] = $resolvedDependacy;
+        }
+
+        if (GenericSchema::class === $className) {
+            array_unshift($callArguments, $modelClassName);
         }
 
         // create schema

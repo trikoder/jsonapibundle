@@ -33,11 +33,22 @@ class Product
     /**
      * @var int
      *
-     *
      * @ORM\Column(name="price", type="integer")
      * @Assert\Type(type="integer")
      */
     private $price = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Cart", inversedBy="products")
+     */
+    private $cart;
+
+    /**
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * Get id
@@ -85,5 +96,15 @@ class Product
         $this->price = $price;
 
         return $this;
+    }
+
+    public function getCart()
+    {
+        return $this->cart;
+    }
+
+    public function setCart(Cart $cart)
+    {
+        $this->cart = $cart;
     }
 }

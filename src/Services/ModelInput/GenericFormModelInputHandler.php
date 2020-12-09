@@ -2,6 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -105,6 +106,14 @@ class GenericFormModelInputHandler extends AbstractFormModelInputHandler
                     $fieldOptions['allow_delete'] = true;
                     $fieldOptions['delete_empty'] = true;
                     break;
+                case 'bool':
+                    $type = CheckboxType::class;
+                    break;
+                default:
+                    // if we do not have doctrine entity, we cannot leave form to autoguess
+                    if ($this->modelMetaData instanceof GenericModelMetaData) {
+                        $type = TextType::class;
+                    }
             }
 
             $formBuilder->add($fieldName, $type, $fieldOptions);

@@ -18,20 +18,20 @@ class ContainerAutowiringTest extends \PHPUnit_Framework_TestCase
     private function getServiceContainer()
     {
         $serviceContainer = $this->getMockBuilder(ContainerInterface::class)->disableOriginalConstructor()->getMock();
-        $serviceContainer->method('has')->will($this->returnCallback(function ($service) {
+        $serviceContainer->method('has')->willReturnCallback(function ($service) {
             switch ($service) {
                 case RouterInterface::class:
                     return true;
                     break;
             }
-        }));
-        $serviceContainer->method('get')->will($this->returnCallback(function ($service) {
+        });
+        $serviceContainer->method('get')->willReturnCallback(function ($service) {
             switch ($service) {
                 case RouterInterface::class:
                     return $this->createMock(RouterInterface::class);
                     break;
             }
-        }));
+        });
 
         return $serviceContainer;
     }

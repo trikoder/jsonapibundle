@@ -2,7 +2,7 @@
 
 ## Write process
 
-Write process in jsonapi bundle is provided by Create, Update and Delete action traits.
+Write process in jsonapi bundle is provided by Create, Update, UpdateRelationship and Delete  action traits.
 
 ## Create and update
 Create and update of model follows similar flow with few differences in start and end points that are described in next chapter.
@@ -19,6 +19,14 @@ There are two differences in create and update actions:
 1. starting model in create action is aquired from create factory while update action get it's from repository
 2. create's proper response is redirect to show action while update will return updated resource
 
+## UpdateRelationship
+Adds or removes resources from relationship.
+
+Process for both is same:
+1. validate that relationship is allowed to be updated (by using `JsonApiConfig\UpdateRelationshipConfig`)
+1. get starting model
+1. use `\Trikoder\JsonApiBundle\Contracts\RelationshipRepositoryInterface` to add or remove resources from relationship
+1. return `\Symfony\Component\HttpFoundation\Response` response if something went wrong or return model if it was successfully changed
 
 ## Delete
 Delete action will use repository to delete loaded model.

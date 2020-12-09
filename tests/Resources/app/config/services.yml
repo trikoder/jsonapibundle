@@ -40,3 +40,23 @@ services:
 
 
   Trikoder\JsonApiBundle\Tests\Resources\Security\AuthenticatedUserProvider: ~
+
+  test.trikoder.jsonapi.request_listener:
+    alias: trikoder.jsonapi.request_listener
+    public: true
+
+  test.trikoder.jsonapi.model_meta_data_factory:
+    alias: trikoder.jsonapi.model_meta_data_factory
+    public: true
+
+
+  test.symfony.form_factory:
+    alias: Symfony\Component\Form\FormFactoryInterface
+    public: true
+
+  test.symfony.validator:
+    alias: Symfony\Component\Validator\Validator\ValidatorInterface
+    public: true
+
+  Trikoder\JsonApiBundle\Tests\Resources\DataFixtures\ORM\:
+    resource: '../../DataFixtures/ORM/*'

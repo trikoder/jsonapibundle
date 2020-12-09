@@ -15,7 +15,7 @@ trait ShowActionTrait
     /**
      * @Route("/{id}{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""}, methods={"GET"})
      *
-     * @return null|object
+     * @return object|null
      */
     public function showAction(Request $request, $id)
     {

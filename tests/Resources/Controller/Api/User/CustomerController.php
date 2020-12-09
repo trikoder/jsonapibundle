@@ -43,7 +43,6 @@ class CustomerController extends JsonApiController
     /**
      * Dummy action - so we can try to generate route inside schema
      *
-     *
      * @Route("/dummy-action/{id}", name="customer_dummy_action")
      */
     public function dummyAction(Request $request, $id)

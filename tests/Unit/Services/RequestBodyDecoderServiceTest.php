@@ -3,13 +3,12 @@
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
 use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService;
-use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyValidator;
 
 class RequestBodyDecoderServiceTest extends \PHPUnit_Framework_TestCase
 {
     protected function createService()
     {
-        return new RequestBodyDecoderService(new RequestBodyValidator());
+        return new RequestBodyDecoderService();
     }
 
     /**

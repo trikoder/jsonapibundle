@@ -8,6 +8,7 @@ use Trikoder\JsonApiBundle\Contracts\Config\CreateConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\Config\DeleteConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\Config\IndexConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\Config\UpdateConfigInterface;
+use Trikoder\JsonApiBundle\Contracts\Config\UpdateRelationshipConfigInterface;
 
 /**
  * Class Config
@@ -38,6 +39,7 @@ final class Config implements ConfigInterface
      * @var DeleteConfigInterface
      */
     private $delete;
+    private $updateRelationship;
 
     /**
      * Config constructor.
@@ -47,13 +49,15 @@ final class Config implements ConfigInterface
         CreateConfigInterface $create,
         IndexConfigInterface $index,
         UpdateConfigInterface $update,
-        DeleteConfigInterface $delete
+        DeleteConfigInterface $delete,
+        UpdateRelationshipConfigInterface $updateRelationship
     ) {
         $this->api = $api;
         $this->create = $create;
         $this->index = $index;
         $this->update = $update;
         $this->delete = $delete;
+        $this->updateRelationship = $updateRelationship;
     }
 
     /**
@@ -94,5 +98,13 @@ final class Config implements ConfigInterface
     public function getDelete()
     {
         return $this->delete;
+    }
+
+    /**
+     * @return UpdateRelationshipConfigInterface
+     */
+    public function getUpdateRelationship()
+    {
+        return $this->updateRelationship;
     }
 }

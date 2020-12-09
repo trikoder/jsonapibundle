@@ -41,7 +41,6 @@ class FactoryService extends Factory
      * This is symfony way for creating with factory as service,
      * neomerx way is @see \Neomerx\JsonApi\Encoder\Encoder::instance
      *
-     *
      * @return Encoder
      */
     public function createEncoderInstance(array $schemas = [], EncoderOptions $encoderOptions = null)

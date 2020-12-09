@@ -138,8 +138,8 @@ class IndexActionTest extends JsonapiWebTestCase
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $content = $this->getResponseContentJson($response);
-        // TODO refactor total of 8 to count from database ++
-        $this->assertEquals(8, $content['data'][0]['id']);
+        // TODO refactor total of 8 to count from database +++
+        $this->assertEquals(10, $content['data'][0]['id']);
     }
 
     /**
@@ -202,7 +202,7 @@ class IndexActionTest extends JsonapiWebTestCase
 
         $client->request(
             'GET',
-            '/api/user-config-restrictions/',
+            '/api/user-config-restrictions',
             [
                 'filter' => [
                     'i_should_not_be_able_to_filter_by_this_field' => 'my',
@@ -221,7 +221,7 @@ class IndexActionTest extends JsonapiWebTestCase
 
         $client->request(
             'GET',
-            '/api/user-config-restrictions/',
+            '/api/user-config-restrictions',
             [
                 'sort' => 'i_should_not_be_able_to_sort_by_this_field',
             ]
@@ -244,5 +244,19 @@ class IndexActionTest extends JsonapiWebTestCase
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    /**
+     * test simple listing
+     */
+    public function testVersionedUserIndexAction()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/v2/user/');
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
     }
 }

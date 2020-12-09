@@ -7,7 +7,6 @@ namespace Trikoder\JsonApiBundle\Response;
  */
 class DataResponse extends AbstractResponse
 {
-    /** @var mixed */
     private $data;
 
     /**
@@ -21,8 +20,6 @@ class DataResponse extends AbstractResponse
         parent::__construct($meta, $links);
     }
 
-    /**
-     */
     public function getData()
     {
         return $this->data;

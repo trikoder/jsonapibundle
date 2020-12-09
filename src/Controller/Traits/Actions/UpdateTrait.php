@@ -23,7 +23,7 @@ trait UpdateTrait
     /**
      * @param $id
      *
-     * @return null|object
+     * @return object|null
      *
      * @throws ModelValidationException
      * @throws UnhandleableModelInputException
@@ -38,7 +38,7 @@ trait UpdateTrait
     /**
      * @param $id
      *
-     * @return null|object
+     * @return object|null
      *
      * @throws ModelValidationException
      * @throws UnhandleableModelInputException
@@ -96,9 +96,8 @@ trait UpdateTrait
         $modelInput = $request->request->all();
         if ($request->files->count() > 0) {
             foreach ($request->files->all() as $filesKey => $filesValue) {
-                if (array_key_exists($filesKey, $modelInput)) {
-                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s',
-                        $filesKey));
+                if (\array_key_exists($filesKey, $modelInput)) {
+                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s', $filesKey));
                 }
                 $modelInput[$filesKey] = $filesValue;
             }
@@ -189,7 +188,7 @@ trait UpdateTrait
     /**
      * @param $id
      *
-     * @return null|object|\Symfony\Component\HttpFoundation\Response
+     * @return object|\Symfony\Component\HttpFoundation\Response|null
      */
     protected function updateRequestFromRequest(Request $request, $id)
     {

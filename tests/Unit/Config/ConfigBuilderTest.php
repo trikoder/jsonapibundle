@@ -8,8 +8,10 @@ use Trikoder\JsonApiBundle\Config\Annotation\CreateConfig;
 use Trikoder\JsonApiBundle\Config\Annotation\DeleteConfig;
 use Trikoder\JsonApiBundle\Config\Annotation\IndexConfig;
 use Trikoder\JsonApiBundle\Config\Annotation\UpdateConfig;
+use Trikoder\JsonApiBundle\Config\Annotation\UpdateRelationshipConfig;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface;
+use Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface;
 use Trikoder\JsonApiBundle\Model\ModelFactoryInterface;
 use Trikoder\JsonApiBundle\Model\ModelFactoryResolver;
 use Trikoder\JsonApiBundle\Model\ModelFactoryResolverInterface;
@@ -30,18 +32,21 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $mocker = $this->getMockBuilder(ContainerInterface::class)->disableOriginalConstructor()->getMock();
         $mocker->method('has')->willReturn(true);
-        $mocker->method('get')->will($this->returnCallback(function (...$args) {
+        $mocker->method('get')->willReturnCallback(function (...$args) {
             switch ($args[0]) {
                 case 'request_body_decoder':
+                case 'relationship_request_body_decoder':
                     return $this->getRequestBodyDecoderMock();
                     break;
+                case 'request_body_validator':
+                    return $this->getRequestBodyValidatorMock();
                 case 'repository':
                     return $this->getRepositoryMock();
                     break;
             }
 
             return null;
-        }));
+        });
 
         return $mocker;
     }
@@ -52,6 +57,11 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
     protected function getRequestBodyDecoderMock()
     {
         return $this->getMockBuilder(RequestBodyDecoderInterface::class)->disableOriginalConstructor()->getMock();
+    }
+
+    protected function getRequestBodyValidatorMock()
+    {
+        return $this->getMockBuilder(RequestBodyValidatorInterface::class)->disableOriginalConstructor()->getMock();
     }
 
     /**
@@ -220,13 +230,16 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
         $annotationConfig->create = new CreateConfig();
         $annotationConfig->update = new UpdateConfig();
         $annotationConfig->delete = new DeleteConfig();
+        $annotationConfig->updateRelationship = new UpdateRelationshipConfig();
 
         $annotationConfig->modelClass = 'modelClass';
         $annotationConfig->repository = 'repository';
         $annotationConfig->requestBodyDecoder = 'request_body_decoder';
+        $annotationConfig->requestBodyValidator = 'request_body_validator';
         $annotationConfig->fixedFiltering = ['fixed_filtering'];
         $annotationConfig->allowedIncludePaths = ['allowed_include_paths'];
         $annotationConfig->allowExtraParams = true;
+        $annotationConfig->relationshipRequestBodyDecoder = 'relationship_request_body_decoder';
 
         $annotationConfig->index->allowedSortFields = ['allowed_sort_fields'];
         $annotationConfig->index->allowedFilteringParameters = ['allowed_filtering_parameters'];
@@ -256,6 +269,7 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
             'model_class' => '',
             'repository' => '',
             'request_body_decoder' => '',
+            'request_body_validator' => '',
             'fixed_filtering' => '',
             'allowed_include_paths' => '',
             'allow_extra_params' => '',
@@ -279,6 +293,8 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
             'delete' => [
                 'required_roles' => '',
             ],
+            'relationship_request_body_decoder' => '',
+            'relationship_request_body_validator' => '',
         ];
     }
 }

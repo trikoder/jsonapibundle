@@ -36,6 +36,16 @@ class Config
     public $requestBodyDecoder;
 
     /**
+     * @var string
+     */
+    public $relationshipRequestBodyDecoder;
+
+    /**
+     * @var string
+     */
+    public $requestBodyValidator;
+
+    /**
      * @var bool
      */
     public $allowExtraParams;
@@ -59,4 +69,9 @@ class Config
      * @var Trikoder\JsonApiBundle\Config\Annotation\DeleteConfig
      */
     public $delete;
+
+    /**
+     * @var Trikoder\JsonApiBundle\Config\Annotation\UpdateRelationshipConfig
+     */
+    public $updateRelationship;
 }

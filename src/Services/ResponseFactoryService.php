@@ -19,14 +19,19 @@ class ResponseFactoryService implements ResponseFactoryInterface
      * @var ErrorFactoryInterface
      */
     private $errorFactory;
+    /**
+     * @var ResponseLinterInterface
+     */
+    private $responseLinter;
 
     /**
      * ResponseFactoryService constructor.
      */
-    public function __construct(EncoderService $encoderService, ErrorFactoryInterface $errorFactory)
+    public function __construct(EncoderService $encoderService, ErrorFactoryInterface $errorFactory, ResponseLinterInterface $responseLinter)
     {
         $this->encoderService = $encoderService;
         $this->errorFactory = $errorFactory;
+        $this->responseLinter = $responseLinter;
     }
 
     /**
@@ -42,8 +47,7 @@ class ResponseFactoryService implements ResponseFactoryInterface
         $response->setContent($data);
 
         // set proper headers
-        // TODO - this should be MediaTypeInterface::JSON_API_MEDIA_TYPE but nobody understands this :(
-        $response->headers->set('Content-type', 'application/json');
+        $response = $this->responseLinter->lint($response);
 
         return $response;
     }

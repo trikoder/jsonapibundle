@@ -11,6 +11,7 @@ use Trikoder\JsonApiBundle\Config\CreateConfig;
 use Trikoder\JsonApiBundle\Config\DeleteConfig;
 use Trikoder\JsonApiBundle\Config\IndexConfig;
 use Trikoder\JsonApiBundle\Config\UpdateConfig;
+use Trikoder\JsonApiBundle\Config\UpdateRelationshipConfig;
 use Trikoder\JsonApiBundle\Contracts\Config\ApiConfigInterface;
 use Trikoder\JsonApiBundle\Model\ModelFactoryResolverInterface;
 use Trikoder\JsonApiBundle\Repository\RepositoryFactoryInterface;
@@ -44,7 +45,6 @@ class ConfigBuilder
     /**
      * Creates config using provided annotation, if non supplied, config is with defaults
      *
-     *
      * @return Config
      */
     public function fromAnnotation(Annotation\Config $configAnnotation = null)
@@ -62,14 +62,19 @@ class ConfigBuilder
             $configAnnotation->delete = new Annotation\DeleteConfig();
         }
 
+        if (null === $configAnnotation->updateRelationship) {
+            $configAnnotation->updateRelationship = new Annotation\UpdateRelationshipConfig();
+        }
+
         // prepare config parts
         $configApi = $this->createApiConfig($configAnnotation);
         $configIndex = $this->createIndexConfig($configAnnotation); // TODO - review index name for retreive (R of CRUD)
         $configCreate = $this->createCreateConfig($configAnnotation, $configApi);
         $configUpdate = $this->createUpdateConfig($configAnnotation);
         $configDelete = $this->createDeleteConfig($configAnnotation);
+        $configUpdateRelationship = $this->createUpdateRelationshipConfig($configAnnotation);
 
-        $config = new Config($configApi, $configCreate, $configIndex, $configUpdate, $configDelete);
+        $config = new Config($configApi, $configCreate, $configIndex, $configUpdate, $configDelete, $configUpdateRelationship);
 
         return $config;
     }
@@ -90,8 +95,7 @@ class ConfigBuilder
             if ($this->serviceContainer->has($repository)) {
                 $repository = $this->serviceContainer->get($repository);
             } else {
-                throw new \RuntimeException(sprintf('Value for repository setting must be valid service, given value: %s',
-                    $repository));
+                throw new \RuntimeException(sprintf('Value for repository setting must be valid service, given value: %s', $repository));
             }
         }
         // if resolver or factory, put closure to resolve the repo
@@ -116,8 +120,40 @@ class ConfigBuilder
             if ($this->serviceContainer->has($requestBodyDecoder)) {
                 $requestBodyDecoder = $this->serviceContainer->get($requestBodyDecoder);
             } else {
-                throw new \RuntimeException(sprintf('String value for RequestBodyDecoder setting must be valid service, given value: %s',
-                    $requestBodyDecoder));
+                throw new \RuntimeException(sprintf('String value for RequestBodyDecoder setting must be valid service, given value: %s', $requestBodyDecoder));
+            }
+        }
+
+        $relationshipRequestBodyDecoder = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
+            return $configAnnotation->relationshipRequestBodyDecoder;
+        }, $this->defaults['relationship_request_body_decoder']);
+        if (true === \is_string($relationshipRequestBodyDecoder)) {
+            if ($this->serviceContainer->has($relationshipRequestBodyDecoder)) {
+                $relationshipRequestBodyDecoder = $this->serviceContainer->get($relationshipRequestBodyDecoder);
+            } else {
+                throw new \RuntimeException(sprintf('String value for RequestBodyDecoder setting must be valid service, given value: %s', $relationshipRequestBodyDecoder));
+            }
+        }
+
+        $requestBodyValidator = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
+            return $configAnnotation->requestBodyValidator;
+        }, $this->defaults['request_body_validator']);
+        if (true === \is_string($requestBodyValidator)) {
+            if ($this->serviceContainer->has($requestBodyValidator)) {
+                $requestBodyValidator = $this->serviceContainer->get($requestBodyValidator);
+            } else {
+                throw new \RuntimeException(sprintf('String value for RequestBodyValidator setting must be valid service, given value: %s', $requestBodyValidator));
+            }
+        }
+
+        $relationshipRequestBodyValidator = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
+            return $configAnnotation->requestBodyValidator;
+        }, $this->defaults['relationship_request_body_validator']);
+        if (true === \is_string($relationshipRequestBodyValidator)) {
+            if ($this->serviceContainer->has($relationshipRequestBodyValidator)) {
+                $relationshipRequestBodyValidator = $this->serviceContainer->get($relationshipRequestBodyValidator);
+            } else {
+                throw new \RuntimeException(sprintf('String value for RequestBodyValidator setting must be valid service, given value: %s', $relationshipRequestBodyValidator));
             }
         }
 
@@ -139,7 +175,10 @@ class ConfigBuilder
             $fixedFiltering,
             $allowedIncludePaths,
             $requestBodyDecoder,
-            $allowExtraParams
+            $allowExtraParams,
+            $requestBodyValidator,
+            $relationshipRequestBodyValidator,
+            $relationshipRequestBodyDecoder
         );
 
         return $config;
@@ -200,8 +239,7 @@ class ConfigBuilder
             if ($this->serviceContainer->has($factory)) {
                 $factory = $this->serviceContainer->get($factory);
             } else {
-                throw new \RuntimeException(sprintf('String value for create factory setting must be valid service, given value: %s',
-                    $factory));
+                throw new \RuntimeException(sprintf('String value for create factory setting must be valid service, given value: %s', $factory));
             }
         }
         if (true === ($factory instanceof ModelFactoryResolverInterface)) {
@@ -249,6 +287,24 @@ class ConfigBuilder
         }, $this->defaults['delete']['required_roles']);
 
         $config = new DeleteConfig($requiredRoles);
+
+        return $config;
+    }
+
+    /**
+     * @return UpdateRelationshipConfig
+     */
+    protected function createUpdateRelationshipConfig(Annotation\Config $configAnnotation = null)
+    {
+        $allowedRelationships = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
+            return $configAnnotation->updateRelationship->allowedRelationships;
+        }, null);
+
+        $requiredRoles = $this->annotationValueIfNotNull($configAnnotation, function ($configAnnotation) {
+            return $configAnnotation->updateRelationship->requiredRoles;
+        }, null);
+
+        $config = new UpdateRelationshipConfig($allowedRelationships, $requiredRoles);
 
         return $config;
     }

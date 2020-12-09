@@ -40,11 +40,8 @@ trait ConstraintViolationToErrorTransformer
         $source = [];
         if ($violation->getPropertyPath()) {
             // TODO - make diff between attributes and relationships
-            $source['pointer'] = '/data/attributes/' . $violation->getPropertyPath();
-        }
-        if (2 === $code) {
-            // TODO - parameter should be string? maybe we should send this in meta?
-            $source['parameter'] = $violation->getParameters();
+            $source['pointer'] = '/data/attributes/' . str_replace('.', '/', $violation->getPropertyPath());
+            $source['parameter'] = (string) $violation->getInvalidValue();
         }
 
         return new Error(

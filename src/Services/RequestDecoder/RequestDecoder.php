@@ -9,16 +9,22 @@ use Neomerx\JsonApi\Http\Request as NeomerxHttpRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
-use Trikoder\JsonApiBundle\Services\RequestDecoder\Exception\InvalidBodyForMethodException;
 
 /**
  * Class RequestDecoder
  */
 class RequestDecoder
 {
+    const METHODS_WITH_BODY = [
+        Request::METHOD_PATCH,
+        Request::METHOD_POST,
+        Request::METHOD_PUT,
+    ];
+
     /**
      * @var FactoryService
      */
@@ -36,8 +42,10 @@ class RequestDecoder
      */
     private $controller;
 
-    public function __construct(FactoryService $jsonApiFactory, JsonApiEnabledInterface $controller)
-    {
+    public function __construct(
+        FactoryService $jsonApiFactory,
+        JsonApiEnabledInterface $controller
+    ) {
         $this->jsonApiFactory = $jsonApiFactory;
         $this->controller = $controller;
     }
@@ -68,13 +76,13 @@ class RequestDecoder
                         // should resulting fields list be product of query fields and config fields? or leave it to underlaying checkers?
                         $configFields = $config->getIndex()->getIndexAllowedFields();
                         // if all request fields are empty so we apply for all types
-                        $currentRequestQueryFieldsEmpty = (false === array_key_exists('fields',
+                        $currentRequestQueryFieldsEmpty = (false === \array_key_exists('fields',
                                 $currentRequestQuery) || false === \is_array($currentRequestQuery['fields']));
                         if (true === $currentRequestQueryFieldsEmpty) {
                             $currentRequestQuery['fields'] = [];
                         }
                         foreach ($configFields as $type => $fields) {
-                            if (false === array_key_exists($type, $currentRequestQuery['fields'])) {
+                            if (false === \array_key_exists($type, $currentRequestQuery['fields'])) {
                                 $currentRequestQuery['fields'][$type] = implode(',', $fields);
                             }
                         }
@@ -96,7 +104,11 @@ class RequestDecoder
 
             // TODO - this throws exception - need to check if we wanna handle it here or let it bubble up to controllerException event
             // TODO - should we recheck built params also?
-            $queryChecker->checkQuery($this->parsedRequestParameters);
+            try {
+                $queryChecker->checkQuery($this->parsedRequestParameters);
+            } catch (JsonApiException $jsonApiException) {
+                throw new BadRequestHttpException('Invalid or not allowed query parameters');
+            }
 
             // TODO add header checker, might cause problems with clients, should be configurable (checker eg. \Neomerx\JsonApi\Http\Headers\RestrictiveHeadersChecker)
 
@@ -140,12 +152,46 @@ class RequestDecoder
 
             // TODO - check if correct type is sent (find it by schema type in class map by model)
 
-            // decode content
-            try {
-                $decodedContent = $config->getApi()->getRequestBodyDecoder()->decode($currentRequest->getMethod(),
-                    $requestContentPrepared);
-            } catch (InvalidBodyForMethodException $exception) {
-                throw new BadRequestHttpException('Body must contain data to be a valid JSON API payload.', $exception);
+            $decodedContent = [];
+
+            if (
+                $currentRequest->attributes->has('_jsonapibundle_relationship_endpoint')
+                &&
+                true === $currentRequest->attributes->get('_jsonapibundle_relationship_endpoint')
+                &&
+                \in_array($currentRequest->getMethod(), [Request::METHOD_POST, Request::METHOD_DELETE])
+            ) {
+                $validator = $config->getApi()->getRelationshipRequestBodyValidator();
+
+                try {
+                    if ($validator->validate($requestContentPrepared)->count()) {
+                        throw new BadRequestHttpException('Body must contain data to be a valid JSON API payload.');
+                    }
+                } catch (UnexpectedTypeException $exception) {
+                    //inconsistency in Symfony before 4.2.0 causes payload like \Trikoder\JsonApiBundle\Tests\Integration\RequestDecoderTest::testJsonPostPayloadWithDefaultsAttributeAndInvalidStructure to fail with exception
+                    //@see https://github.com/symfony/symfony/pull/27917
+                    throw new BadRequestHttpException('Body does not contain valid data');
+                }
+
+                $decodedContent = $config->getApi()->getRelationshipRequestBodyDecoder()->decode(
+                    $currentRequest->getMethod(),
+                    $requestContentPrepared
+                );
+            } elseif (\in_array($currentRequest->getMethod(), self::METHODS_WITH_BODY, true)) {
+                try {
+                    if ($config->getApi()->getRequestBodyValidator()->validate($requestContentPrepared)->count()) {
+                        throw new BadRequestHttpException('Body must contain data to be a valid JSON API payload.');
+                    }
+                } catch (UnexpectedTypeException $exception) {
+                    //inconsistency in Symfony before 4.2.0 causes payload like \Trikoder\JsonApiBundle\Tests\Integration\RequestDecoderTest::testJsonPostPayloadWithDefaultsAttributeAndInvalidStructure to fail with exception
+                    //@see https://github.com/symfony/symfony/pull/27917
+                    throw new BadRequestHttpException('Body does not contain valid data');
+                }
+
+                $decodedContent = $config->getApi()->getRequestBodyDecoder()->decode(
+                    $currentRequest->getMethod(),
+                    $requestContentPrepared
+                );
             }
 
             /** -- content and request
@@ -153,7 +199,7 @@ class RequestDecoder
              * we could merge it, that would be multipart support however this is jsonapi so we only do jsonapi stuff (atm :))
              */
 
-            // create new reqest that will replace original one
+            // create new request that will replace original one
             // empty duplicated to get copy of current request with allowed preserved properties
             $transformedRequest = $currentRequest->duplicate();
             // we favour initialize for setup because we can give content of request here, what we cannot do in duplicate
@@ -221,10 +267,14 @@ class RequestDecoder
 
         if (true === \is_array($sourceFilterParams)) {
             foreach ($sourceFilterParams as $field => $filters) {
-                if (false !== strpos($filters, ',')) {
-                    $decodedParams[$field] = explode(',', $filters);
+                if (true === \is_array($filters)) {
+                    $decodedParams[$field] = $this->decodeFilterParams($filters);
                 } else {
-                    $decodedParams[$field] = $filters;
+                    if (false !== strpos($filters, ',')) {
+                        $decodedParams[$field] = explode(',', $filters);
+                    } else {
+                        $decodedParams[$field] = $filters;
+                    }
                 }
             }
         }

@@ -3,6 +3,7 @@
 namespace Trikoder\JsonApiBundle\Listener;
 
 use Closure;
+use LogicException;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 
 trait JsonApiEnabledControllerDetectorTrait
@@ -15,38 +16,36 @@ trait JsonApiEnabledControllerDetectorTrait
     protected function isJsonApiEnabledController($controller)
     {
         // we cannot support Closure as we cannot look inside it safely
-        if (true === \is_callable($controller) && false === ($controller instanceof Closure)) {
-            if ($controller[0] instanceof JsonApiEnabledInterface) {
-                return true;
-            } else {
-                return false;
-            }
-        } elseif (true === \is_object($controller)) {
-            if ($controller instanceof JsonApiEnabledInterface) {
-                return true;
-            } else {
-                return false;
-            }
+        if (true === \is_object($controller)) {
+            return $controller instanceof JsonApiEnabledInterface;
         }
 
-        throw new \LogicException('Unsupported type provided as controller');
+        if (true === \is_callable($controller) && false === ($controller instanceof Closure)) {
+            return $controller[0] instanceof JsonApiEnabledInterface;
+        }
+
+        throw new LogicException(sprintf('Unsupported type provided as controller: %s', \gettype($controller)));
     }
 
     /**
      * @param $eventController
      *
-     * @return null|object
+     * @return object|null
      */
     protected function resolveControllerFromEventController($eventController)
     {
-        if (true === \is_callable($eventController) && false === ($eventController instanceof Closure)) {
-            return $eventController[0];
-        } elseif (true === \is_callable($eventController) && true === ($eventController instanceof Closure)) {
-            return null;
-        } elseif (true === \is_object($eventController)) {
-            return $eventController;
-        } else {
+        if (true === ($eventController instanceof Closure)) {
             return null;
         }
+
+        if (true === \is_object($eventController)) {
+            return $eventController;
+        }
+
+        if (true === \is_callable($eventController)) {
+            return $eventController[0];
+        }
+
+        return null;
     }
 }

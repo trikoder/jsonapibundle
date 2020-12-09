@@ -33,6 +33,36 @@ class JsonApiEnabledControllerDetectorTraitTest extends \PHPUnit_Framework_TestC
 
         // test some class
         $this->assertFalse($trait->isJsonApiEnabledControllerTest($this));
+
+        // test class with invoke that's not JSON API enabled
+        $invokableClass = new class() {
+            public function __invoke()
+            {
+            }
+        };
+
+        $this->assertFalse($trait->isJsonApiEnabledControllerTest($invokableClass));
+
+        // test class with invoke that's'JSON API enabled
+        $invokableClass = new class() implements JsonApiEnabledInterface {
+            public function __invoke()
+            {
+            }
+
+            public function getSchemaClassMapProvider()
+            {
+            }
+
+            public function getJsonApiConfig(): ConfigInterface
+            {
+            }
+
+            public function setJsonApiConfig(ConfigInterface $config)
+            {
+            }
+        };
+
+        $this->assertTrue($trait->isJsonApiEnabledControllerTest($invokableClass));
     }
 
     public function testResolveControllerFromEventController()
@@ -51,6 +81,15 @@ class JsonApiEnabledControllerDetectorTraitTest extends \PHPUnit_Framework_TestC
         $this->assertNull($trait->resolveControllerFromEventControllerTest(function () use ($controller) {
             return $controller;
         }));
+
+        // test class with invoke
+        $invokableClass = new class() {
+            public function __invoke()
+            {
+            }
+        };
+
+        $this->assertEquals($invokableClass, $trait->resolveControllerFromEventControllerTest($invokableClass));
     }
 }
 

@@ -22,6 +22,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'model_class' => '\stdClass',
             'repository' => 'trikoder.jsonapi.doctrine_repository_factory',
             'request_body_decoder' => 'trikoder.jsonapi.request_body_decoder',
+            'relationship_request_body_decoder' => 'trikoder.jsonapi.relationship_request_body_decoder',
             'fixed_filtering' => [],
             'allowed_include_paths' => null,
             'allow_extra_params' => false,
@@ -46,6 +47,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'required_roles' => null,
             ],
             'schema_automap_scan_patterns' => [],
+            'kernel_listener_on_kernel_view_priority' => 0,
+            'kernel_listener_on_kernel_exception_priority' => 0,
+            'request_body_validator' => 'trikoder.jsonapi.request_body_validator',
+            'relationship_request_body_validator' => 'trikoder.jsonapi.relationship_request_body_validator',
         ];
     }
 }

@@ -24,13 +24,12 @@ class ModelFactoryResolver implements ModelFactoryResolverInterface
      */
     public function resolve(string $modelClass): ModelFactoryInterface
     {
-        if (array_key_exists($modelClass, $this->registry)) {
+        if (\array_key_exists($modelClass, $this->registry)) {
             return $this->registry[$modelClass];
         } elseif (null !== $this->defaultFactory) {
             return $this->defaultFactory;
         } else {
-            throw new RuntimeException(sprintf('No factory defined for model %s (no default factory also). Did you forget to register any in ModelFactoryInterface?',
-                $modelClass));
+            throw new RuntimeException(sprintf('No factory defined for model %s (no default factory also). Did you forget to register any in ModelFactoryInterface?', $modelClass));
         }
     }
 
@@ -40,7 +39,7 @@ class ModelFactoryResolver implements ModelFactoryResolverInterface
     {
         if (null === $modelClass) {
             $this->defaultFactory = $factory;
-        } elseif (true === array_key_exists($modelClass, $this->registry)) {
+        } elseif (true === \array_key_exists($modelClass, $this->registry)) {
             throw new RuntimeException(sprintf('Factory for model %s is already defined', $modelClass));
         } else {
             $this->registry[$modelClass] = $factory;

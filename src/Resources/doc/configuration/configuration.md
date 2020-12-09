@@ -7,6 +7,16 @@ For needs of this document, term Field means any model attribute or relation.
 
 ## Configuration directives
 
+### kernel_listener_on_kernel_view_priority
+
+This configures the `\Trikoder\JsonApiBundle\Listener\KernelListener` listener
+`kernel.view` event priority. The value must be an integer.
+
+### kernel_listener_on_kernel_exception_priority
+
+This configures the `\Trikoder\JsonApiBundle\Listener\KernelListener` listener
+`kernel.exception` event priority. The value must be an integer.
+
 ### model class
 Model class that this controller is responsible of. Defaults to `\stdClass`.
 
@@ -28,6 +38,27 @@ You can remap fields, change formats, etc.
 
 Defaults to `\Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService` .
 
+
+### relationship_request_body_decoder
+
+Decoder which is used when accessing relationship endpoint.
+Must implement `\Trikoder\JsonApiBundle\Contracts\RequestBodyDecoderInterface`.
+
+Defaults to `trikoder.jsonapi.relationship_request_body_decoder` which is `\Trikoder\JsonApiBundle\Services\RequestDecoder\RelationshipRequestBodyDecoder` by default.
+
+### request_body_validator
+
+Validator which is used when accessing non-relationship endpoint.
+Must implement `\Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface`.
+
+Defaults to `trikoder.jsonapi.request_body_validator` which is `\Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService` by default.
+
+### relationship_request_body_validator
+
+Validator which is used when accessing relationship endpoint.
+Must implement `\Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface`.
+
+Defaults to `trikoder.jsonapi.relationship_request_body_validator` which is `\Trikoder\JsonApiBundle\Services\RequestDecoder\RelationshipValidatorAdapter` by default.
 
 ### fixed filtering
 Array of fixed filtering defined for this controller. It is applied to all load action from repository (index, show, update, delete).
@@ -146,3 +177,14 @@ Each action of CRUD has corresponding trait (or several of them for simple/speci
 ### Delete
 
 #### DeleteActionTrait
+
+#### UpdateRelationshipTrait
+
+Trait which adds support for [updating To-Many Relationships](https://jsonapi.org/format/#crud-updating-to-many-relationships) with `POST` and `DELETE` methods.
+In order to use it, controller attribute `_jsonapibundle_relationship_endpoint` must be set to `true` so code outside controller can treat request as relationship request.
+To configure which relationships can be updated see [example](https://gitlab.trikoder.net/trikoder/jsonapibundle/blob/master/src/Resources/doc/configuration/examples/exampleAnnotation.php).
+
+#### UpdateRelationshipActionTrait
+
+Creates `/relationships/` endpoints for model and uses `UpdateRelationshipTrait`.
+If `UpdateRelationshipTrait` returns model, return [204 No Content](https://jsonapi.org/format/#crud-updating-relationship-responses-204) response, otherwise return response received from `UpdateRelationshipTrait`.

@@ -82,8 +82,7 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
                 }
                 throw new UnhandleableModelInputException($extraFields);
             } else {
-                throw new UnhandleableModelInputException([],
-                    new ModelValidationException($this->convertFormErrorsToErrors($formErrors)));
+                throw new UnhandleableModelInputException([], new ModelValidationException($this->convertFormErrorsToErrors($formErrors)));
             }
         }
 

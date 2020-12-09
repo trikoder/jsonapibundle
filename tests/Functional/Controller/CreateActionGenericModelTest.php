@@ -19,10 +19,7 @@ final class CreateActionGenericModelTest extends JsonapiWebTestCase
         $client->request(
             'POST',
             '/api/generic/',
-            [],
-            [],
-            [],
-            json_encode([
+            [
                 'data' => [
                     'type' => 'generic-model',
                     'attributes' => [
@@ -30,7 +27,7 @@ final class CreateActionGenericModelTest extends JsonapiWebTestCase
                         'isActive' => true,
                     ],
                 ],
-            ])
+            ]
         );
 
         $response = $client->getResponse();

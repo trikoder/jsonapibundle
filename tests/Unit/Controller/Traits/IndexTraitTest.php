@@ -2,7 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services\ModelInput;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Trikoder\JsonApiBundle\Controller\Traits\Actions\IndexTrait;
 
 class IndexTraitTest extends TestCase

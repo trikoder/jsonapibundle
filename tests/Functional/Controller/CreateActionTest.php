@@ -4,6 +4,7 @@ namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
+use Trikoder\JsonApiBundle\Tests\Resources\Entity\User;
 
 class CreateActionTest extends JsonapiWebTestCase
 {
@@ -270,5 +271,138 @@ class CreateActionTest extends JsonapiWebTestCase
         ], $data['data']);
 
         // TODO - verify the database has the same data
+    }
+
+    public function testCreateWithRelationshipReturnsBadRequestIfInvalidInputIsProvided()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'POST',
+            '/api/posts',
+            [
+                'data' => [
+                    'type' => 'post',
+                    'attributes' => [
+                    ],
+                    'relationships' => [
+                        'author' => [
+                            'data' => [
+                                'type' => 'user',
+                                // purposefully left out id
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    /**
+     * test versioned create
+     */
+    public function testVersionedUserCreateAction()
+    {
+        $client = static::createClient();
+
+        $email = sprintf('mytest%s@domain.com', time());
+
+        $client->request(
+            'POST',
+            '/api/v2/user/',
+            [],
+            [],
+            [],
+            json_encode([
+                'data' => [
+                    'type' => 'user',
+                    'attributes' => [
+                        'email' => $email,
+                        'active' => true,
+                    ],
+                ],
+            ])
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
+
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertEquals([
+            'type' => 'user',
+            'id' => $data['data']['id'], // get take id from response - if none, this will cause error
+            'attributes' => [
+                'email' => $email,
+                'active' => true,
+            ],
+            'links' => [
+                'self' => '/user/' . $data['data']['id'],
+            ],
+        ], $data['data']);
+
+        // TODO - verify the database has the same data
+    }
+
+    public function testSpecifiedIncludesGetIncludedOnCreateRequests()
+    {
+        $client = static::createClient();
+
+        /** @var User $user */
+        $user = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class)->find(1);
+
+        $client->request(
+            'POST',
+            '/api/posts?include=author',
+            [],
+            [],
+            [],
+            json_encode([
+                'data' => [
+                    'type' => 'post',
+                    'attributes' => [
+                        'title' => bin2hex(random_bytes(16)),
+                        'active' => true,
+                    ],
+                    'relationships' => [
+                        'author' => [
+                            'data' => [
+                                'type' => 'user',
+                                'id' => (string) $user->getId(),
+                            ],
+                        ],
+                    ],
+                ],
+            ])
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
+
+        $this->assertSame(Response::HTTP_CREATED, $response->getStatusCode());
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertArrayHasKey('included', $data);
+
+        $this->assertSame([
+            [
+                'type' => 'user',
+                'id' => (string) $user->getId(),
+                'attributes' => [
+                    'email' => $user->getEmail(),
+                    'active' => $user->isActive(),
+                ],
+            ],
+        ], $data['included']);
     }
 }

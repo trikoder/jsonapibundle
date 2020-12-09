@@ -10,6 +10,7 @@ use Trikoder\JsonApiBundle\Controller\Traits\DeleteActionTrait;
 use Trikoder\JsonApiBundle\Controller\Traits\IndexActionTrait;
 use Trikoder\JsonApiBundle\Controller\Traits\ShowActionTrait;
 use Trikoder\JsonApiBundle\Controller\Traits\UpdateActionTrait;
+use Trikoder\JsonApiBundle\Controller\Traits\UpdateRelationshipActionTrait;
 
 /**
  * @Route("/user")
@@ -19,6 +20,9 @@ use Trikoder\JsonApiBundle\Controller\Traits\UpdateActionTrait;
  *     index=@JsonApiConfig\IndexConfig(
  *         allowedSortFields={"email", "id"},
  *         allowedFilteringParameters={"email", "id"}
+ *     ),
+ *     updateRelationship=@JsonApiConfig\UpdateRelationshipConfig(
+ *         allowedRelationships={"tags", "relationshipWhichDoesNotExistOnResource"}
  *     )
  * )
  */
@@ -29,4 +33,5 @@ class UserController extends JsonApiController
     use CreateActionTrait;
     use UpdateActionTrait;
     use DeleteActionTrait;
+    use UpdateRelationshipActionTrait;
 }

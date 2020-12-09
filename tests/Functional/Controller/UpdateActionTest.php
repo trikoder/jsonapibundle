@@ -23,19 +23,16 @@ class UpdateActionTest extends JsonapiWebTestCase
         $client->request(
             'PUT',
             '/api/user/3',
-            [],
-            [],
-            [],
-            json_encode([
+            [
                 'data' => [
                     'type' => 'user',
-                    'id' => 3,
+                    'id' => '3',
                     'attributes' => [
                         'email' => 'myupdatetest@domain.com',
                         'active' => true,
                     ],
                 ],
-            ])
+            ]
         );
 
         $response = $client->getResponse();
@@ -48,7 +45,7 @@ class UpdateActionTest extends JsonapiWebTestCase
 
         $this->assertEquals([
             'type' => 'user',
-            'id' => 3,
+            'id' => '3',
             'attributes' => [
                 'email' => 'myupdatetest@domain.com',
                 'active' => true,
@@ -75,18 +72,15 @@ class UpdateActionTest extends JsonapiWebTestCase
         $client->request(
             'PUT',
             '/api/user/3',
-            [],
-            [],
-            [],
-            json_encode([
+            [
                 'data' => [
                     'type' => 'user',
-                    'id' => 3,
+                    'id' => '3',
                     'attributes' => [
                         'email' => 'invalid',
                     ],
                 ],
-            ])
+            ]
         );
 
         $response = $client->getResponse();
@@ -115,18 +109,15 @@ class UpdateActionTest extends JsonapiWebTestCase
         $client->request(
             'PUT',
             '/api/user/999',
-            [],
-            [],
-            [],
-            json_encode([
+            [
                 'data' => [
                     'type' => 'user',
-                    'id' => 3,
+                    'id' => '3',
                     'attributes' => [
                         'email' => 'invalid',
                     ],
                 ],
-            ])
+            ]
         );
         $response = $client->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
@@ -178,22 +169,51 @@ class UpdateActionTest extends JsonapiWebTestCase
         $client->request(
             'POST',
             '/api/user-config-restrictions/3',
-            [],
-            [],
-            [],
-            json_encode([
+            [
                 'data' => [
                     'type' => 'user',
-                    'id' => 3,
+                    'id' => '3',
                     'attributes' => [
                         'i_should_not_be_able_to_update_this_field' => 'some malicious value',
                     ],
                 ],
-            ])
+            ]
         );
 
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode(), $response->getContent());
+    }
+
+    /**
+     * test simple update
+     */
+    public function testVersionedUserUpdateAction()
+    {
+        $client = static::createClient();
+
+        // load user
+        /** @var User $user */
+        $user = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class)->find(3);
+
+        $client->request(
+            'PUT',
+            '/api/v2/user/3',
+            [
+                'data' => [
+                    'type' => 'user',
+                    'id' => '3',
+                    'attributes' => [
+                        'active' => true,
+                    ],
+                ],
+            ]
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertIsJsonapiResponse($response);
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 }

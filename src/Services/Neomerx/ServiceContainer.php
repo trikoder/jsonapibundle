@@ -50,7 +50,7 @@ class ServiceContainer implements ContainerInterface
      */
     public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
     {
-        if (array_key_exists($id, $this->services)) {
+        if (\array_key_exists($id, $this->services)) {
             return $this->services[$id];
         } else {
             if (null !== $this->fallbackContainer) {
@@ -70,7 +70,7 @@ class ServiceContainer implements ContainerInterface
      */
     public function has($id)
     {
-        if (array_key_exists($id, $this->services)) {
+        if (\array_key_exists($id, $this->services)) {
             return true;
         } else {
             if (null !== $this->fallbackContainer) {
@@ -90,7 +90,7 @@ class ServiceContainer implements ContainerInterface
      */
     public function initialized($id)
     {
-        if (array_key_exists($id, $this->services)) {
+        if (\array_key_exists($id, $this->services)) {
             return true;
         } else {
             if (null !== $this->fallbackContainer) {

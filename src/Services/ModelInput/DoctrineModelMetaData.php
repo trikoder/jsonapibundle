@@ -32,7 +32,7 @@ final class DoctrineModelMetaData implements ModelMetaDataInterface
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getTypeForField(string $fieldName)
     {

@@ -2,6 +2,7 @@ trikoder_json_api:
   model_class: '\stdClass'
   repository: "trikoder.jsonapi.doctrine_repository_factory"
   request_body_decoder: "trikoder.jsonapi.request_body_decoder"
+  relationship_request_body_decoder: "trikoder.jsonapi.relationship_request_body_decoder"
   fixed_filtering: {}
   allowed_include_paths: null
   allow_extra_params: false
@@ -22,3 +23,5 @@ trikoder_json_api:
   delete:
     required_roles: null
   schema_automap_scan_patterns: []
+  kernel_listener_on_kernel_view_priority: 0
+  kernel_listener_on_kernel_exception_priority: 0

@@ -15,7 +15,7 @@ trait IndexActionTrait
     /**
      * @Route("{trailingSlash}", requirements={"trailingSlash": "[/]{0,1}"}, defaults={"trailingSlash": ""}, methods={"GET"})
      *
-     * @return array|null|\Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface
+     * @return array|\Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface|null
      */
     public function indexAction(Request $request)
     {

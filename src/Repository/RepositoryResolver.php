@@ -33,11 +33,11 @@ class RepositoryResolver implements RepositoryResolverInterface
         // first check for repository
         $resolvedRepository = null;
 
-        if (true === array_key_exists($modelClass, $this->repositoryRegistry)) {
+        if (true === \array_key_exists($modelClass, $this->repositoryRegistry)) {
             $resolvedRepository = $this->repositoryRegistry[$modelClass];
         }
 
-        if (null === $resolvedRepository && true === array_key_exists($modelClass, $this->factoryRegistry)) {
+        if (null === $resolvedRepository && true === \array_key_exists($modelClass, $this->factoryRegistry)) {
             $resolvedRepository = $this->factoryRegistry[$modelClass]->create($modelClass);
             $this->registerRepository($resolvedRepository, $modelClass);
         }
@@ -48,8 +48,7 @@ class RepositoryResolver implements RepositoryResolverInterface
         }
 
         if (null === $resolvedRepository) {
-            throw new RuntimeException(sprintf('No repository found for model %s (no defaults also). Did you forget to register any in RepositoryResolverInterface?',
-                $modelClass));
+            throw new RuntimeException(sprintf('No repository found for model %s (no defaults also). Did you forget to register any in RepositoryResolverInterface?', $modelClass));
         }
 
         return $resolvedRepository;
@@ -59,7 +58,7 @@ class RepositoryResolver implements RepositoryResolverInterface
      */
     public function registerRepository(RepositoryInterface $repository, string $modelClass)
     {
-        if (true === array_key_exists($modelClass, $this->repositoryRegistry)) {
+        if (true === \array_key_exists($modelClass, $this->repositoryRegistry)) {
             throw new RuntimeException(sprintf('Repository for model %s is already defined', $modelClass));
         } else {
             $this->repositoryRegistry[$modelClass] = $repository;
@@ -73,7 +72,7 @@ class RepositoryResolver implements RepositoryResolverInterface
     {
         if (true === (null === $modelClass)) {
             $this->defaultFactory = $factory;
-        } elseif (true === array_key_exists($modelClass, $this->factoryRegistry)) {
+        } elseif (true === \array_key_exists($modelClass, $this->factoryRegistry)) {
             throw new RuntimeException(sprintf('Repository factory for model %s is already defined', $modelClass));
         } else {
             $this->factoryRegistry[$modelClass] = $factory;

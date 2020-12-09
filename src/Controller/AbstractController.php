@@ -70,7 +70,6 @@ abstract class AbstractController implements JsonApiEnabledInterface
     /**
      * Returns config
      *
-     *
      * @throws Exception
      */
     public function getJsonApiConfig(): ConfigInterface

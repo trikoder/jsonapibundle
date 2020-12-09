@@ -17,7 +17,7 @@ class ModelValidator implements ModelValidatorInterface
      */
     protected $validator;
 
-    /** @var object $model */
+    /** @var object */
     protected $model;
 
     /**

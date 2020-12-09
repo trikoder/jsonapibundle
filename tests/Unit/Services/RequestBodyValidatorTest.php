@@ -4,55 +4,47 @@ declare(strict_types=1);
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services;
 
-use Trikoder\JsonApiBundle\Services\RequestDecoder\Exception\InvalidBodyForMethodException;
-use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyValidator;
+use Prophecy\Argument;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Trikoder\JsonApiBundle\Services\RequestDecoder\SymfonyValidatorAdapter;
 
 final class RequestBodyValidatorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testExceptionForEmptyPostBody()
+    public function testReturnsEmptyViolationListWithoutDoingValidationIfPrimaryDataIsNull()
     {
-        $this->expectException(InvalidBodyForMethodException::class);
-        $this->expectExceptionMessage('Passed body is not valid for request method POST');
-        $this->createService()->validate('POST', []);
+        $symfonyValidator = $this->prophesize(ValidatorInterface::class);
+        $validator = $this->createService($symfonyValidator->reveal());
+
+        $result = $validator->validate(['data' => null]);
+
+        $this->assertCount(0, $result);
+        $symfonyValidator->validate()->shouldNotHaveBeenCalled();
     }
 
-    protected function createService()
-    {
-        return new RequestBodyValidator();
-    }
-
-    public function testNullDataBody()
-    {
-        $testData = [
-            'data' => null,
-        ];
-
-        $result = $this->createService()->validate('POST', $testData);
-
-        $this->assertNull($result);
-    }
-
-    public function testExceptionForDataWithoutTypePostBody()
+    public function testValidationIsBeingPerformedWhenValidInputIsProvided()
     {
         $testData = [
             'data' => [
-                'id' => 1,
+                'id' => 'foo',
+                'type' => 'bar',
             ],
         ];
 
-        $this->expectException(InvalidBodyForMethodException::class);
-        $this->expectExceptionMessage('Passed body is not valid for request method POST');
-        $this->createService()->validate('POST', $testData);
+        $symfonyValidator = $this->prophesize(ValidatorInterface::class);
+
+        $validator = $this->createService($symfonyValidator->reveal());
+
+        $validator->validate($testData);
+
+        $symfonyValidator->validate(
+            Argument::type('array'),
+            Argument::type(Constraint::class)
+        )->shouldHaveBeenCalledOnce();
     }
 
-    public function testValidPostBody()
+    protected function createService(ValidatorInterface $validator)
     {
-        $testData = [
-            'data' => [
-                'type' => 'ok',
-            ],
-        ];
-
-        $this->assertNull($this->createService()->validate('POST', $testData));
+        return new SymfonyValidatorAdapter($validator);
     }
 }

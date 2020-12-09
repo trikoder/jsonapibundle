@@ -2,7 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\Services\ModelInput;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormInterface;
 use Trikoder\JsonApiBundle\Services\ModelInput\CustomFormModelInputHandler;
 

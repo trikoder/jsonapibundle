@@ -2,6 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Functional\Controller;
 
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Trikoder\JsonApiBundle\Tests\Functional\JsonapiWebTestCase;
 use Trikoder\JsonApiBundle\Tests\Resources\Entity\Post;
@@ -61,6 +62,10 @@ class ShowActionTest extends JsonapiWebTestCase
         // load user
         /** @var User $user */
         $user = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class)->find(4);
+        $user->setCustomer(true);
+        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
+        $em->persist($user);
+        $em->flush();
 
         $client->request('GET', '/api/customer/4');
 
@@ -184,7 +189,7 @@ class ShowActionTest extends JsonapiWebTestCase
                 'author' => [
                     'data' => [
                         'type' => 'user',
-                        'id' => 3,
+                        'id' => '4',
                     ],
                 ],
             ],
@@ -223,7 +228,7 @@ class ShowActionTest extends JsonapiWebTestCase
                 'author' => [
                     'data' => [
                         'type' => 'user',
-                        'id' => 3,
+                        'id' => '4',
                     ],
                 ],
             ],
@@ -235,7 +240,7 @@ class ShowActionTest extends JsonapiWebTestCase
         $this->assertEquals([
             [
                 'type' => 'user',
-                'id' => '3',
+                'id' => '4',
                 'attributes' => [
                     'email' => $post->getAuthor()->getEmail(),
                     'active' => $post->getAuthor()->isActive(),
@@ -246,7 +251,7 @@ class ShowActionTest extends JsonapiWebTestCase
         $this->assertArrayHasKey('included', $data);
         $this->assertNotEmpty($data['included']);
         $this->assertEquals('user', $data['included'][0]['type']);
-        $this->assertEquals(3, $data['included'][0]['id']);
+        $this->assertEquals(4, $data['included'][0]['id']);
     }
 
     public function testIAmAllowedToFetchOnlyFieldsConfiguredInAllowedFields()
@@ -261,6 +266,89 @@ class ShowActionTest extends JsonapiWebTestCase
         $response = $client->getResponse();
         $this->assertIsJsonapiResponse($response);
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    /**
+     * Test a bit more complex show action
+     */
+    public function testGenericSchemaShowAction()
+    {
+        $client = static::createClient();
+
+        // load post
+        /** @var Post post */
+        $post = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(Post::class)->find(1);
+
+        $client->request('GET', '/api/generic-schema/1');
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
+
+        $data = $this->getResponseContentJson($response);
+
+        $this->assertEquals([
+            'type' => 'post',
+            'id' => '1',
+            'attributes' => [
+                'title' => 'Post 1',
+                'active' => false,
+                'publishedAt' => $post->getPublishedAt()->format(DateTime::ATOM),
+            ],
+            'relationships' => [
+                'author' => [
+                    'data' => [
+                        'type' => 'user',
+                        'id' => '4',
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => '/post/1',
+            ],
+        ], $data['data']);
+
+        $this->assertEquals([
+            [
+                'type' => 'user',
+                'id' => '4',
+                'attributes' => [
+                    'email' => $post->getAuthor()->getEmail(),
+                    'active' => $post->getAuthor()->isActive(),
+                    'customer' => $post->getAuthor()->isCustomer(),
+                ],
+                'relationships' => [
+                    'carts' => [
+                        'data' => [
+                        ],
+                    ],
+                    'tags' => [
+                        'data' => [
+                        ],
+                    ],
+                ],
+            ],
+        ], $data['included']);
+    }
+
+    /**
+     * Test simple show action
+     */
+    public function testVersionedUserShowAction()
+    {
+        $client = static::createClient();
+
+        // load user
+        /** @var User $user */
+        $user = $client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class)->find(1);
+
+        $client->request('GET', '/api/v2/user/1');
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertIsJsonapiResponse($response);
     }
 
     // TODO - If a server is unable to identify a relationship path or does not support inclusion of resources from a path, it MUST respond with 400 Bad Request.

@@ -3,7 +3,9 @@ parameters:
     trikoder.jsonapi.schema_class_map_provider.class: 'Trikoder\JsonApiBundle\Services\SchemaClassMapService'
     trikoder.jsonapi.factory.class: 'Trikoder\JsonApiBundle\Services\Neomerx\FactoryService'
     trikoder.jsonapi.request_body_decoder.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyDecoderService'
-    trikoder.jsonapi.request_body_validator.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\RequestBodyValidator'
+    trikoder.jsonapi.relationship_request_body_decoder.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\RelationshipRequestBodyDecoder'
+    trikoder.jsonapi.request_body_validator.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\SymfonyValidatorAdapter'
+    trikoder.jsonapi.relationship_request_body_validator.class: 'Trikoder\JsonApiBundle\Services\RequestDecoder\RelationshipValidatorAdapter'
     trikoder.jsonapi.response_factory.class: 'Trikoder\JsonApiBundle\Services\ResponseFactoryService'
     trikoder.jsonapi.encoder.class: 'Trikoder\JsonApiBundle\Services\Neomerx\EncoderService'
     trikoder.jsonapi.model_tools_factory.class: 'Trikoder\JsonApiBundle\Services\ModelInput\ModelToolsFactory'
@@ -16,21 +18,6 @@ parameters:
     trikoder.jsonapi.simple_model_factory.class: 'Trikoder\JsonApiBundle\Model\Factory\SimpleModelFactory'
 
 services:
-    trikoder.jsonapi.request_listener:
-        class: "%trikoder.jsonapi.request_listener.class%"
-        arguments:
-            - "@trikoder.jsonapi.factory"
-            - "@trikoder.jsonapi.request_body_decoder"
-            - "@trikoder.jsonapi.response_factory"
-            - "@trikoder.jsonapi.encoder"
-            - "@logger"
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller, priority: 16 }
-            - { name: kernel.event_listener, event: kernel.controller_arguments, priority: -10 }
-            - { name: kernel.event_listener, event: kernel.view }
-            - { name: kernel.event_listener, event: kernel.response }
-            - { name: kernel.event_listener, event: kernel.exception }
-
     trikoder.jsonapi.controller_config_listener:
         class: "%trikoder.jsonapi.controller_config_listener.class%"
         arguments:
@@ -50,20 +37,34 @@ services:
     trikoder.jsonapi.factory:
         class: "%trikoder.jsonapi.factory.class%"
         arguments: ['@Trikoder\JsonApiBundle\Services\Neomerx\ServiceContainer', "@logger"]
+        public: true
+
+    Trikoder\JsonApiBundle\Services\Neomerx\FactoryService: "@trikoder.jsonapi.factory"
 
     trikoder.jsonapi.request_body_decoder:
         class: "%trikoder.jsonapi.request_body_decoder.class%"
-        arguments: ['@Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface']
         public: true
 
-    Trikoder\JsonApiBundle\Contracts\RequestBodyValidatorInterface:
+    trikoder.jsonapi.relationship_request_body_decoder:
+        class: "%trikoder.jsonapi.relationship_request_body_decoder.class%"
+        public: true
+
+    trikoder.jsonapi.request_body_validator:
         class: '%trikoder.jsonapi.request_body_validator.class%'
+        arguments: ['@validator']
+        public: true
+
+    trikoder.jsonapi.relationship_request_body_validator:
+        class: '%trikoder.jsonapi.relationship_request_body_validator.class%'
+        arguments: ['@validator']
+        public: true
 
     Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface:
         class: "%trikoder.jsonapi.response_factory.class%"
         arguments:
             - "@trikoder.jsonapi.encoder"
             - "@trikoder.jsonapi.error_factory"
+            - '@Trikoder\JsonApiBundle\Services\ResponseLinterInterface'
         public: true
 
     trikoder.jsonapi.response_factory: '@Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface'
@@ -89,6 +90,7 @@ services:
     Trikoder\JsonApiBundle\Services\ModelInput\ModelMetaDataFactory:
         class: "%trikoder.jsonapi.model_meta_data_factory.class%"
         arguments: ["@doctrine.orm.entity_manager"]
+        public: true
 
     trikoder.jsonapi.model_meta_data_factory: '@Trikoder\JsonApiBundle\Services\ModelInput\ModelMetaDataFactory'
 
@@ -101,7 +103,7 @@ services:
 
     trikoder.jsonapi.doctrine_repository_factory:
         class: "%trikoder.jsonapi.doctrine_repository_factory.class%"
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments: ["@doctrine.orm.entity_manager", "@property_accessor"]
         public: true
 
     trikoder.jsonapi.simple_model_factory:
@@ -112,3 +114,11 @@ services:
         class: "%trikoder.jsonapi.model_factory_resolver.class%"
         calls:
           - [registerFactory, ['@trikoder.jsonapi.simple_model_factory']]
+
+    Trikoder\JsonApiBundle\Services\JsonResponseLinter:
+        class: 'Trikoder\JsonApiBundle\Services\JsonResponseLinter'
+
+    Trikoder\JsonApiBundle\Services\JsonApiResponseLinter:
+        class: 'Trikoder\JsonApiBundle\Services\JsonApiResponseLinter'
+
+    Trikoder\JsonApiBundle\Services\ResponseLinterInterface: '@Trikoder\JsonApiBundle\Services\JsonApiResponseLinter'

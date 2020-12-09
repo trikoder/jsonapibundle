@@ -98,8 +98,7 @@ class SimpleFileUploadControllerTest extends JsonapiWebTestCase
         return new UploadedFile(
             'README.md',
             'README.md',
-            'application/octe',
-            123
+            'application/octe'
         );
     }
 }

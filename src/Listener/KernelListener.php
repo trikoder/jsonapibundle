@@ -16,6 +16,8 @@ use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
 use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
 use Trikoder\JsonApiBundle\Controller\JsonApiEnabledInterface;
 use Trikoder\JsonApiBundle\Response\DataResponse;
+use Trikoder\JsonApiBundle\Response\Header;
+use Trikoder\JsonApiBundle\Response\HttpAwareDataResponse;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
 use Trikoder\JsonApiBundle\Services\Neomerx\FactoryService;
 use Trikoder\JsonApiBundle\Services\RequestDecoder\RequestDecoder;
@@ -118,7 +120,6 @@ class KernelListener
     /**
      * Transforms controller result to valid json api response if possible
      *
-     *
      * @throws \Exception
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
@@ -160,7 +161,6 @@ class KernelListener
                 // TODO - this should never happen here? Response is called in kernelResponse
 
                 break;
-
             case $controllerResult instanceof DataResponse:
 
                 $resultMeta = array_merge($resultMeta, $controllerResult->getMeta());
@@ -169,12 +169,24 @@ class KernelListener
                 // allow null value data response
                 if (null !== $controllerResult->getData()) {
                     // as data inside can be anything, we extract extra info from response and pass all down for another round of decoding
-                    return $this->getResponseFromControllerResult($controllerResult->getData(), $resultMeta,
-                        $resultLinks);
+                    $response = $this->getResponseFromControllerResult(
+                        $controllerResult->getData(), $resultMeta, $resultLinks
+                    );
+                } else {
+                    $response = $this->responseFactory->createResponse(
+                        $this->encode(null, $resultMeta, $resultLinks)
+                    );
                 }
 
-                $response = $this->responseFactory->createResponse($this->encode(null, $resultMeta,
-                    $resultLinks));
+                if ($controllerResult instanceof HttpAwareDataResponse) {
+                    if (null !== $controllerResult->getStatusCode()) {
+                        $response->setStatusCode($controllerResult->getStatusCode());
+                    }
+
+                    if (!empty($controllerResult->getHeaders())) {
+                        $this->addHeadersToResponse($response, $controllerResult->getHeaders());
+                    }
+                }
 
                 return $response;
 
@@ -223,7 +235,7 @@ class KernelListener
     }
 
     /**
-     * @param array|Iterator|null|object|string $data
+     * @param array|Iterator|object|string|null $data
      *
      * @return string
      */
@@ -294,6 +306,16 @@ class KernelListener
             $this->logger->error($exception->getMessage(), [
                 'exception' => $exception,
             ]);
+        }
+    }
+
+    /**
+     * @param Header[] $headers
+     */
+    private function addHeadersToResponse(Response $response, array $headers)
+    {
+        foreach ($headers as $header) {
+            $response->headers->set($header->getKey(), $header->getValue());
         }
     }
 }

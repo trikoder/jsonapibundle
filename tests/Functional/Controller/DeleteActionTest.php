@@ -43,13 +43,14 @@ class DeleteActionTest extends JsonapiWebTestCase
         $this->assertNull($user);
     }
 
-    public function testActionWithTrailingSlash()
+    public function testUserDeleteActionWithTrailingSlash()
     {
         $client = static::createClient();
 
         $user = new User();
         $user->setEmail('testActionWithTrailingSlash@test.com');
         $client->getContainer()->get('doctrine.orm.entity_manager')->persist($user);
+        $client->getContainer()->get('doctrine.orm.entity_manager')->flush();
 
         $client->request(
             'DELETE',
@@ -60,7 +61,7 @@ class DeleteActionTest extends JsonapiWebTestCase
             ''
         );
         $response = $client->getResponse();
-        $this->assertNotEquals(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
     public function testNotFound()
@@ -77,5 +78,22 @@ class DeleteActionTest extends JsonapiWebTestCase
         );
         $response = $client->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
+
+    public function testUserDeleteVersioned()
+    {
+        $client = static::createClient();
+
+        $user = new User();
+        $user->setEmail('testVersioned@test.com');
+        $client->getContainer()->get('doctrine.orm.entity_manager')->persist($user);
+        $client->getContainer()->get('doctrine.orm.entity_manager')->flush();
+
+        $client->request(
+            'DELETE',
+            '/api/v2/user/' . $user->getId()
+        );
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 }

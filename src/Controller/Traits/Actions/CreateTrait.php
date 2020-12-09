@@ -3,17 +3,15 @@
 namespace Trikoder\JsonApiBundle\Controller\Traits\Actions;
 
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Trikoder\JsonApiBundle\Contracts\Config\ConfigInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelInputHandlerInterface;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelValidatorInterface;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\ResponseFactoryInterface;
-use Trikoder\JsonApiBundle\Contracts\SchemaClassMapProviderInterface;
+use Trikoder\JsonApiBundle\Response\CreatedResponse;
 use Trikoder\JsonApiBundle\Services\ModelInput\ModelValidationException;
 use Trikoder\JsonApiBundle\Services\ModelInput\UnhandleableModelInputException;
 use Trikoder\JsonApiBundle\Services\Neomerx\EncoderService;
@@ -49,9 +47,8 @@ trait CreateTrait
         $modelInput = $request->request->all();
         if ($request->files->count() > 0) {
             foreach ($request->files->all() as $filesKey => $filesValue) {
-                if (array_key_exists($filesKey, $modelInput)) {
-                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s',
-                        $filesKey));
+                if (\array_key_exists($filesKey, $modelInput)) {
+                    throw new RuntimeException(sprintf('Conflict with request files, duplicate param found in request and files %s', $filesKey));
                 }
                 $modelInput[$filesKey] = $filesValue;
             }
@@ -137,7 +134,7 @@ trait CreateTrait
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response|CreatedResponse
      */
     protected function createCreatedFromRequest(Request $request)
     {
@@ -147,8 +144,6 @@ trait CreateTrait
         $responseFactory = $this->getJsonApiResponseFactory();
         /** @var EncoderService $encoder */
         $encoder = $this->getJsonApiEncoder();
-        /** @var SchemaClassMapProviderInterface $schemaProvider */
-        $schemaProvider = $this->getSchemaClassMapProvider();
 
         try {
             $model = $this->createModelFromRequest($request);
@@ -168,48 +163,39 @@ trait CreateTrait
 
         $showLocation = null;
         if (true === method_exists($this, 'getRouter')) {
-            $showRouteName = $this->findShowRouteName();
+            $showRouteName = $this->findShowRouteName($request);
             if (null !== $showRouteName) {
-                $showLocation = $this->getRouter()->generate($showRouteName, ['id' => $model->getId()], RouterInterface::ABSOLUTE_URL);
+                $showRouteParameters = ['id' => $this->getPropertyAccessor()->getValue($model, 'id')] + $request->attributes->get('_route_params', []);
+                $showLocation = $this->getRouter()->generate($showRouteName, $showRouteParameters, RouterInterface::ABSOLUTE_URL);
             }
         }
-        $response = $responseFactory->createCreated(
-            $encoder->encode($schemaProvider, $model),
-            $showLocation
-        );
 
-        return $response;
+        return new CreatedResponse($model, [], [], $showLocation);
     }
 
     /**
      * Find showAction route to this controller.
      * Returns null if route cannot be found
      *
-     * @internal
-     *
      * @return string|null
+     *
+     * @internal
      */
-    protected function findShowRouteName()
+    protected function findShowRouteName(Request $request = null)
     {
-        if (true !== method_exists($this, 'getRouter')) {
+        if (true !== method_exists($this, 'showAction')) {
             return null;
         }
-        /** @var Router $router */
-        $router = $this->getRouter();
-        $controllerName = \get_class($this) . '::showAction';
-        $showRouteName = null;
-        /** @var Route $route */
-        foreach ($router->getRouteCollection() as $routeName => $route) {
-            $defaults = $route->getDefaults();
-            if (isset($defaults['_controller']) && $defaults['_controller'] == $controllerName) {
-                $showRouteName = $routeName;
-                break;
+        if (null !== $request) {
+            // guess route name from convention
+            $createRouteName = $request->get('_route');
+
+            // we test and calculate by known symfony convention
+            if ('_create' == substr($createRouteName, -7)) {
+                return sprintf('%s_show', substr($createRouteName, 0, -7));
             }
         }
-        if (null === $showRouteName) {
-            return null;
-        }
 
-        return $showRouteName;
+        return null;
     }
 }

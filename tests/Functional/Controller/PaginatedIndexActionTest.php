@@ -28,8 +28,8 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
 
         $this->assertArrayHasKey('meta', $content);
         $this->assertEquals([
-            // TODO refactor this to count from database
-            'total' => 7,
+            // TODO refactor this to count from database ++
+            'total' => 9,
         ], $content['meta']);
 
         $this->assertArrayHasKey('links', $content);
@@ -40,9 +40,18 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $this->assertArrayHasKey('last', $content['links']);
 
         // check if urls are correct, eg. /api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0
-        $this->assertStringEndsWith('/api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['self']);
-        $this->assertStringEndsWith('/api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=2', $content['links']['next']);
-        $this->assertStringEndsWith('/api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['first']);
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?page[limit]=2&page[offset]=0',
+            urldecode($content['links']['self'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?page[limit]=2&page[offset]=2',
+            urldecode($content['links']['next'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?page[limit]=2&page[offset]=0',
+            urldecode($content['links']['first'])
+        );
         $this->assertEmpty($content['links']['prev']);
     }
 
@@ -58,9 +67,18 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $content = $this->getResponseContentJson($response);
 
         // check if urls are correct, eg. /api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0
-        $this->assertStringEndsWith('/api/user-paginated/?filter%5Bid%5D=1%2C2%2C3%2C4%2C99&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['self']);
-        $this->assertStringEndsWith('/api/user-paginated/?filter%5Bid%5D=1%2C2%2C3%2C4%2C99&page%5Blimit%5D=2&page%5Boffset%5D=2', $content['links']['next']);
-        $this->assertStringEndsWith('/api/user-paginated/?filter%5Bid%5D=1%2C2%2C3%2C4%2C99&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['first']);
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?filter[id]=1,2,3,4,99&page[limit]=2&page[offset]=0',
+            urldecode($content['links']['self'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?filter[id]=1,2,3,4,99&page[limit]=2&page[offset]=2',
+            urldecode($content['links']['next'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?filter[id]=1,2,3,4,99&page[limit]=2&page[offset]=0',
+            urldecode($content['links']['first'])
+        );
         $this->assertEmpty($content['links']['prev']);
     }
 
@@ -76,9 +94,18 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $content = $this->getResponseContentJson($response);
 
         // check if urls are correct, eg. /api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0
-        $this->assertStringEndsWith('/api/user-paginated/?fields%5Buser%5D=email%2Cid%2Cactive%2Cinvalid&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['self']);
-        $this->assertStringEndsWith('/api/user-paginated/?fields%5Buser%5D=email%2Cid%2Cactive%2Cinvalid&page%5Blimit%5D=2&page%5Boffset%5D=2', $content['links']['next']);
-        $this->assertStringEndsWith('/api/user-paginated/?fields%5Buser%5D=email%2Cid%2Cactive%2Cinvalid&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['first']);
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?fields[user]=email,id,active,invalid&page[limit]=2&page[offset]=0',
+            urldecode($content['links']['self'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?fields[user]=email,id,active,invalid&page[limit]=2&page[offset]=2',
+            urldecode($content['links']['next'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?fields[user]=email,id,active,invalid&page[limit]=2&page[offset]=0',
+            urldecode($content['links']['first'])
+        );
         $this->assertEmpty($content['links']['prev']);
     }
 
@@ -94,9 +121,18 @@ class PaginatedIndexActionTest extends JsonapiWebTestCase
         $content = $this->getResponseContentJson($response);
 
         // check if urls are correct, eg. /api/user-paginated/?page%5Blimit%5D=2&page%5Boffset%5D=0
-        $this->assertStringEndsWith('/api/user-paginated/?include=user%2Cpost&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['self']);
-        $this->assertStringEndsWith('/api/user-paginated/?include=user%2Cpost&page%5Blimit%5D=2&page%5Boffset%5D=2', $content['links']['next']);
-        $this->assertStringEndsWith('/api/user-paginated/?include=user%2Cpost&page%5Blimit%5D=2&page%5Boffset%5D=0', $content['links']['first']);
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?include=user,post&page[limit]=2&page[offset]=0',
+            urldecode($content['links']['self'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?include=user,post&page[limit]=2&page[offset]=2',
+            urldecode($content['links']['next'])
+        );
+        $this->assertStringEndsWith(
+            '/api/user-paginated/?include=user,post&page[limit]=2&page[offset]=0',
+            urldecode($content['links']['first'])
+        );
         $this->assertEmpty($content['links']['prev']);
     }
 

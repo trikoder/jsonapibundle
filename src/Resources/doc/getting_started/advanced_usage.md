@@ -24,3 +24,7 @@ public function getSchemaClassMapProvider()
     return $mapService;
 }
 ```
+
+## JSON API VALIDATORS
+
+To see available JSON API VALIDATORS open [this document](json_api_validators.md)

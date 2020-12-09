@@ -29,6 +29,10 @@ use Trikoder\JsonApiBundle\Config\Annotation as JsonApiConfig;
  *     ),
  *     delete=@JsonApiConfig\DeleteConfig(
  *         requiredRoles=null
+ *     ),
+ *     updateRelationship=@JsonApiConfig\UpdateRelationshipConfig(
+ *         allowedRelationships={"tags"},
+ *         requiredRoles=null
  *     )
  * )
  */

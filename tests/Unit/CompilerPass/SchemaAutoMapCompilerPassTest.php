@@ -2,7 +2,7 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Unit\CompilerPass;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Trikoder\JsonApiBundle\CompilerPass\SchemaAutoMapCompilerPass;

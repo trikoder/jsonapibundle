@@ -15,7 +15,7 @@ use Trikoder\JsonApiBundle\Response\DataResponse;
 trait IndexTrait
 {
     /**
-     * @return array|null|\Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface
+     * @return array|\Trikoder\JsonApiBundle\Contracts\ObjectListCollectionInterface|null
      */
     private function createCollectionFromRequest(Request $request)
     {
@@ -59,13 +59,7 @@ trait IndexTrait
         $routeParams = $request->query->all();
 
         // figure out request attributes from route
-        $compiledRoute = $router->getRouteCollection()->get($routeName)->compile();
-        $compiledRouteVariables = $compiledRoute->getVariables();
-        foreach ($compiledRouteVariables as $compiledRouteVariable) {
-            if ($request->attributes->has($compiledRouteVariable)) {
-                $routeParams[$compiledRouteVariable] = $request->attributes->get($compiledRouteVariable);
-            }
-        }
+        $routeParams += $request->attributes->get('_route_params', []);
 
         $routeParams = array_merge($routeParams, $overrideParams);
 
@@ -101,13 +95,13 @@ trait IndexTrait
     ) {
         // check for required values
         if (
-            false === array_key_exists('strategy', $paginationParams) ||
-            false === array_key_exists('limit', $paginationParams) ||
-            false === array_key_exists('offset', $paginationParams)
+            false === \array_key_exists('strategy', $paginationParams) ||
+            false === \array_key_exists('limit', $paginationParams) ||
+            false === \array_key_exists('offset', $paginationParams)
         ) {
             throw new \InvalidArgumentException();
         }
-        if (false === array_key_exists('limit', $paginationParams) || null === $paginationParams['limit']) {
+        if (false === \array_key_exists('limit', $paginationParams) || null === $paginationParams['limit']) {
             throw new \RuntimeException('Limit values for pagination is missing. Did you forget to configure defaults?');
         }
 
@@ -211,24 +205,24 @@ trait IndexTrait
         if (true === \is_array($arguments)) {
             // calculate limit first
             // page size strategy
-            if (true === array_key_exists('size', $arguments)) {
+            if (true === \array_key_exists('size', $arguments)) {
                 $pagination['limit'] = (int) $arguments['size'];
                 $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_PAGE_SIZE;
             } else {
                 // offset limit strategy
-                if (true === array_key_exists('limit', $arguments)) {
+                if (true === \array_key_exists('limit', $arguments)) {
                     $pagination['limit'] = (int) $arguments['limit'];
                     $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_LIMIT_OFFSET;
                 }
             }
 
             // page size strategy
-            if (true === array_key_exists('number', $arguments)) {
+            if (true === \array_key_exists('number', $arguments)) {
                 $pagination['offset'] = ((int) $arguments['number'] - 1) * $pagination['limit'];
                 $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_PAGE_SIZE;
             } else {
                 // offset limit strategy
-                if (true === array_key_exists('offset', $arguments)) {
+                if (true === \array_key_exists('offset', $arguments)) {
                     $pagination['offset'] = (int) $arguments['offset'];
                     $pagination['strategy'] = IndexConfigInterface::PAGINATION_STRATEGY_LIMIT_OFFSET;
                 }

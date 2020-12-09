@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Trikoder\JsonApiBundle\Contracts;
 
-use Trikoder\JsonApiBundle\Services\RequestDecoder\Exception\InvalidBodyForMethodException;
+// @todo don't depend on this
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+/**
+ * Should only validate structure of the document as per JsonApi spec
+ */
 interface RequestBodyValidatorInterface
 {
     /**
-     * @throws InvalidBodyForMethodException
+     * @return ConstraintViolationListInterface
      */
-    public function validate(string $requestMethod, array $body);
+    public function validate(array $body);
 }

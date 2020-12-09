@@ -4,12 +4,17 @@ namespace Trikoder\JsonApiBundle\Bridge\Doctrine;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\MappingException;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Trikoder\JsonApiBundle\Contracts\RelationshipDoesNotExistException;
+use Trikoder\JsonApiBundle\Contracts\RelationshipRepositoryInterface;
 use Trikoder\JsonApiBundle\Contracts\RepositoryInterface;
+use Trikoder\JsonApiBundle\Contracts\ResourceDoesNotExistException;
 
 /**
  * Class DoctrineRepository
  */
-class DoctrineRepository implements RepositoryInterface
+class DoctrineRepository implements RepositoryInterface, RelationshipRepositoryInterface
 {
     /**
      * @var EntityRepository
@@ -21,12 +26,21 @@ class DoctrineRepository implements RepositoryInterface
     protected $entityManager;
 
     /**
+     * @var PropertyAccessorInterface
+     */
+    protected $propertyAccessor;
+
+    /**
      * DoctrineRepository constructor.
      */
-    public function __construct(EntityRepository $entityRepository, EntityManager $entityManager)
-    {
+    public function __construct(
+        EntityRepository $entityRepository,
+        EntityManager $entityManager,
+        PropertyAccessorInterface $propertyAccessor
+    ) {
         $this->entityRepository = $entityRepository;
         $this->entityManager = $entityManager;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
@@ -74,5 +88,83 @@ class DoctrineRepository implements RepositoryInterface
     {
         $this->entityManager->remove($model);
         $this->entityManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addToRelationship($model, string $relationshipName, array $relationshipData)
+    {
+        $modelMeta = $this->entityManager->getClassMetadata($this->entityRepository->getClassName());
+
+        try {
+            $relationshipModelClassName = $modelMeta->getAssociationMapping($relationshipName)['targetEntity'];
+        } catch (MappingException $e) {
+            throw new RelationshipDoesNotExistException($relationshipName);
+        }
+
+        $relationshipModelMeta = $this->entityManager->getClassMetadata($relationshipModelClassName);
+        $relationshipIdentifier = $relationshipModelMeta->getSingleIdentifierFieldName();
+
+        $repository = $this->entityManager->getRepository($relationshipModelClassName);
+        $currentRelationshipModels = $this->propertyAccessor->getValue($model, $relationshipName);
+
+        $relationshipModels = [];
+
+        //add current relationship resources to array
+        foreach ($currentRelationshipModels as $data) {
+            $relationshipModels[$this->propertyAccessor->getValue($data, $relationshipIdentifier)] = $data;
+        }
+
+        $newRelationshipModels = $repository->findBy([$relationshipIdentifier => array_column($relationshipData, 'id')]);
+
+        /*
+         * @see https://gitlab.trikoder.net/trikoder/jsonapibundle/merge_requests/102#note_251076
+         */
+        if (\count($newRelationshipModels) !== \count($relationshipData)) {
+            throw new ResourceDoesNotExistException();
+        }
+
+        //add new relationship resources to array
+        foreach ($newRelationshipModels as $data) {
+            $relationshipModels[$this->propertyAccessor->getValue($data, $relationshipIdentifier)] = $data;
+        }
+
+        $this->propertyAccessor->setValue($model, $relationshipName, $relationshipModels);
+
+        return $this->save($model);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeFromRelationship($model, string $relationshipName, array $relationshipData)
+    {
+        $modelMeta = $this->entityManager->getClassMetadata($this->entityRepository->getClassName());
+
+        try {
+            $relationshipModelClassName = $modelMeta->getAssociationMapping($relationshipName)['targetEntity'];
+        } catch (MappingException $e) {
+            throw new RelationshipDoesNotExistException($relationshipName);
+        }
+
+        $relationshipModelMeta = $this->entityManager->getClassMetadata($relationshipModelClassName);
+        $relationshipIdentifier = $relationshipModelMeta->getSingleIdentifierFieldName();
+
+        $relationshipModels = $this->propertyAccessor->getValue($model, $relationshipName);
+        $relationshipIds = array_column($relationshipData, 'id');
+
+        $this->propertyAccessor->setValue(
+            $model,
+            $relationshipName,
+            array_filter(
+                iterator_to_array($relationshipModels),
+                function ($data) use ($relationshipIdentifier, $relationshipIds) {
+                    return !\in_array($this->propertyAccessor->getValue($data, $relationshipIdentifier), $relationshipIds);
+                }
+            )
+        );
+
+        return $this->save($model);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Trikoder\JsonApiBundle\Tests\Resources\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Trikoder\JsonApiBundle\Schema\Builtin\ResourceInterface;
 
 /**
  * Post
@@ -11,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="post")
  * @ORM\Entity(repositoryClass="Trikoder\JsonApiBundle\Tests\Resources\Repository\PostRepository")
  */
-class Post
+class Post implements ResourceInterface
 {
     /**
      * @var int
@@ -44,6 +46,30 @@ class Post
     private $author;
 
     /**
+     * @var DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $publishedAt;
+
+    public function __construct()
+    {
+        $this->publishedAt = new DateTime();
+    }
+
+    public static function getJsonApiResourceType(): string
+    {
+        return 'post';
+    }
+
+    /**
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
      * Get id
      *
      * @return int
@@ -54,8 +80,9 @@ class Post
     }
 
     /**
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle()
     {
         return $this->title;
     }
@@ -93,7 +120,7 @@ class Post
 
     /**
      */
-    public function getAuthor()
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
@@ -106,5 +133,19 @@ class Post
         $this->author = $author;
 
         return $this;
+    }
+
+    /**
+     */
+    public function getPublishedAt(): DateTime
+    {
+        return $this->publishedAt;
+    }
+
+    /**
+     */
+    public function setPublishedAt(DateTime $publishedAt): void
+    {
+        $this->publishedAt = $publishedAt;
     }
 }
