@@ -7,7 +7,7 @@
     "symfony/framework-bundle": "^3.4|^4.4|^5",
     "symfony/dependency-injection": "^3.4|^4.4|^5",
     "symfony/config": "^3.4|^4.4|^5",
-    "sensio/framework-extra-bundle": "^5.3|^5",
+    "sensio/framework-extra-bundle": "^5.3|^6",
     "symfony/http-foundation": "^3.4|^4.4|^5",
     "symfony/form": "^3.4|^4.4|^5",
     "symfony/routing": "^3.4|^4.4|^5",
