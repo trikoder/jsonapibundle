@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata as LegacyClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelMetaDataInterface;
 
 final class DoctrineModelMetaData implements ModelMetaDataInterface
 {
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata|LegacyClassMetadata
      */
     private $classMetaData;
 
-    public function __construct(ClassMetadata $classMetaData)
+    /**
+     * @param ClassMetadata|LegacyClassMetadata $classMetaData
+     */
+    public function __construct($classMetaData)
     {
         $this->classMetaData = $classMetaData;
     }

@@ -6,6 +6,9 @@ services:
     build:
           context: php
           dockerfile: Dockerfile
+          args:
+              PHP_VERSION_MAJOR: ${PHP_VERSION_MAJOR:-7}
+              PHP_VERSION_MINOR: ${PHP_VERSION_MINOR:-2}
     volumes:
       - ../../../:/usr/src/bundle #mount bundle root
     links:

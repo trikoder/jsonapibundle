@@ -157,12 +157,10 @@ class KernelListener
         switch (true) {
             // if you have response from controller, check if it is valid
             case $controllerResult instanceof Response:
-
                 // TODO - this should never happen here? Response is called in kernelResponse
 
                 break;
             case $controllerResult instanceof DataResponse:
-
                 $resultMeta = array_merge($resultMeta, $controllerResult->getMeta());
                 $resultLinks = array_merge($resultLinks, $controllerResult->getLinks());
 
@@ -194,7 +192,6 @@ class KernelListener
 
             // if we got our collection encode it and package it in response
             case $controllerResult instanceof ObjectListCollectionInterface:
-
                 // append total from collection
                 $resultMeta['total'] = $controllerResult->getTotal();
 
@@ -210,7 +207,6 @@ class KernelListener
 
             // if you got array or object, try to encode it and package in response
             case \is_array($controllerResult) || \is_object($controllerResult):
-
                 $response = $this->responseFactory->createResponse($this->encode($controllerResult, $resultMeta,
                     $resultLinks));
 
@@ -220,7 +216,6 @@ class KernelListener
 
             // no content response?
             case null === $controllerResult:
-
                 $response = $this->responseFactory->createNoContent();
 
                 return $response;

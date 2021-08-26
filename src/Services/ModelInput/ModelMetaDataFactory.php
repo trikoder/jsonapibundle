@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectManager as LegacyObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\JsonApiBundle\Contracts\ModelTools\ModelMetaDataInterface;
 
 final class ModelMetaDataFactory
 {
     /**
-     * @var ObjectManager
+     * @var ObjectManager|LegacyObjectManager
      */
     private $objectManager;
 
-    public function __construct(ObjectManager $objectManager)
+    /**
+     * @param ObjectManager|LegacyObjectManager $objectManager
+     */
+    public function __construct($objectManager)
     {
         $this->objectManager = $objectManager;
     }

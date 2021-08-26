@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\Common\Persistence\ObjectManager as LegacyObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -37,5 +39,13 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__ . '/config/config.yml');
+    }
+
+    public function boot()
+    {
+        if (!$this->booted && !interface_exists(LegacyObjectManager::class)) {
+            class_alias(ObjectManager::class, LegacyObjectManager::class);
+        }
+        parent::boot();
     }
 }

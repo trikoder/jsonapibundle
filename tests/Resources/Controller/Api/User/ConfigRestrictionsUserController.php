@@ -30,8 +30,8 @@ use Trikoder\JsonApiBundle\Controller\Traits\UpdateActionTrait;
  */
 class ConfigRestrictionsUserController extends JsonApiController
 {
-    use IndexActionTrait;
     use CreateActionTrait;
-    use UpdateActionTrait;
+    use IndexActionTrait;
     use ShowActionTrait;
+    use UpdateActionTrait;
 }

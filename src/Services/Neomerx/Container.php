@@ -2,7 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Services\Neomerx;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Common\Persistence\Proxy as LegacyProxy;
+use Doctrine\Persistence\Proxy;
 use InvalidArgumentException;
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaProviderInterface;
@@ -43,7 +44,7 @@ class Container extends BaseContainer
      */
     protected function getResourceType($resource)
     {
-        if ($resource instanceof Proxy) {
+        if ($resource instanceof Proxy || $resource instanceof LegacyProxy) {
             return get_parent_class($resource);
         }
 

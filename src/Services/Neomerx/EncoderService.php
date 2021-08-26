@@ -112,7 +112,7 @@ class EncoderService
     {
         $options = 0;
         if (true === $this->configurationEncodingPrettyPrint) {
-            $options += JSON_PRETTY_PRINT;
+            $options += \JSON_PRETTY_PRINT;
         }
         $this->encoderOptions = new EncoderOptions($options, '');
     }

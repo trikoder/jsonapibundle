@@ -19,8 +19,8 @@ use Trikoder\JsonApiBundle\Controller\Traits\UpdateActionTrait;
  */
 class ProductController extends JsonApiController
 {
+    use CreateActionTrait;
     use IndexActionTrait;
     use ShowActionTrait;
-    use CreateActionTrait;
     use UpdateActionTrait;
 }

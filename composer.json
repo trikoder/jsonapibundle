@@ -17,7 +17,7 @@
     "symfony/monolog-bundle": "^3.4",
     "neomerx/json-api": "^1.0",
     "doctrine/orm": "^2.4",
-    "doctrine/common": "^2",
+    "doctrine/common": "^2|^3",
     "doctrine/doctrine-bundle": "^1.11|^2.0",
     "ext-json": "*",
     "symfony/property-access": "^3.4|^4.4"
@@ -29,7 +29,6 @@
     "justinrainbow/json-schema": "^1.6",
     "doctrine/doctrine-fixtures-bundle": "^3.3",
     "fzaninotto/faker": "^1.5",
-    "sensiolabs/security-checker": "^5",
     "symfony/twig-bundle": "^3.4|^4.4",
     "doctrine/cache": "^1.6",
     "symfony/debug-bundle": "^3.4|^4.4",

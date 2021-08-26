@@ -33,7 +33,7 @@ class ExtensionTest extends KernelTestCase
             -10,
             $eventDispatcher->getListenerPriority(
                 KernelEvents::CONTROLLER_ARGUMENTS,
-                [$listener, 'onKernelControllerarguments']
+                [$listener, 'onKernelControllerArguments']
             )
         );
 

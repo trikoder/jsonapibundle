@@ -21,10 +21,10 @@ use Trikoder\JsonApiBundle\Controller\Traits\UpdateRelationshipActionTrait;
  */
 class ExampleController extends JsonApiController
 {
+    use CreateActionTrait;
+    use DeleteActionTrait;
     use IndexActionTrait;
     use ShowActionTrait;
-    use CreateActionTrait;
     use UpdateActionTrait;
-    use DeleteActionTrait;
     use UpdateRelationshipActionTrait;
 }

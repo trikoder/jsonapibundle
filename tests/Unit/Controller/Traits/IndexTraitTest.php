@@ -178,6 +178,8 @@ class IndexTraitTest extends TestCase
 
 class TestIndexTraitClass
 {
+    use IndexTrait;
+
     public function callCalculatePagesForLimitOffset($offset, $limit, $total)
     {
         return $this->calculatePagesForLimitOffset($offset, $limit, $total);
@@ -187,6 +189,4 @@ class TestIndexTraitClass
     {
         return $this->calculatePagesForPageSize($offset, $limit, $total);
     }
-
-    use IndexTrait;
 }

@@ -6,12 +6,46 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.19.0] 2021-03-25
+
+### Added
+- Support for Doctrine common v3
+
+### Changed
+- CI now uses the Symfony binary for `security:check` instead of the deprecated composer package
+- CI "latest" build now runs on PHP 7.4
+
+### Fixed
+- Compliance with newer version of php cs fixer
+
+## [0.18.0] 2020-12-09
+
+### Added
+- Support for multi-level filters
+
+### Changed
+- CI removes created images & volumes when finished
+
+## [0.17.7] 2020-02-14
+
+### Added
+- Support for Doctrine bundle v2
+
+### Fixed
+- Specified includes now get properly included on create requests
+- Headers argument being unintentionally cleared in when creating response
+
+## [0.17.6] 2020-01-21
+
+### Added
+- Support for empty data attribute to `ResponseBodyDecoder`
+
 ### Changed
 - Form validation errors now generate pointers from cause instead of origin
 
 ### Fixed
 - Form validation errors pointers now correctly target deep properties 
-- Specified includes now get properly included on create requests
+- Failing tests in newer PHPUnit bridge version
 
 ## [0.17.5] 2019-11-15
 

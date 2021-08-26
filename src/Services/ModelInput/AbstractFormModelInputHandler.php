@@ -2,7 +2,8 @@
 
 namespace Trikoder\JsonApiBundle\Services\ModelInput;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Common\Persistence\Proxy as LegacyProxy;
+use Doctrine\Persistence\Proxy;
 use Symfony\Component\Form\Extension\Validator\Constraints\Form;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\FormInterface;
@@ -46,7 +47,7 @@ abstract class AbstractFormModelInputHandler implements ModelInputHandlerInterfa
         $this->model = $model;
 
         // make sure we are not working with doctrine proxy
-        if ($this->model instanceof Proxy) {
+        if ($this->model instanceof Proxy || $this->model instanceof LegacyProxy) {
             $this->modelClass = get_parent_class($this->model);
         } else {
             $this->modelClass = \get_class($this->model);
